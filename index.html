@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HKDSE ICT Study Hub — Mr Ivan Fung</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="true">Topics</button>
+
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="brand-block">
+        <div class="brand-icon">ICT</div>
+        <div>
+          <h1>HKDSE ICT Study Hub</h1>
+          <p>Created by Mr Ivan Fung</p>
+        </div>
+        <button id="sidebarHideBtn" class="sidebar-hide-btn" type="button" aria-label="Hide sidebar">Hide</button>
+      </div>
+
+      <nav class="module-nav">
+        <div class="nav-title">HKDSE ICT</div>
+
+        <button class="nav-item nav-root active" data-page="dashboard">
+          <span class="nav-emoji">⌂</span>
+          ICT revision arcade
+        </button>
+
+        <section class="curriculum-group is-open">
+          <button class="curriculum-heading" type="button" aria-expanded="true" aria-controls="coreAList">
+            <span class="nav-emoji">A</span>
+            <span>Core A Information Processing</span>
+          </button>
+          <div class="topic-list" id="coreAList">
+            <button class="nav-item" data-topic="A1 Introduction to Information Processing" data-group="Core A Information Processing">A1 Introduction to Information Processing</button>
+            <button class="nav-item" data-topic="A2 Data Organisation and Data Control" data-group="Core A Information Processing">A2 Data Organisation and Data Control</button>
+            <button class="nav-item" data-topic="A3 Data Representation" data-group="Core A Information Processing">A3 Data Representation</button>
+            <button class="nav-item" data-topic="A4 Spreadsheet / Data Manipulation and Analysis" data-group="Core A Information Processing">A4 Spreadsheet / Data Manipulation and Analysis</button>
+            <button class="nav-item" data-topic="A5 Simple Database" data-group="Core A Information Processing">A5 Simple Database</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="coreBList">
+            <span class="nav-emoji">B</span>
+            <span>Core B Computer System Fundamentals</span>
+          </button>
+          <div class="topic-list" id="coreBList">
+            <button class="nav-item" data-topic="B1 Input and Output Devices" data-group="Core B Computer System Fundamentals">B1 Input and Output Devices</button>
+            <button class="nav-item" data-topic="B2 Computer Hardware" data-group="Core B Computer System Fundamentals">B2 Computer Hardware</button>
+            <button class="nav-item" data-topic="B3 Computer Software" data-group="Core B Computer System Fundamentals">B3 Computer Software</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="coreCList">
+            <span class="nav-emoji">C</span>
+            <span>Core C Internet and its Applications</span>
+          </button>
+          <div class="topic-list" id="coreCList">
+            <button class="nav-item" data-topic="C1 Networking and Internet Basics" data-group="Core C Internet and its Applications">C1 Networking and Internet Basics</button>
+            <button class="nav-item" data-topic="C2 Internet Protocols" data-group="Core C Internet and its Applications">C2 Internet Protocols</button>
+            <button class="nav-item" data-topic="C3 Internet Services and Applications" data-group="Core C Internet and its Applications">C3 Internet Services and Applications</button>
+            <button class="nav-item" data-topic="C4 Elementary Web Authoring" data-group="Core C Internet and its Applications">C4 Elementary Web Authoring</button>
+            <button class="nav-item" data-topic="C5 Network Security and Privacy Threats" data-group="Core C Internet and its Applications">C5 Network Security and Privacy Threats</button>
+            <button class="nav-item" data-topic="C6 Network Security Measures" data-group="Core C Internet and its Applications">C6 Network Security Measures</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="coreDList">
+            <span class="nav-emoji">D</span>
+            <span>Core D Computational Thinking and Programming</span>
+          </button>
+          <div class="topic-list" id="coreDList">
+            <button class="nav-item" data-topic="D1 Problem Formulation and Analysis" data-group="Core D Computational Thinking and Programming">D1 Problem Formulation and Analysis</button>
+            <button class="nav-item" data-topic="D2 Algorithm Design I - Sequence and Selection" data-group="Core D Computational Thinking and Programming">D2 Algorithm Design I - Sequence and Selection</button>
+            <button class="nav-item" data-topic="D3 Algorithm Design II - Iteration and Arrays" data-group="Core D Computational Thinking and Programming">D3 Algorithm Design II - Iteration and Arrays</button>
+            <button class="nav-item" data-topic="D4 Introduction to Python Programming" data-group="Core D Computational Thinking and Programming">D4 Introduction to Python Programming</button>
+            <button class="nav-item" data-topic="D5 Integrated Problem-solving in Python" data-group="Core D Computational Thinking and Programming">D5 Integrated Problem-solving in Python</button>
+            <button class="nav-item" data-topic="D6 Program Testing and Debugging" data-group="Core D Computational Thinking and Programming">D6 Program Testing and Debugging</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="coreEList">
+            <span class="nav-emoji">E</span>
+            <span>Core E Social Implications</span>
+          </button>
+          <div class="topic-list" id="coreEList">
+            <button class="nav-item" data-topic="E1 Technological Innovations" data-group="Core E Social Implications">E1 Technological Innovations</button>
+            <button class="nav-item" data-topic="E2 Health and Ethical Issues" data-group="Core E Social Implications">E2 Health and Ethical Issues</button>
+            <button class="nav-item" data-topic="E3 Intellectual Property" data-group="Core E Social Implications">E3 Intellectual Property</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="electiveAList">
+            <span class="nav-emoji">DB</span>
+            <span>Elective A Databases</span>
+          </button>
+          <div class="topic-list" id="electiveAList">
+            <button class="nav-item" data-topic="EA1 Managing Data Using SQL" data-group="Elective A Databases">EA1 Managing Data Using SQL</button>
+            <button class="nav-item" data-topic="EA2 SQL Operators and Functions" data-group="Elective A Databases">EA2 SQL Operators and Functions</button>
+            <button class="nav-item" data-topic="EA3 SQL Operations on Multiple Tables" data-group="Elective A Databases">EA3 SQL Operations on Multiple Tables</button>
+            <button class="nav-item" data-topic="EA4 Relational Database Concepts" data-group="Elective A Databases">EA4 Relational Database Concepts</button>
+            <button class="nav-item" data-topic="EA5 Database Design and ER Diagram" data-group="Elective A Databases">EA5 Database Design and ER Diagram</button>
+          </div>
+        </section>
+
+        <section class="curriculum-group">
+          <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="electiveCList">
+            <span class="nav-emoji">AP</span>
+            <span>Elective C Algorithm and Programming</span>
+          </button>
+          <div class="topic-list" id="electiveCList">
+            <button class="nav-item" data-topic="EC1 Algorithm Design and Python Basics" data-group="Elective C Algorithm and Programming">EC1 Algorithm Design and Python Basics</button>
+            <button class="nav-item" data-topic="EC2 Program Testing and Debugging II" data-group="Elective C Algorithm and Programming">EC2 Program Testing and Debugging II</button>
+            <button class="nav-item" data-topic="EC3 Advanced Control Structures" data-group="Elective C Algorithm and Programming">EC3 Advanced Control Structures</button>
+            <button class="nav-item" data-topic="EC4 Sub-programs" data-group="Elective C Algorithm and Programming">EC4 Sub-programs</button>
+            <button class="nav-item" data-topic="EC5 Data Structures" data-group="Elective C Algorithm and Programming">EC5 Data Structures</button>
+            <button class="nav-item" data-topic="EC6 Searching and Sorting" data-group="Elective C Algorithm and Programming">EC6 Searching and Sorting</button>
+            <button class="nav-item" data-topic="EC7 Handling of Text Files" data-group="Elective C Algorithm and Programming">EC7 Handling of Text Files</button>
+            <button class="nav-item" data-topic="EC8 Applications of Programming in Real Life" data-group="Elective C Algorithm and Programming">EC8 Applications of Programming in Real Life</button>
+          </div>
+        </section>
+      </nav>
+
+    </aside>
+
+    <main class="content">
+      <section id="dashboardPage" class="dashboard-page" aria-live="polite">
+        <section class="hub-hero">
+          <div>
+            <p class="eyebrow">Hong Kong DSE ICT revision platform</p>
+            <h2>HKDSE ICT Study Hub</h2>
+            <p class="hero-copy">
+              A student-facing HKDSE ICT revision hub with clear chapter notes, common mistakes and compact DSE-style checkpoint tasks. Meaningful activities will be added only after their learning value is clear.
+            </p>
+            <p class="creator-line">Created by Mr Ivan Fung</p>
+            <div class="tag-row">
+              <span class="tag">Core A-E</span>
+              <span class="tag">Elective A</span>
+              <span class="tag">Elective C</span>
+              <span class="tag">Clear revision</span>
+              <span class="tag">DSE checkpoints</span>
+            </div>
+          </div>
+          <div class="hub-metrics" aria-label="Learning coverage">
+            <div><strong>TBA</strong><span>activities to be added</span></div>
+            <div><strong>36</strong><span>topic pages</span></div>
+            <div><strong>DSE</strong><span>checkpoint practice</span></div>
+          </div>
+        </section>
+
+        <section class="learning-path-grid" aria-label="Start learning paths">
+          <article class="path-card path-lab">
+            <p>Activities</p>
+            <h3>To Be Added</h3>
+            <span>Useful activities will be added later only when they genuinely demonstrate a concept or train a DSE-style skill.</span>
+            <button class="secondary-btn" type="button" data-dashboard-action="lab">Open A3 Chapter</button>
+          </article>
+          <article class="path-card path-topic">
+            <p>Chapter Study</p>
+            <h3>Pick A Syllabus Point</h3>
+            <span>Read the exact DSE concept, check common traps, then practise with a short transfer task.</span>
+            <button class="secondary-btn" type="button" data-dashboard-action="topic">Open Core C1</button>
+          </article>
+          <article class="path-card path-practice">
+            <p>DSE Drill</p>
+            <h3>Open Programming Chapter</h3>
+            <span>Start from the correct programming chapter, review the details and traps, then try the checkpoint tasks. Simulations can be added later when the design is useful.</span>
+            <button class="primary-btn" type="button" data-dashboard-action="programming">Open D2 Chapter</button>
+          </article>
+        </section>
+
+        <section class="exam-focus-section" aria-label="Frequently examined ICT points">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Homepage focus</p>
+              <h3>Frequently Examined Points</h3>
+              <p>Quick chapter summaries and high-yield revision targets for DSE-style preparation.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="area-grid" aria-label="Frequently examined ICT points">
+          <article class="area-card core-a">
+            <p>Core A</p>
+            <h3>Information Processing</h3>
+            <span>A1 information systems and IPO, A2 data hierarchy/control, A3 representation, A4 spreadsheet analysis and A5 simple database/DBMS operations.</span>
+          </article>
+          <article class="area-card core-b">
+            <p>Core B</p>
+            <h3>Computer System Fundamentals</h3>
+            <span>CPU, memory, storage, operating system functions, utility software, system performance and suitable device selection.</span>
+          </article>
+          <article class="area-card core-c">
+            <p>Core C</p>
+            <h3>Internet and Applications</h3>
+            <span>LAN/WAN, network hardware, internet access, TCP/IP, IP, DNS, URL, protocols, internet services, web authoring, threats and security measures.</span>
+          </article>
+          <article class="area-card core-d">
+            <p>Core D</p>
+            <h3>Programming</h3>
+            <span>Sequence, selection, iteration, arrays, basic algorithm tracing, Python basics, testing and debugging.</span>
+          </article>
+          <article class="area-card core-e">
+            <p>Core E</p>
+            <h3>Social Implications</h3>
+            <span>Privacy, personal data protection, copyright, software licensing, ergonomic practice, e-waste and ethical technology use.</span>
+          </article>
+          <article class="area-card elective-a">
+            <p>Elective A</p>
+            <h3>Databases</h3>
+            <span>SQL table maintenance, operators/functions, multi-table joins/subqueries, relational integrity, ER diagrams, normalisation and access rights.</span>
+          </article>
+          <article class="area-card elective-c">
+            <p>Elective C</p>
+            <h3>Algorithm and Programming</h3>
+            <span>Python review, advanced control, modular programming, data structures, searching/sorting/merging, text files and device/IoT applications.</span>
+          </article>
+        </section>
+      </section>
+
+      <section id="topicPage" class="topic-page hidden" aria-live="polite">
+        <section class="chapter-section chapter-introduction">
+          <p class="eyebrow" id="topicGroupLabel">Topic</p>
+          <h2 id="topicPageTitle">Topic page</h2>
+          <p id="topicPageDescription">Content for this topic will be added later.</p>
+          <div id="topicStatGrid" class="topic-stat-grid"></div>
+        </section>
+
+        <section class="chapter-section chapter-details">
+          <div class="chapter-section-heading">
+            <p class="eyebrow">Details</p>
+            <h3>Build the concept</h3>
+          </div>
+          <div id="topicCardGrid" class="topic-card-grid"></div>
+          <div id="topicKeypointGrid" class="topic-keypoint-grid"></div>
+          <div id="topicFormulaPanel" class="topic-formula-panel hidden"></div>
+          <div id="topicExamGrid" class="topic-exam-grid"></div>
+          <div id="topicSimulationPanel" class="topic-simulation-panel hidden"></div>
+          <div class="topic-workbench">
+            <div>
+              <p class="eyebrow">Revision path</p>
+              <h3>Syllabus point → game → DSE transfer</h3>
+            </div>
+            <ol id="topicSteps"></ol>
+          </div>
+        </section>
+
+        <section class="chapter-section chapter-mistakes">
+          <div id="topicMisconceptionGrid" class="topic-misconception-grid"></div>
+        </section>
+
+        <section class="chapter-section chapter-activities">
+          <div id="topicActivityPanel" class="topic-activity-panel hidden"></div>
+        </section>
+
+        <section class="chapter-section chapter-checkpoint">
+          <div id="topicPracticePanel" class="topic-practice-panel hidden"></div>
+        </section>
+      </section>
+
+      <section id="arcadePage" class="arcade-page hidden" aria-live="polite">
+        <section class="arcade-hero">
+          <div>
+            <p class="eyebrow" id="arcadeGroupLabel">ICT Game Lab</p>
+            <h2 id="arcadeTitle">Game Lab</h2>
+            <p id="arcadeDescription">Choose a game from the sidebar to start.</p>
+          </div>
+          <div class="arcade-scoreboard" aria-label="Game score">
+            <span id="arcadeXp">XP 0</span>
+            <span id="arcadeStreak">Streak 0</span>
+            <span id="arcadeDone">0/0 done</span>
+          </div>
+        </section>
+        <div id="arcadeVisualGrid" class="arcade-visual-grid"></div>
+        <div id="arcadeMissionGrid" class="arcade-mission-grid"></div>
+      </section>
+
+      <section class="hero-card">
+        <div>
+          <p class="eyebrow">Core D / Elective C</p>
+          <h2>Programming Visual Lab</h2>
+          <p class="hero-copy">
+            Step through HKDSE programming structures and logic, watch variables, arrays and abstract data structures change, then challenge yourself with randomised DSE-style exercises.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Core D</span>
+            <span class="tag">Elective C</span>
+            <span class="tag">Pseudocode</span>
+            <span class="tag">Trace table</span>
+            <span class="tag">Random practice</span>
+          </div>
+        </div>
+        <div class="demo-meter" aria-label="Learning coverage">
+          <div class="meter-item"><strong>20</strong><span>demo types</span></div>
+          <div class="meter-item"><strong>∞</strong><span>random cases</span></div>
+          <div class="meter-item"><strong>DSE</strong><span>style drills</span></div>
+        </div>
+      </section>
+
+      <section class="mode-panel">
+        <div>
+          <p class="eyebrow">Choose a demonstration</p>
+          <h3 id="demoTitle">Linear search</h3>
+          <p id="demoDescription">Search for a target value in an array using a Boolean flag.</p>
+        </div>
+        <div class="mode-controls">
+          <select id="demoSelect" class="hidden" aria-hidden="true" tabindex="-1">
+            <optgroup label="Core D programming">
+              <option value="sequence">Sequence and assignment</option>
+              <option value="selection">Selection</option>
+              <option value="whileValidation">While loop and validation</option>
+              <option value="booleanSelection">Boolean selection</option>
+              <option value="forAccumulator">Counting and accumulation</option>
+              <option value="sumAverage">Sum and average</option>
+              <option value="linearSearch">Linear search</option>
+              <option value="findMax">1D array processing</option>
+              <option value="findMin">Finding minimum value</option>
+            </optgroup>
+            <optgroup label="Elective C programming">
+              <option value="subprogram">Elective C — Sub-programs</option>
+              <option value="nestedLoop">Nested-loop</option>
+              <option value="twoDArray">2D arrays</option>
+              <option value="twoDCount">2D array counting</option>
+              <option value="binarySearch">Binary search</option>
+              <option value="bubblePass">Bubble sort</option>
+              <option value="mergeLists">Merging sorted lists</option>
+              <option value="stackOps">Stack</option>
+              <option value="queueOps">Queue and circular queue</option>
+              <option value="linkedList">Linked list traversal</option>
+              <option value="textFile">Text file handling</option>
+            </optgroup>
+          </select>
+          <button id="newCaseBtn" class="secondary-btn">Random new case</button>
+        </div>
+      </section>
+
+      <section class="program-storyboard">
+        <article class="story-card">
+          <div class="story-character" aria-hidden="true">
+            <span class="character-head"></span>
+            <span class="character-body"></span>
+          </div>
+          <div>
+            <p class="eyebrow">Visual walkthrough</p>
+            <h3 id="storyTitle">Before running</h3>
+            <p id="storyText">Choose a topic from the sidebar, then run the program one line at a time.</p>
+          </div>
+        </article>
+        <article class="flow-card">
+          <p class="small-label">Program flow</p>
+          <div id="flowSteps" class="flow-steps"></div>
+        </article>
+      </section>
+
+      <section class="lab-grid">
+        <article class="panel code-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Interactive pseudocode</p>
+              <h3>Step runner</h3>
+            </div>
+            <span id="statusBadge" class="status-badge">Ready</span>
+          </div>
+          <ol id="codeLines" class="code-lines" aria-label="Pseudocode lines"></ol>
+          <div class="control-row">
+            <button id="resetBtn" class="ghost-btn">Reset</button>
+            <button id="backBtn" class="ghost-btn">Step back</button>
+            <button id="stepBtn" class="primary-btn">Run next line</button>
+            <button id="autoBtn" class="secondary-btn">Auto run</button>
+            <button id="explainBtn" class="secondary-btn">Show explanation</button>
+          </div>
+        </article>
+
+        <article class="panel visual-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Live memory</p>
+              <h3>Variables and array</h3>
+            </div>
+          </div>
+          <div class="array-wrap">
+            <p class="small-label" id="arrayLabel">Array A</p>
+            <div id="arrayCells" class="array-cells"></div>
+          </div>
+          <div class="variable-table-wrap">
+            <p class="small-label">Variable table</p>
+            <table class="variable-table">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Current value</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody id="variableRows"></tbody>
+            </table>
+          </div>
+          <div class="output-box">
+            <span>Output</span>
+            <strong id="outputValue">—</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="lab-grid lower-grid">
+        <article class="panel prediction-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Prediction checkpoint</p>
+              <h3>Pause and think</h3>
+            </div>
+          </div>
+          <p id="predictionQuestion" class="question-text">Run the program until a checkpoint appears.</p>
+          <div id="predictionOptions" class="option-grid"></div>
+          <p id="predictionFeedback" class="feedback-text"></p>
+        </article>
+
+        <article class="panel note-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Explanation</p>
+              <h3>What to notice</h3>
+            </div>
+          </div>
+          <div id="noticeBox" class="notice-box">
+            Select a demo and click “Run next line”.
+          </div>
+          <div id="followUpBox" class="follow-up-box">
+            A DSE-style follow-up question will appear after you choose a demo.
+          </div>
+        </article>
+      </section>
+
+      <section class="exercise-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Exercise zone</p>
+            <h3>Random DSE-style challenge</h3>
+            <p>Generate a fresh question any time. The numbers and situations change, so students can challenge themselves during revision.</p>
+          </div>
+          <button id="newExerciseBtn" class="primary-btn">Generate exercise</button>
+        </div>
+        <article class="panel exercise-card" id="exerciseCard">
+          <div class="exercise-meta" aria-label="Challenge status">
+            <span class="challenge-badge" id="exerciseTopicLabel">Topic: Ready</span>
+            <span class="challenge-badge" id="exerciseDifficultyLabel">Difficulty: Ready</span>
+            <span class="challenge-badge score-badge" id="exerciseXpLabel">XP 0</span>
+            <span class="challenge-badge streak-badge" id="exerciseStreakLabel">Streak 0</span>
+          </div>
+          <div id="exerciseStem" class="exercise-stem">Click “Generate exercise” to start.</div>
+          <div id="exerciseOptions" class="option-grid exercise-options"></div>
+          <div id="exerciseAnswerArea" class="answer-area"></div>
+          <div class="exercise-tools">
+            <button id="hintBtn" class="ghost-btn" type="button" disabled>Show hint</button>
+            <button id="solutionBtn" class="ghost-btn" type="button" disabled>Show solution</button>
+          </div>
+          <div id="exerciseHint" class="support-box hint-box" hidden></div>
+          <div id="exerciseSolution" class="support-box solution-box" hidden></div>
+          <p id="exerciseFeedback" class="feedback-text"></p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
