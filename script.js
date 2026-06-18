@@ -7508,12 +7508,9 @@ function getChapterCurriculumMeta(topicConfig, groupConfig) {
   const isElectiveC = group.includes('Elective C');
   return {
     code,
-    stage: route[0],
-    moduleHours: route[1],
     path: route[2],
     examLens: route[3],
     classroomTransfer: route[4],
-    source: `${isElectiveA ? 'Elective A' : isElectiveC ? 'Elective C' : 'Compulsory Part'}: ICT C&A Guide + LSCC SOW`,
     assessment: isElectiveA ? 'Paper 2A Databases: answer database design and SQL questions.'
       : isElectiveC ? 'Paper 2C Algorithm and Programming: trace, design, debug and explain algorithms.'
         : 'Paper 1 compulsory: Section A multiple-choice and Section B short/structured questions.'
@@ -7534,7 +7531,6 @@ function renderUniversalChapterDetails(topicConfig, groupConfig) {
       <p>${escapeHtml(topicConfig.focus || topicConfig.description || groupConfig.description || '')}</p>
     </div>
     <section class="universal-learning-path">
-      ${renderUniversalSourceStrip(meta)}
       ${renderUniversalRoute(meta)}
       ${renderUniversalZoneCards(cards)}
       ${renderUniversalConceptBlocks(concepts)}
@@ -7543,16 +7539,6 @@ function renderUniversalChapterDetails(topicConfig, groupConfig) {
     </section>
   `;
   setChapterSectionVisible(topicCardGrid, true);
-}
-
-function renderUniversalSourceStrip(meta) {
-  return `
-    <div class="universal-source-strip" aria-label="Curriculum alignment">
-      <span><b>${escapeHtml(meta.stage)}</b> school sequence</span>
-      <span><b>${escapeHtml(meta.moduleHours)}</b> curriculum time guide</span>
-      <span><b>Source</b> ${escapeHtml(meta.source)}</span>
-    </div>
-  `;
 }
 
 function renderUniversalRoute(meta) {

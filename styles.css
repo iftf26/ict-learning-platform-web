@@ -1363,11 +1363,11 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   font-size: 1.35rem;
 }
 .universal-section-banner {
-  border: 1px solid rgba(216, 226, 238, 0.92);
-  border-radius: 14px;
-  padding: 20px;
+  border: 1px solid rgba(36, 88, 230, 0.16);
+  border-radius: 16px;
+  padding: 22px;
   background:
-    linear-gradient(135deg, rgba(229, 237, 255, 0.92), rgba(255, 255, 255, 0.96)),
+    linear-gradient(135deg, rgba(231, 239, 255, 0.98), rgba(247, 251, 255, 0.96)),
     white;
   box-shadow: var(--shadow-tight);
 }
@@ -1382,25 +1382,6 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   display: grid;
   gap: 18px;
 }
-.universal-source-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-.universal-source-strip span {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--muted);
-  line-height: 1.35;
-}
-.universal-source-strip b {
-  display: block;
-  color: var(--accent-dark);
-  font-size: 0.88rem;
-  margin-bottom: 3px;
-}
 .universal-route {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1408,14 +1389,22 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
 }
 .universal-route article {
   position: relative;
-  min-height: 84px;
-  border: 1px solid rgba(36, 88, 230, 0.16);
-  border-radius: 12px;
+  min-height: 82px;
+  border: 1px solid rgba(36, 88, 230, 0.2);
+  border-radius: 14px;
   padding: 16px 16px 16px 60px;
   background:
-    linear-gradient(135deg, rgba(237, 243, 255, 0.95), rgba(255, 255, 255, 0.96));
+    linear-gradient(135deg, rgba(237, 243, 255, 0.98), rgba(255, 255, 255, 0.98));
   box-shadow: var(--shadow-tight);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.universal-route article:nth-child(2) {
+  border-color: rgba(15, 150, 126, 0.22);
+  background: linear-gradient(135deg, rgba(229, 249, 244, 0.96), rgba(255, 255, 255, 0.98));
+}
+.universal-route article:nth-child(3) {
+  border-color: rgba(245, 137, 34, 0.24);
+  background: linear-gradient(135deg, rgba(255, 244, 228, 0.97), rgba(255, 255, 255, 0.98));
 }
 .universal-route article:hover {
   transform: translateY(-2px);
@@ -1431,9 +1420,18 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   border-radius: 9px;
   display: grid;
   place-items: center;
-  background: var(--ink);
+  background: var(--accent);
   color: white;
   font-weight: 950;
+  box-shadow: 0 8px 18px rgba(36, 88, 230, 0.22);
+}
+.universal-route article:nth-child(2) span {
+  background: #0f967e;
+  box-shadow: 0 8px 18px rgba(15, 150, 126, 0.2);
+}
+.universal-route article:nth-child(3) span {
+  background: #f58922;
+  box-shadow: 0 8px 18px rgba(245, 137, 34, 0.2);
 }
 .universal-route strong {
   display: block;
@@ -1441,19 +1439,39 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   line-height: 1.22;
 }
 .universal-detail-section {
+  position: relative;
+  overflow: hidden;
   border: 1px solid rgba(216, 226, 238, 0.95);
-  border-radius: 14px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.94);
+  border-radius: 16px;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.94));
   box-shadow: var(--shadow-tight);
+}
+.universal-detail-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 6px;
+  background: var(--accent);
+}
+.universal-detail-section:nth-of-type(3)::before {
+  background: #0f967e;
+}
+.universal-detail-section:nth-of-type(4)::before {
+  background: #f58922;
+}
+.universal-detail-section:nth-of-type(5)::before {
+  background: #d95f8d;
 }
 .universal-section-copy {
   display: grid;
   gap: 4px;
   margin-bottom: 16px;
+  padding-left: 4px;
 }
 .universal-section-copy h3 {
-  font-size: 1.16rem;
+  font-size: 1.18rem;
   margin-bottom: 0;
 }
 .universal-zone-grid,
@@ -1470,9 +1488,9 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
 .universal-concept-card,
 .universal-rule-grid article,
 .universal-transfer-grid article {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: rgba(248, 251, 255, 0.92);
+  border: 1px solid rgba(216, 226, 238, 0.95);
+  border-radius: 12px;
+  background: rgba(248, 251, 255, 0.94);
   padding: 15px;
 }
 .universal-zone-card {
@@ -1494,10 +1512,19 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: var(--accent-soft);
-  color: var(--accent-dark);
+  background: var(--accent);
+  color: white;
   font-weight: 950;
   font-size: 0.84rem;
+  box-shadow: 0 8px 16px rgba(36, 88, 230, 0.18);
+}
+.universal-zone-card:nth-child(2n) .universal-zone-index {
+  background: #0f967e;
+  box-shadow: 0 8px 16px rgba(15, 150, 126, 0.18);
+}
+.universal-zone-card:nth-child(3n) .universal-zone-index {
+  background: #f58922;
+  box-shadow: 0 8px 16px rgba(245, 137, 34, 0.18);
 }
 .universal-zone-card h4 {
   margin: 0 0 7px;
@@ -1519,6 +1546,14 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   display: block;
   color: var(--accent-dark);
   margin-bottom: 9px;
+}
+.universal-concept-card:nth-child(2n) strong,
+.universal-transfer-grid article:nth-child(2n) strong {
+  color: #0b735f;
+}
+.universal-concept-card:nth-child(3n) strong,
+.universal-transfer-grid article:nth-child(3n) strong {
+  color: #b85c05;
 }
 .universal-concept-card ul {
   margin: 0;
@@ -1550,7 +1585,9 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   line-height: 1.45;
 }
 .universal-dse-panel {
-  border-top: 4px solid var(--accent);
+  border-top: 0;
+  background:
+    linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(255, 249, 238, 0.95));
 }
 .universal-transfer-grid article {
   background:
@@ -6153,7 +6190,7 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   .sidebar { position: static; height: auto; }
   .app-shell.sidebar-collapsed .sidebar { display: none; }
   .hub-hero, .hero-card, .program-storyboard, .lab-grid, .topic-workbench, .topic-formula-panel, .arcade-hero, .wide-board, .activity-workbench { grid-template-columns: 1fr; }
-  .learning-path-grid, .area-grid, .topic-card-grid, .topic-stat-grid, .topic-keypoint-grid, .topic-misconception-grid, .topic-exam-grid, .formula-list, .practice-mission-grid, .arcade-visual-grid, .arcade-mission-grid, .activity-grid, .concept-zone-grid, .data-info-card-bank, .data-info-zones, .transform-flow, .universal-source-strip, .universal-route, .universal-zone-grid, .universal-concept-grid, .universal-rule-grid, .universal-transfer-grid, .a2-detective-grid, .a2-form-row, .a2-parity-arena, .a2-dse-panel, .a2-check-group, .a2-compare-grid, .a2-compare-grid.two-col, .a2-method-grid, .a2-input-control-grid, .a3-lab-toolbar, .a3-rgb-controls, .a3-bitmap-board, .a3-signal-readout, .a3-colour-comparison, .a3-channel-levels, .a3-rgb-preview, .a3-pixel-inspector, .a3-twos-layout, .a3-number-grid, .a3-range-grid, .a3-code-grid, .a3-code-grid.two-col, .a3-code-grid.three-col, .a3-formula-grid, .a3-utf-input-row, .d3-operation-grid, .b1-ipo-flow, .b1-device-grid, .b1-connection-table, .b1-output-layout, .b1-application-grid, .b1-dse-grid, .b2-component-grid, .b2-performance-grid, .b2-bus-grid, .b2-cycle-flow, .b2-memory-layout, .b2-pc-explorer, .b2-distance-map, .b2-trap-grid, .b2-dse-grid, .b3-os-grid, .b3-interface-grid, .b3-utility-driver, .b3-mode-grid, .b3-dse-grid, .c-two-col, .c-device-grid, .c-model-grid, .c-trap-grid, .c-dse-grid, .c-packet-flow, .c-cloud-grid, .c-transfer-grid, .c-service-grid, .c-flow-strip, .c-email-flow, .c-url-demo, .c-url-line, .c-search-steps, .c-stream-line, .c-ssl-panel, .c-story-topline, .c-story-player, .c-story-stepper, .c-story-steps, .c2-cipher-controls, .c2-cipher-board, .a5-object-grid, .a5-field-layout, .a5-query-strip, .a5-tool-grid, .a5-trap-grid, .a5-dse-grid, .a4-foundation-grid, .a4-tool-list, .a4-formula-labels, .a4-function-grid, .a4-reference-grid, .a4-copy-animation, .a4-analysis-grid, .a4-chart-row, .a4-rescue-layout { grid-template-columns: 1fr; }
+  .learning-path-grid, .area-grid, .topic-card-grid, .topic-stat-grid, .topic-keypoint-grid, .topic-misconception-grid, .topic-exam-grid, .formula-list, .practice-mission-grid, .arcade-visual-grid, .arcade-mission-grid, .activity-grid, .concept-zone-grid, .data-info-card-bank, .data-info-zones, .transform-flow, .universal-route, .universal-zone-grid, .universal-concept-grid, .universal-rule-grid, .universal-transfer-grid, .a2-detective-grid, .a2-form-row, .a2-parity-arena, .a2-dse-panel, .a2-check-group, .a2-compare-grid, .a2-compare-grid.two-col, .a2-method-grid, .a2-input-control-grid, .a3-lab-toolbar, .a3-rgb-controls, .a3-bitmap-board, .a3-signal-readout, .a3-colour-comparison, .a3-channel-levels, .a3-rgb-preview, .a3-pixel-inspector, .a3-twos-layout, .a3-number-grid, .a3-range-grid, .a3-code-grid, .a3-code-grid.two-col, .a3-code-grid.three-col, .a3-formula-grid, .a3-utf-input-row, .d3-operation-grid, .b1-ipo-flow, .b1-device-grid, .b1-connection-table, .b1-output-layout, .b1-application-grid, .b1-dse-grid, .b2-component-grid, .b2-performance-grid, .b2-bus-grid, .b2-cycle-flow, .b2-memory-layout, .b2-pc-explorer, .b2-distance-map, .b2-trap-grid, .b2-dse-grid, .b3-os-grid, .b3-interface-grid, .b3-utility-driver, .b3-mode-grid, .b3-dse-grid, .c-two-col, .c-device-grid, .c-model-grid, .c-trap-grid, .c-dse-grid, .c-packet-flow, .c-cloud-grid, .c-transfer-grid, .c-service-grid, .c-flow-strip, .c-email-flow, .c-url-demo, .c-url-line, .c-search-steps, .c-stream-line, .c-ssl-panel, .c-story-topline, .c-story-player, .c-story-stepper, .c-story-steps, .c2-cipher-controls, .c2-cipher-board, .a5-object-grid, .a5-field-layout, .a5-query-strip, .a5-tool-grid, .a5-trap-grid, .a5-dse-grid, .a4-foundation-grid, .a4-tool-list, .a4-formula-labels, .a4-function-grid, .a4-reference-grid, .a4-copy-animation, .a4-analysis-grid, .a4-chart-row, .a4-rescue-layout { grid-template-columns: 1fr; }
   .b2-cycle-flow article::after { display: none; }
   .b2-distance-map article::after { display: none; }
   .c-packet-flow article::after { display: none; }
