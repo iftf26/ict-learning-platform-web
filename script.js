@@ -4930,7 +4930,7 @@ function renderChapterSidebar() {
         <button class="curriculum-heading" type="button" aria-expanded="${groupIndex === 0 ? 'true' : 'false'}" aria-controls="${group.id}">
           <span class="nav-emoji nav-strand">${escapeHtml(strand.icon || group.icon)}</span>
           <span>
-            <strong>${escapeHtml(strand.titleEn || group.group)}</strong>
+            <strong>${escapeHtml(strand.navEn || strand.titleEn || group.group)}</strong>
             ${strand.titleZh ? `<small class="nav-item-zh" lang="zh-Hant">${escapeHtml(strand.titleZh)}</small>` : ''}
           </span>
         </button>
@@ -12682,6 +12682,16 @@ function initDashboardActions() {
       }
     });
   });
+  document.querySelectorAll('[data-open-topic]').forEach(button => {
+    button.addEventListener('click', () => {
+      const topicId = button.dataset.openTopic;
+      const groupId = button.dataset.openGroup;
+      const topicButton = Array.from(document.querySelectorAll('.nav-item[data-topic]')).find(item => (
+        item.dataset.topic === topicId && (!groupId || item.dataset.group === groupId)
+      ));
+      if (topicButton) showTopicPage(topicButton);
+    });
+  });
 }
 
 function normalise(text) {
@@ -12695,10 +12705,6 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-}
-
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function capitaliseStudySentence(text) {
@@ -12770,8 +12776,7 @@ function renderChapterJumpNav() {
   chapterJump.hidden = available.length === 0;
   chapterJump.innerHTML = available.map((item, index) => `
     <button type="button" data-jump="${item.id}" class="${index === 0 ? 'is-active' : ''}">
-      <span>${escapeHtml(item.label)}</span>
-      <span class="jump-zh" lang="zh-Hant">${escapeHtml(item.zh)}</span>
+      <span>${escapeHtml(item.label)} <em class="jump-zh" lang="zh-Hant">${escapeHtml(item.zh)}</em></span>
     </button>
   `).join('');
   bindChapterJumpObserver(available.map(item => item.id));
