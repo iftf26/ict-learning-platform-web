@@ -168,11 +168,18 @@
             <em>Open chapter</em>
           </button>
           <button class="path-card path-practice" type="button" data-dashboard-action="programming">
-            <p>Programming</p>
-            <h3>Algorithm Design</h3>
-            <span class="path-card-zh" lang="zh-Hant">算法設計：順序與選擇</span>
-            <span class="path-card-copy">Sequence, selection and trace tables before you write Python.</span>
-            <em>Open chapter</em>
+            <p>Programming Visual Lab</p>
+            <h3>Trace, predict, practise</h3>
+            <span class="path-card-zh" lang="zh-Hant">程式視覺實驗室</span>
+            <span class="path-card-copy">Step through sequence, selection, loops, arrays, search, sort and data structures.</span>
+            <em>Open lab</em>
+          </button>
+          <button class="path-card path-practice" type="button" data-dashboard-action="practice">
+            <p>Exam drill</p>
+            <h3>DSE Practice Hub</h3>
+            <span class="path-card-zh" lang="zh-Hant">文憑試練習</span>
+            <span class="path-card-copy">Filter by strand or chapter and generate a mixed randomised set.</span>
+            <em>Open practice</em>
           </button>
         </section>
 
@@ -310,7 +317,41 @@
         <div id="arcadeMissionGrid" class="arcade-mission-grid"></div>
       </section>
 
-      <section class="hero-card">
+      <section id="dsePracticePage" class="topic-page practice-hub-page hidden" aria-live="polite">
+        <section class="chapter-section">
+          <p class="eyebrow">Paper 1 / Paper 2 style</p>
+          <h2>DSE Practice Hub</h2>
+          <p>Questions come from the same chapter pools as topic checkpoints. Filter the mix, then generate another set. Feedback explains the idea, not only right or wrong.</p>
+          <form class="practice-hub-filters" id="practiceHubFilters" onsubmit="return false;">
+            <label>Strand
+              <select id="practiceStrand"></select>
+            </label>
+            <label>Chapter
+              <select id="practiceChapter"></select>
+            </label>
+            <label>Question type
+              <select id="practiceType">
+                <option value="">All types</option>
+                <option value="mc">Multiple choice</option>
+                <option value="fill">Fill in</option>
+                <option value="short">Short answer</option>
+                <option value="order">Ordering</option>
+              </select>
+            </label>
+            <label>Difficulty
+              <select id="practiceDifficulty">
+                <option value="">All</option>
+                <option value="standard">Standard</option>
+                <option value="stretch">Stretch</option>
+              </select>
+            </label>
+            <button class="primary-btn" type="button" id="practiceRun">Generate set</button>
+          </form>
+          <div id="dsePracticePanel" class="topic-practice-panel"></div>
+        </section>
+      </section>
+
+      <section class="hero-card hidden" id="programmingLabStart">
         <div>
           <p class="eyebrow">Core D / Elective C</p>
           <h2>Programming Visual Lab</h2>
@@ -332,14 +373,16 @@
         </div>
       </section>
 
-      <section class="mode-panel">
+      <section class="mode-panel hidden">
         <div>
           <p class="eyebrow">Choose a demonstration</p>
           <h3 id="demoTitle">Linear search</h3>
           <p id="demoDescription">Search for a target value in an array using a Boolean flag.</p>
         </div>
         <div class="mode-controls">
-          <select id="demoSelect" class="hidden" aria-hidden="true" tabindex="-1">
+          <label class="demo-select-label">
+            <span>Demonstration</span>
+            <select id="demoSelect" aria-label="Choose a programming demonstration">
             <optgroup label="Core D programming">
               <option value="sequence">Sequence and assignment</option>
               <option value="selection">Selection</option>
@@ -365,11 +408,13 @@
               <option value="textFile">Text file handling</option>
             </optgroup>
           </select>
+          </label>
           <button id="newCaseBtn" class="secondary-btn">Random new case</button>
         </div>
+        <div id="demoPicker" class="demo-picker" aria-label="Programming demonstrations"></div>
       </section>
 
-      <section class="program-storyboard">
+      <section class="program-storyboard hidden">
         <article class="story-card">
           <div class="story-character" aria-hidden="true">
             <span class="character-head"></span>
@@ -378,7 +423,7 @@
           <div>
             <p class="eyebrow">Visual walkthrough</p>
             <h3 id="storyTitle">Before running</h3>
-            <p id="storyText">Choose a topic from the sidebar, then run the program one line at a time.</p>
+            <p id="storyText">Choose a demonstration from the sidebar, the picker above, or a chapter activity. Then run the program one line at a time.</p>
           </div>
         </article>
         <article class="flow-card">
@@ -387,7 +432,7 @@
         </article>
       </section>
 
-      <section class="lab-grid">
+      <section class="lab-grid hidden">
         <article class="panel code-panel">
           <div class="panel-header">
             <div>
@@ -437,7 +482,7 @@
         </article>
       </section>
 
-      <section class="lab-grid lower-grid">
+      <section class="lab-grid lower-grid hidden">
         <article class="panel prediction-panel">
           <div class="panel-header">
             <div>
@@ -466,7 +511,7 @@
         </article>
       </section>
 
-      <section class="exercise-section">
+      <section class="exercise-section hidden">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Exercise zone</p>
@@ -500,5 +545,9 @@
   <script src="chapter-guides.js"></script>
   <script src="chapter-study-ui.js"></script>
   <script src="script.js"></script>
+  <script src="checkpoint-bank.js"></script>
+  <script src="checkpoint-engine.js"></script>
+  <script src="activity-labs.js"></script>
+  <script src="platform-app.js"></script>
 </body>
 </html>

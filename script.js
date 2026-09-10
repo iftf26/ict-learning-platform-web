@@ -2421,7 +2421,17 @@ const chapterBlueprints = [
       'A 64-bit processor is not simply twice as efficient as a 32-bit processor.',
       'Direct access storage can still read data sequentially when needed.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Fetch–Decode–Execute Visualiser',
+        mode: 'b2Fde',
+        status: 'Available now',
+        goal: 'Step through FETCH, DECODE and EXECUTE and say which register, bus or CPU part changes.',
+        misconception: 'FETCH does not copy files from disk. It copies the next instruction from main memory.',
+        challenge: 'Predict the next change before the visualiser updates registers and buses.',
+        transfer: 'DSE transfer: interpret a short machine-cycle scenario without brand names.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -2639,7 +2649,17 @@ const chapterBlueprints = [
       'The internet and the web are related but not identical.',
       'Peer-to-peer does not mean there is no network; it means there is no dedicated central server for that service.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Build a School Network',
+        mode: 'c1Network',
+        status: 'Available now',
+        goal: 'Place PCs, an access point, switch, router, modem/ONT and server so LAN traffic and Internet traffic use different boundaries.',
+        misconception: 'A router is not the device that connects 20 PCs inside one room. A switch forwards within a LAN.',
+        challenge: 'Build the school network, then predict each hop of a laptop packet going to a public website.',
+        transfer: 'DSE transfer: distinguish switch, AP, router and modem/ONT in an unfamiliar campus scenario.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -2795,7 +2815,17 @@ const chapterBlueprints = [
       'IoT is not just any website; it involves connected physical devices or sensors.',
       'A search engine result at the top is not automatically reliable.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Streaming Buffer Simulator',
+        mode: 'c3Stream',
+        status: 'Available now',
+        goal: 'Change bitrate, throughput and starting buffer to see the buffer grow, drain or empty.',
+        misconception: 'Bandwidth is not the same as the rate actually achieved. Playback pauses when the buffer is empty, not merely because the file is large.',
+        challenge: 'Create one case that survives a short slowdown and one case that stalls.',
+        transfer: 'DSE transfer: explain a buffering pause using bitrate, throughput and buffer.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -2862,7 +2892,26 @@ const chapterBlueprints = [
       'HTML structures content; CSS controls most visual styling.',
       'An image without suitable alt text is less accessible.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Mini HTML Live Lab',
+        mode: 'c4Html',
+        status: 'Available now',
+        goal: 'Edit headings, paragraphs, links, images, lists and tables and watch the page change immediately.',
+        misconception: 'href is for links; src is for images. Changing a tag should change the rendered structure.',
+        challenge: 'Break then repair one attribute and describe the consequence in the preview.',
+        transfer: 'DSE transfer: repair a short HTML fragment using only syllabus tags.'
+      },
+      {
+        title: 'Relative Path Explorer',
+        mode: 'c4Path',
+        status: 'Available now',
+        goal: 'Build a relative path from a stated folder tree using ../ and folder names.',
+        misconception: 'Relative paths start from the current file’s folder, not from a guessed website root.',
+        challenge: 'Walk up with ../, into a child folder, then name the file. Every question shows the full tree.',
+        transfer: 'DSE transfer: correct a broken image path from an unfamiliar folder diagram.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -4533,6 +4582,20 @@ const chapterBlueprints = [
 
 topicContent = makeChapterContent();
 
+function makeDemoLaunchActivities(chapter) {
+  if ((chapter.activities || []).some(item => item.demoKey)) return [];
+  return (topicDemoMap[chapter.id] || []).slice(0, 3).map(key => ({
+    title: demos[key].title,
+    demoKey: key,
+    mode: 'demo',
+    status: 'Available now',
+    goal: demos[key].description,
+    misconception: 'Do not guess the final output. Trace each assignment and condition.',
+    challenge: 'Open the Programming Visual Lab, step through a random case, then answer the prediction checkpoint.',
+    transfer: 'DSE transfer: generate a random exercise in the lab using the same construct.'
+  }));
+}
+
 function getGuideForChapter(chapter) {
   const guideSource = (typeof getChapterGuide === 'function')
     ? getChapterGuide(chapter.id)
@@ -4575,7 +4638,10 @@ function makeChapterContent() {
       keywords: guide.keywords,
       misconceptions: guide.mistakes.length ? guide.mistakes : (chapter.misconceptions || makeCommonMisconceptions(chapter)).map(normaliseMistake),
       exam: makeDseTransferItems(chapter),
-      activities: chapter.activities || [],
+      activities: [
+        ...(chapter.activities || []),
+        ...makeDemoLaunchActivities(chapter)
+      ],
       practice: chapter.practice || makeRandomPractice(chapter),
       steps: [
         'Start from the DSE syllabus focus and identify the exact boundary: Core, Elective A or Elective C.',
@@ -7621,6 +7687,7 @@ function renderUniversalChapterDetails(topicConfig, groupConfig) {
     </section>
   `;
   setChapterSectionVisible(topicCardGrid, true);
+  renderTopicSimulationPanel(topicConfig);
 }
 
 function renderUniversalRoute(meta) {
@@ -9982,7 +10049,8 @@ function renderTopicSimulationPanel(topicConfig) {
     <div class="topic-section-banner simulation-banner">
       <p class="eyebrow">Animated simulation</p>
       <h3>See the operation on this page</h3>
-      <p>Run the original programming visualisations here without leaving the chapter. The current line, active data item, variables and output are animated together so students can connect code with memory changes.</p>
+      <p>Run the original programming visualisations here without leaving the chapter. Use <strong>Open full lab</strong> if you want the complete Programming Visual Lab with random DSE exercises.</p>
+      <button class="secondary-btn" type="button" data-open-full-lab="${escapeHtml(keys[0])}">Open full Programming Visual Lab</button>
     </div>
     <div class="topic-sim-tabs" role="tablist" aria-label="Programming simulations">
       ${keys.map((key, index) => `
@@ -10046,6 +10114,10 @@ function renderTopicSimulationPanel(topicConfig) {
   topicSimulationPanel.querySelector('[data-topic-sim-next]')?.addEventListener('click', nextTopicSimulationStep);
   topicSimulationPanel.querySelector('[data-topic-sim-auto]')?.addEventListener('click', toggleTopicSimulationAuto);
   topicSimulationPanel.querySelector('[data-topic-sim-new]')?.addEventListener('click', () => loadTopicSimulation(topicSimState.demoKey));
+  topicSimulationPanel.querySelector('[data-open-full-lab]')?.addEventListener('click', event => {
+    loadDemo(event.currentTarget.dataset.openFullLab);
+  });
+  setChapterSectionVisible(topicSimulationPanel, true);
   loadTopicSimulation(keys[0]);
 }
 
@@ -10332,7 +10404,13 @@ function activityModeLabel(mode) {
     a3Utf8Encoder: 'encoding lab',
     d3ListOps: 'list trainer',
     a4FormulaCopyRescue: 'formula rescue',
-    c2Cipher: 'cipher lab'
+    c2Cipher: 'cipher lab',
+    demo: 'visual lab',
+    c1Network: 'network builder',
+    b2Fde: 'CPU cycle',
+    c3Stream: 'stream lab',
+    c4Html: 'HTML lab',
+    c4Path: 'path explorer'
   };
   return labels[mode] || mode;
 }

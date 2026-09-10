@@ -4,6 +4,19 @@ This prototype is designed as a student-facing HKDSE ICT learning platform rathe
 
 ## What changed in this version
 
+- Restored the **Programming Visual Lab** as a first-class area: sidebar groups (Core D and Elective C demos), homepage tile, visible demo picker, and shareable `#demo=sequence` links. The lab was always in the page; chapter navigation had hidden every way to open it.
+- Wired the existing in-chapter programming simulation panel so D2–D6 and Elective C chapters can step through the same traces without leaving the topic, with an **Open full Programming Visual Lab** button.
+- Added a reusable **checkpoint engine** (MC, fill-in, short answer with marking points, ordering). Each chapter draws a randomised 6-question set from its practice pool plus extra items. Feedback explains the concept and why distractors are wrong, then offers retry / new set.
+- Added a **DSE Practice Hub** that uses the same question pools, with strand, chapter, type and difficulty filters.
+- Phase 1 activities (not click-only quizzes):
+  - C1 Build a School Network + packet-journey predictions
+  - B2 Fetch–Decode–Execute visualiser
+  - C3 Streaming buffer simulator (bitrate vs throughput)
+  - C4 Mini HTML Live Lab and Relative Path Explorer
+- Deep links: `#demo=linearSearch`, `#chapter=C1`, `#practice`, `#practice=B2`, `#activity=c1Network`.
+
+## Earlier study-hub work
+
 - Added a collapsible sidebar for HKDSE ICT topic navigation.
 - Rebuilt the sidebar as a tree-style navigation menu with simple rows, chevrons and indented child links.
 - Added an all-round ICT dashboard as the default first screen.
@@ -102,4 +115,9 @@ This prototype is designed as a student-facing HKDSE ICT learning platform rathe
 
 ## How to use
 
-Open `index.html` in a browser.
+Open `index.html` in a browser, or visit the GitHub Pages site.
+
+- **Programming Visual Lab:** homepage tile, sidebar “Programming Visual Lab”, or a link such as `index.html#demo=sequence`.
+- **DSE Practice Hub:** homepage tile, sidebar, or `index.html#practice`.
+- **A chapter:** sidebar or `index.html#chapter=C1`.
+- **An activity:** open the chapter, then the Activities section, or `index.html#chapter=C1&activity=c1Network`.
