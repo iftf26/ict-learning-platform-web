@@ -6,42 +6,49 @@ const strandStudyMeta = {
   'Core A Information Processing': {
     kicker: 'Compulsory A',
     titleEn: 'Information Processing',
+    navEn: 'Information Processing',
     titleZh: '資訊處理',
     icon: '資訊'
   },
   'Core B Computer System Fundamentals': {
     kicker: 'Compulsory B',
     titleEn: 'Computer Systems Fundamentals',
+    navEn: 'Computer Systems',
     titleZh: '電腦系統基礎',
     icon: '系統'
   },
   'Core C Internet and its Applications': {
     kicker: 'Compulsory C',
     titleEn: 'Internet and its Applications',
+    navEn: 'Internet',
     titleZh: '互聯網及其應用',
     icon: '網絡'
   },
   'Core D Computational Thinking and Programming': {
     kicker: 'Compulsory D',
     titleEn: 'Computational Thinking and Programming',
+    navEn: 'Programming',
     titleZh: '計算思維與程式編寫',
     icon: '編程'
   },
   'Core E Social Implications': {
     kicker: 'Compulsory E',
     titleEn: 'Social Implications of ICT',
+    navEn: 'Social Implications',
     titleZh: '資訊及通訊科技對社會的影響',
     icon: '社會'
   },
   'Elective A Databases': {
     kicker: 'Elective A',
     titleEn: 'Databases',
+    navEn: 'Databases',
     titleZh: '數據庫',
     icon: '數據庫'
   },
   'Elective C Algorithm and Programming': {
     kicker: 'Elective C',
     titleEn: 'Algorithm and Programming',
+    navEn: 'Algorithms',
     titleZh: '算法與程式編寫',
     icon: '算法'
   }

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell" id="appShell">
+  <div class="app-shell study-studio" id="appShell">
     <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-controls="sidebar" aria-expanded="true">Topics</button>
 
     <aside class="sidebar" id="sidebar" aria-label="Main navigation">
@@ -138,94 +138,90 @@
       <section id="dashboardPage" class="dashboard-page" aria-live="polite">
         <section class="hub-hero">
           <div>
-            <p class="eyebrow">Hong Kong DSE ICT revision platform</p>
-            <h2>HKDSE ICT Study Hub</h2>
+            <p class="eyebrow">HKDSE ICT · 資訊及通訊科技</p>
+            <h2>Study Hub</h2>
             <p class="hero-copy">
-              A student-facing HKDSE ICT revision hub with clear chapter notes, common mistakes and compact DSE-style checkpoint tasks. Meaningful activities will be added only after their learning value is clear.
+              Pick a C&amp;A topic, check the keywords, then beat the common traps. Activities are added only when they actually help students learn.
             </p>
             <p class="creator-line">Created by Mr Ivan Fung</p>
-            <div class="tag-row">
-              <span class="tag">Core A-E</span>
-              <span class="tag">Elective A</span>
-              <span class="tag">Elective C</span>
-              <span class="tag">Clear revision</span>
-              <span class="tag">DSE checkpoints</span>
-            </div>
           </div>
           <div class="hub-metrics" aria-label="Learning coverage">
-            <div><strong>TBA</strong><span>activities to be added</span></div>
             <div><strong>36</strong><span>topic pages</span></div>
-            <div><strong>DSE</strong><span>checkpoint practice</span></div>
+            <div><strong>C&amp;A</strong><span>outcomes + keywords</span></div>
+            <div><strong>DSE</strong><span>traps to avoid</span></div>
           </div>
         </section>
 
         <section class="learning-path-grid" aria-label="Start learning paths">
-          <article class="path-card path-lab">
-            <p>Activities</p>
-            <h3>To Be Added</h3>
-            <span>Useful activities will be added later only when they genuinely demonstrate a concept or train a DSE-style skill.</span>
-            <button class="secondary-btn" type="button" data-dashboard-action="lab">Open Data Representation</button>
-          </article>
-          <article class="path-card path-topic">
-            <p>Chapter Study</p>
-            <h3>Pick a C&amp;A topic</h3>
-            <span>Read the exact DSE concept, check common traps, then practise with a short transfer task.</span>
-            <button class="secondary-btn" type="button" data-dashboard-action="topic">Open Networking Basics</button>
-          </article>
-          <article class="path-card path-practice">
-            <p>DSE Drill</p>
+          <button class="path-card path-lab" type="button" data-dashboard-action="lab">
+            <p>Start here</p>
+            <h3>Data Representation</h3>
+            <span class="path-card-zh" lang="zh-Hant">數據表示</span>
+            <span class="path-card-copy">Numbers, codes and digital media — a high-yield Core A chapter.</span>
+            <em>Open chapter</em>
+          </button>
+          <button class="path-card path-topic" type="button" data-dashboard-action="topic">
+            <p>Networking</p>
+            <h3>Networking Basics</h3>
+            <span class="path-card-zh" lang="zh-Hant">建網及互聯網基本知識</span>
+            <span class="path-card-copy">Local and wide area networks, devices and how data travels.</span>
+            <em>Open chapter</em>
+          </button>
+          <button class="path-card path-practice" type="button" data-dashboard-action="programming">
+            <p>Programming</p>
             <h3>Algorithm Design</h3>
-            <span>Start from sequence and selection, review the details and traps, then try the checkpoint tasks. Simulations can be added later when the design is useful.</span>
-            <button class="primary-btn" type="button" data-dashboard-action="programming">Open Algorithm Design</button>
-          </article>
+            <span class="path-card-zh" lang="zh-Hant">算法設計：順序與選擇</span>
+            <span class="path-card-copy">Sequence, selection and trace tables before you write Python.</span>
+            <em>Open chapter</em>
+          </button>
         </section>
 
         <section class="exam-focus-section" aria-label="Frequently examined ICT points">
           <div class="section-heading compact-heading">
             <div>
-              <p class="eyebrow">Homepage focus</p>
-              <h3>Frequently Examined Points</h3>
-              <p>Quick chapter summaries and high-yield revision targets for DSE-style preparation.</p>
+              <p class="eyebrow">Syllabus map</p>
+              <h3>Open a strand</h3>
+              <p>Each tile opens the first chapter in that C&amp;A area.</p>
             </div>
           </div>
         </section>
 
         <section class="area-grid" aria-label="Frequently examined ICT points">
-          <article class="area-card core-a">
+          <button class="area-card core-a" type="button" data-open-topic="A1 Introduction to Information Processing" data-open-group="Core A Information Processing">
             <p>Compulsory A · 資訊處理</p>
             <h3>Information Processing</h3>
             <span>Information systems, data organisation and control, data representation, spreadsheet analysis, and simple databases.</span>
-          </article>
-          <article class="area-card core-b">
+          </button>
+          <button class="area-card core-b" type="button" data-open-topic="B1 Input and Output Devices" data-open-group="Core B Computer System Fundamentals">
             <p>Compulsory B · 電腦系統基礎</p>
             <h3>Computer Systems Fundamentals</h3>
             <span>Input/output devices, CPU, memory, storage, operating system functions, utility software and suitable device selection.</span>
-          </article>
-          <article class="area-card core-c">
+          </button>
+          <button class="area-card core-c" type="button" data-open-topic="C1 Networking and Internet Basics" data-open-group="Core C Internet and its Applications">
             <p>Compulsory C · 互聯網及其應用</p>
             <h3>Internet and its Applications</h3>
             <span>Networking basics, internet protocols, internet services, elementary web authoring, threats and security measures.</span>
-          </article>
-          <article class="area-card core-d">
+          </button>
+          <button class="area-card core-d" type="button" data-open-topic="D1 Problem Formulation and Analysis" data-open-group="Core D Computational Thinking and Programming">
             <p>Compulsory D · 計算思維與程式編寫</p>
             <h3>Computational Thinking and Programming</h3>
             <span>Problem analysis, sequence, selection, iteration, arrays, Python basics, testing and debugging.</span>
-          </article>
-          <article class="area-card core-e">
+          </button>
+          <button class="area-card core-e" type="button" data-open-topic="E1 Technological Innovations" data-open-group="Core E Social Implications">
             <p>Compulsory E · 資訊及通訊科技對社會的影響</p>
             <h3>Social Implications of ICT</h3>
             <span>Technological innovations, health and ethical issues, privacy, copyright and intellectual property.</span>
-          </article>
-          <article class="area-card elective-a">
+          </button>
+          <button class="area-card elective-a" type="button" data-open-topic="EA1 Managing Data Using SQL" data-open-group="Elective A Databases">
             <p>Elective A · 數據庫</p>
             <h3>Databases</h3>
             <span>SQL, relational database concepts, ER diagrams, normalisation and access rights.</span>
-          </article>
-          <article class="area-card elective-c">
+          </button>
+          <button class="area-card elective-c" type="button" data-open-topic="EC1 Algorithm Design and Python Basics" data-open-group="Elective C Algorithm and Programming">
             <p>Elective C · 算法與程式編寫</p>
             <h3>Algorithm and Programming</h3>
             <span>Advanced control, sub-programs, data structures, searching/sorting, text files and real-life programming applications.</span>
-          </article>
+          </button>
         </section>
       </section>
 
@@ -240,23 +236,25 @@
           <div id="topicStatGrid" class="topic-stat-grid"></div>
         </section>
 
+        <div class="chapter-study-board">
         <section class="chapter-section chapter-ca" id="chapter-outcomes">
           <div class="chapter-section-heading">
             <p class="eyebrow">C&amp;A Guide</p>
             <h3>Learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
           </div>
-          <p class="chapter-section-lead">What the HKDSE ICT Curriculum and Assessment Guide expects students to be able to do. Command words such as identify <span lang="zh-Hant">(識別)</span> and distinguish <span lang="zh-Hant">(區分)</span> tell you how to answer.</p>
+          <p class="chapter-section-lead">Command words such as identify <span lang="zh-Hant">(識別)</span> and distinguish <span lang="zh-Hant">(區分)</span> tell you how to answer.</p>
           <div id="topicCaPanel" class="topic-ca-panel"></div>
         </section>
 
         <section class="chapter-section chapter-keywords" id="chapter-keywords">
           <div class="chapter-section-heading">
-            <p class="eyebrow">Revision focus</p>
-            <h3>Important keywords / concepts <span class="heading-zh" lang="zh-Hant">重要關鍵詞</span></h3>
+            <p class="eyebrow">Self-check</p>
+            <h3>Keywords <span class="heading-zh" lang="zh-Hant">關鍵詞</span></h3>
           </div>
-          <p class="chapter-section-lead">Tap a card to self-check, then reveal the DSE meaning. Harder words include a Chinese gloss.</p>
+          <p class="chapter-section-lead">Tap a card to reveal the DSE meaning. Harder words include a Chinese gloss.</p>
           <div id="topicKeywordGrid" class="topic-keyword-grid"></div>
         </section>
+        </div>
 
         <section class="chapter-section chapter-mistakes" id="chapter-mistakes">
           <div class="chapter-section-heading">
