@@ -220,8 +220,8 @@
         <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="${group.id}">
           <span class="nav-emoji nav-strand">${index === 0 ? 'D' : 'C'}</span>
           <span>
-            <strong>Programming Visual Lab</strong>
-            <small class="nav-item-zh">${escapeHtml(group.labelEn)}</small>
+            <strong>${escapeHtml(group.labelEn)}</strong>
+            <small class="nav-item-zh" lang="zh-Hant">${escapeHtml(group.labelZh)}</small>
           </span>
         </button>
         <div class="topic-list" id="${group.id}">
@@ -253,7 +253,9 @@
         return;
       }
       if (item.dataset.page === 'programming') {
-        loadDemo(currentDemoKey || 'sequence');
+        event.preventDefault();
+        const key = (typeof currentDemoKey === 'string' && demos[currentDemoKey]) ? currentDemoKey : 'sequence';
+        loadDemo(key);
         return;
       }
       if (item.dataset.page === 'practice') {
@@ -268,6 +270,13 @@
   }
 
   function wrapCore() {
+    const origProg = global.showProgrammingView;
+    global.showProgrammingView = function () {
+      document.getElementById('dsePracticePage')?.classList.add('hidden');
+      origProg();
+      revealDemoSelect();
+    };
+
     const origLoad = global.loadDemo;
     global.loadDemo = function (key, keepExercise) {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
