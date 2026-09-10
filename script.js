@@ -206,7 +206,10 @@ const sidebarHideBtn = document.getElementById('sidebarHideBtn');
 const topicPage = document.getElementById('topicPage');
 const topicGroupLabel = document.getElementById('topicGroupLabel');
 const topicPageTitle = document.getElementById('topicPageTitle');
+const topicPageTitleZh = document.getElementById('topicPageTitleZh');
+const topicCaTopicLabel = document.getElementById('topicCaTopicLabel');
 const topicPageDescription = document.getElementById('topicPageDescription');
+const chapterJump = document.getElementById('chapterJump');
 const topicStatGrid = document.getElementById('topicStatGrid');
 const topicCardGrid = document.getElementById('topicCardGrid');
 const topicCaPanel = document.getElementById('topicCaPanel');
@@ -4586,14 +4589,25 @@ function makeChapterContent() {
 }
 
 function makeChapterStats(chapter) {
-  if (chapter.stats) return chapter.stats;
-  const id = chapter.id.split(' ')[0];
-  const words = chapter.title.replace(id, '').trim().split(/\s+/).filter(Boolean);
-  const available = (chapter.activities || []).filter(title => getActivityStatus(title) === 'Available now').length;
+  const study = typeof getChapterStudyMeta === 'function' ? getChapterStudyMeta(chapter.id) : null;
+  if (study?.focuses?.length) {
+    return study.focuses.map((focus, index) => ({
+      value: focus.en,
+      zh: focus.zh || '',
+      label: focus.detail || '',
+      kind: 'focus',
+      step: String(index + 1)
+    }));
+  }
+  const title = typeof displayChapterTitle === 'function'
+    ? displayChapterTitle(chapter.id, chapter.title)
+    : String(chapter.title || chapter.id).replace(/^(EA|EC|[A-E])\d+\s+/, '');
+  const words = title.split(/\s+/).filter(Boolean);
+  const available = (chapter.activities || []).filter(item => getActivityStatus(item) === 'Available now').length;
   return [
-    { value: id, label: 'DSE syllabus point' },
-    { value: words.slice(0, 2).join(' ') || 'Concept', label: 'Revision focus' },
-    { value: available, label: 'Available games now' }
+    { value: words.slice(0, 3).join(' ') || 'Concept', label: 'Revision focus', kind: 'focus' },
+    { value: 'C&A outcomes', label: 'What you should be able to do', kind: 'focus' },
+    { value: String(available || 'Practice'), label: 'Available activities', kind: 'focus' }
   ];
 }
 
@@ -4907,20 +4921,40 @@ function renderChapterSidebar() {
       <span class="nav-emoji">⌂</span>
       ICT revision hub
     </button>
-    ${chapterStructure.map((group, groupIndex) => `
+    ${chapterStructure.map((group, groupIndex) => {
+      const strand = typeof getStrandStudyMeta === 'function'
+        ? getStrandStudyMeta(group.group)
+        : { icon: group.icon, titleEn: group.group, titleZh: '', kicker: group.group };
+      return `
       <section class="curriculum-group ${groupIndex === 0 ? 'is-open' : ''}">
         <button class="curriculum-heading" type="button" aria-expanded="${groupIndex === 0 ? 'true' : 'false'}" aria-controls="${group.id}">
-          <span class="nav-emoji">${escapeHtml(group.icon)}</span>
-          <span>${escapeHtml(group.group)}</span>
+          <span class="nav-emoji nav-strand">${escapeHtml(strand.icon || group.icon)}</span>
+          <span>
+            <strong>${escapeHtml(strand.titleEn || group.group)}</strong>
+            ${strand.titleZh ? `<small class="nav-item-zh">${escapeHtml(strand.titleZh)}</small>` : ''}
+          </span>
         </button>
         <div class="topic-list" id="${group.id}">
-          ${group.chapters.map(([topic, label]) => `
-            <button class="nav-item" data-topic="${escapeHtml(topic)}" data-group="${escapeHtml(group.group)}">${escapeHtml(label)}</button>
-          `).join('')}
+          ${group.chapters.map(([topic]) => {
+            const titleEn = typeof displayChapterTitle === 'function' ? displayChapterTitle(topic, topic) : stripChapterCodeSafe(topic);
+            const titleZh = typeof displayChapterTitleZh === 'function' ? displayChapterTitleZh(topic) : '';
+            return `
+            <button class="nav-item nav-chapter" data-topic="${escapeHtml(topic)}" data-group="${escapeHtml(group.group)}">
+              <span class="nav-item-copy">
+                <span class="nav-item-en">${escapeHtml(titleEn)}</span>
+                ${titleZh ? `<span class="nav-item-zh" lang="zh-Hant">${escapeHtml(titleZh)}</span>` : ''}
+              </span>
+            </button>`;
+          }).join('')}
         </div>
       </section>
-    `).join('')}
+    `;
+    }).join('')}
   `;
+}
+
+function stripChapterCodeSafe(text) {
+  return typeof stripChapterCode === 'function' ? stripChapterCode(text) : String(text || '').replace(/^(EA|EC|[A-E])\d+\s+/, '').trim();
 }
 
 function randInt(min, max) {
@@ -6393,6 +6427,7 @@ function showTopicPage(button) {
   renderCommonMistakesSection(topicConfig);
   renderActivitiesSection(topicConfig);
   renderCheckpointSection(topicConfig);
+  renderChapterJumpNav();
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
   button.classList.add('active');
   openNavGroupFor(button);
@@ -7430,8 +7465,28 @@ function setChapterSectionVisible(element, visible) {
 }
 
 function renderIntroductionSection(topicConfig, groupConfig, meta) {
-  topicGroupLabel.textContent = meta.group;
-  topicPageTitle.textContent = topicConfig.title || meta.topic;
+  const strand = typeof getStrandStudyMeta === 'function' ? getStrandStudyMeta(meta.group) : null;
+  const study = typeof getChapterStudyMeta === 'function' ? getChapterStudyMeta(topicConfig.id || meta.topic) : null;
+  const titleEn = study?.titleEn || (typeof displayChapterTitle === 'function'
+    ? displayChapterTitle(meta.topic, topicConfig.title || meta.topic)
+    : (topicConfig.title || meta.topic));
+  const titleZh = study?.titleZh || '';
+  topicGroupLabel.textContent = strand
+    ? `${strand.kicker} · ${strand.titleEn}${strand.titleZh ? ` · ${strand.titleZh}` : ''}`
+    : meta.group;
+  topicPageTitle.textContent = titleEn;
+  if (topicPageTitleZh) {
+    topicPageTitleZh.textContent = titleZh;
+    topicPageTitleZh.hidden = !titleZh;
+  }
+  if (topicCaTopicLabel) {
+    const sameTopic = study && study.caTopicEn === study.titleEn;
+    const caLabel = study && !sameTopic
+      ? `C&A topic: ${study.caTopicEn}${study.caTopicZh ? ` · ${study.caTopicZh}` : ''}`
+      : '';
+    topicCaTopicLabel.textContent = caLabel;
+    topicCaTopicLabel.hidden = !caLabel;
+  }
   topicPageDescription.textContent = topicConfig.description || groupConfig.description;
   renderTopicStats(topicConfig.stats || groupConfig.stats);
   setChapterSectionVisible(topicStatGrid, true);
@@ -9462,24 +9517,35 @@ function renderC3DsePanel() {
 function renderCaOutcomesSection(topicConfig) {
   const items = topicConfig.caOutcomes || [];
   if (!topicCaPanel) return;
-  topicCaPanel.innerHTML = items.map((item, index) => `
+  topicCaPanel.innerHTML = items.map((item, index) => {
+    const command = typeof matchStudyCommand === 'function' ? matchStudyCommand(item) : null;
+    const body = command ? command.rest : item;
+    return `
     <article>
       <strong>${String(index + 1).padStart(2, '0')}</strong>
-      <p>${escapeHtml(item)}</p>
-    </article>
-  `).join('');
+      <div>
+        ${command ? `<span class="command-chip">${escapeHtml(command.en)} <small lang="zh-Hant">(${escapeHtml(command.zh)})</small></span>` : ''}
+        <p>${annotateStudyText(body)}</p>
+      </div>
+    </article>`;
+  }).join('');
   setChapterSectionVisible(topicCaPanel, Boolean(items.length));
 }
 
 function renderKeywordsSection(topicConfig) {
   const items = topicConfig.keywords || [];
   if (!topicKeywordGrid) return;
-  topicKeywordGrid.innerHTML = items.map(item => `
-    <article class="keyword-card">
-      <strong>${escapeHtml(item.term || item)}</strong>
-      <p>${escapeHtml(item.meaning || '')}</p>
-    </article>
-  `).join('');
+  topicKeywordGrid.innerHTML = items.map((item, index) => {
+    const term = item.term || item;
+    const meaning = item.meaning || '';
+    const zh = typeof getKeywordChinese === 'function' ? getKeywordChinese(term) : '';
+    return `
+    <button class="keyword-card" type="button" data-keyword-toggle aria-expanded="false">
+      <strong>${escapeHtml(term)}${zh ? `<span class="keyword-zh" lang="zh-Hant">(${escapeHtml(zh)})</span>` : ''}</strong>
+      <p class="keyword-hint">Tap to check the DSE meaning · 點擊查看意思</p>
+      <p class="keyword-meaning">${annotateStudyText(meaning)}</p>
+    </button>`;
+  }).join('');
   setChapterSectionVisible(topicKeywordGrid, Boolean(items.length));
 }
 
@@ -9502,12 +9568,25 @@ function renderCheckpointSection(topicConfig) {
 }
 
 function renderTopicStats(items) {
-  topicStatGrid.innerHTML = items.map((item, index) => `
-    <div class="topic-stat ${typeof item === 'object' && item.kind === 'word' ? 'topic-stat-word' : ''} ${typeof item === 'object' && item.step ? 'topic-stat-step' : ''}" ${typeof item === 'object' && item.step ? `style="--step-label:'${escapeHtml(item.step)}'"` : ''}>
+  topicStatGrid.innerHTML = (items || []).map((item, index) => {
+    const isFocus = typeof item === 'object' && item.kind === 'focus';
+    const isWord = typeof item === 'object' && item.kind === 'word';
+    const isStep = typeof item === 'object' && item.step;
+    if (isFocus) {
+      return `
+      <div class="topic-stat topic-stat-focus ${isStep ? 'topic-stat-step' : ''}" ${isStep ? `style="--step-label:'${escapeHtml(item.step)}'"` : ''}>
+        <span class="topic-stat-kicker">Focus ${index + 1}</span>
+        <strong>${escapeHtml(item.value)}</strong>
+        ${item.zh ? `<em lang="zh-Hant">${escapeHtml(item.zh)}</em>` : ''}
+        <span>${escapeHtml(item.label || '')}</span>
+      </div>`;
+    }
+    return `
+    <div class="topic-stat ${isWord ? 'topic-stat-word' : ''} ${isStep ? 'topic-stat-step' : ''}" ${isStep ? `style="--step-label:'${escapeHtml(item.step)}'"` : ''}>
       <strong>${escapeHtml(typeof item === 'string' ? index + 1 : item.value)}</strong>
       <span>${escapeHtml(typeof item === 'string' ? item : item.label)}</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderTopicCards(items) {
@@ -9832,22 +9911,25 @@ function renderTopicMisconceptions(items) {
     const mistake = normaliseMistake(item);
     const hasCorrect = Boolean(mistake.correct);
     return `
-    <article class="${hasCorrect ? 'mistake-card' : 'misconception-card'}">
+    <${hasCorrect ? 'button type="button"' : 'article'} class="${hasCorrect ? 'mistake-card' : 'misconception-card'}" ${hasCorrect ? 'data-mistake-toggle aria-expanded="false"' : ''}>
       ${hasCorrect ? `
         <div class="mistake-side mistake-wrong">
-          <span>Wrong ${index + 1}</span>
-          <p>${escapeHtml(mistake.wrong)}</p>
+          <span>Trap ${index + 1}</span>
+          <p>${annotateStudyText(mistake.wrong)}</p>
         </div>
         <div class="mistake-arrow" aria-hidden="true">→</div>
-        <div class="mistake-side mistake-correct">
-          <span>Correct</span>
-          <p>${escapeHtml(mistake.correct)}</p>
+        <div class="mistake-reveal">
+          <div class="mistake-side mistake-correct">
+            <span>Correct idea</span>
+            <p>${annotateStudyText(mistake.correct)}</p>
+          </div>
+          <span class="mistake-reveal-hint">Tap to reveal the correct idea<br>點擊顯示正確說法</span>
         </div>
       ` : `
         <strong>Trap ${index + 1}</strong>
-        <p>${escapeHtml(mistake.wrong)}</p>
+        <p>${annotateStudyText(mistake.wrong)}</p>
       `}
-    </article>`;
+    </${hasCorrect ? 'button' : 'article'}>`;
   }).join('') : '';
 }
 
@@ -12616,6 +12698,98 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function annotateStudyText(text) {
+  if (!text) return '';
+  let html = escapeHtml(text);
+  if (typeof studyGlossaryEntries !== 'function') return html;
+  const used = new Set();
+  for (const { term, zh } of studyGlossaryEntries()) {
+    if (!term || term.length < 4) continue;
+    const key = term.toLowerCase();
+    if (used.has(key)) continue;
+    const escapedTerm = escapeHtml(term);
+    const pattern = new RegExp(`(?<![\\w#&])(${escapeRegExp(escapedTerm)})(?![\\w;])`, 'i');
+    if (!pattern.test(html)) continue;
+    html = html.replace(pattern, (match, word, offset) => {
+      const before = html.slice(0, offset);
+      if ((before.split('<').length - 1) !== (before.split('>').length - 1)) return match;
+      used.add(key);
+      return `<abbr class="term-gloss" title="${escapeHtml(zh)}">${word}<span class="term-zh" lang="zh-Hant"> (${escapeHtml(zh)})</span></abbr>`;
+    });
+  }
+  return html;
+}
+
+const CHAPTER_JUMP_ITEMS = [
+  { id: 'chapter-intro', label: 'Focus', zh: '重點' },
+  { id: 'chapter-outcomes', label: 'Outcomes', zh: '學習成果' },
+  { id: 'chapter-keywords', label: 'Keywords', zh: '關鍵詞' },
+  { id: 'chapter-mistakes', label: 'Mistakes', zh: '常見錯誤' },
+  { id: 'chapter-details', label: 'Details', zh: '詳情' },
+  { id: 'chapter-practice', label: 'Practice', zh: '練習' },
+  { id: 'chapter-checkpoint', label: 'Checkpoint', zh: '檢查站' }
+];
+
+let chapterJumpObserver = null;
+
+function renderChapterJumpNav() {
+  if (!chapterJump) return;
+  const available = CHAPTER_JUMP_ITEMS.filter(item => {
+    const section = document.getElementById(item.id);
+    return section && !section.classList.contains('hidden');
+  });
+  chapterJump.hidden = available.length === 0;
+  chapterJump.innerHTML = available.map((item, index) => `
+    <button type="button" data-jump="${item.id}" class="${index === 0 ? 'is-active' : ''}">
+      <span>${escapeHtml(item.label)}</span>
+      <span class="jump-zh" lang="zh-Hant">${escapeHtml(item.zh)}</span>
+    </button>
+  `).join('');
+  bindChapterJumpObserver(available.map(item => item.id));
+}
+
+function bindChapterJumpObserver(ids) {
+  if (chapterJumpObserver) chapterJumpObserver.disconnect();
+  const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
+  if (!sections.length || typeof IntersectionObserver === 'undefined') return;
+  chapterJumpObserver = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+    if (!visible || !chapterJump) return;
+    chapterJump.querySelectorAll('button').forEach(button => {
+      button.classList.toggle('is-active', button.dataset.jump === visible.target.id);
+    });
+  }, { rootMargin: '-18% 0px -62% 0px', threshold: [0.12, 0.35, 0.7] });
+  sections.forEach(section => chapterJumpObserver.observe(section));
+}
+
+function initStudyUiInteractions() {
+  document.addEventListener('click', event => {
+    const jump = event.target.closest('[data-jump]');
+    if (jump) {
+      const target = document.getElementById(jump.dataset.jump);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const keyword = event.target.closest('[data-keyword-toggle]');
+    if (keyword) {
+      keyword.classList.toggle('is-open');
+      keyword.setAttribute('aria-expanded', String(keyword.classList.contains('is-open')));
+      return;
+    }
+    const mistake = event.target.closest('[data-mistake-toggle]');
+    if (mistake) {
+      mistake.classList.toggle('is-open');
+      mistake.setAttribute('aria-expanded', String(mistake.classList.contains('is-open')));
+    }
+  });
+}
+
 renderChapterSidebar();
 
 demoSelect.addEventListener('change', () => loadDemo(demoSelect.value));
@@ -12649,4 +12823,5 @@ document.querySelectorAll('[data-arcade]').forEach(item => {
 });
 
 initDashboardActions();
+initStudyUiInteractions();
 showDashboardPage();

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HKDSE ICT Study Hub — Mr Ivan Fung</title>
   <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -161,19 +164,19 @@
             <p>Activities</p>
             <h3>To Be Added</h3>
             <span>Useful activities will be added later only when they genuinely demonstrate a concept or train a DSE-style skill.</span>
-            <button class="secondary-btn" type="button" data-dashboard-action="lab">Open A3 Chapter</button>
+            <button class="secondary-btn" type="button" data-dashboard-action="lab">Open Data Representation</button>
           </article>
           <article class="path-card path-topic">
             <p>Chapter Study</p>
-            <h3>Pick A Syllabus Point</h3>
+            <h3>Pick a C&amp;A topic</h3>
             <span>Read the exact DSE concept, check common traps, then practise with a short transfer task.</span>
-            <button class="secondary-btn" type="button" data-dashboard-action="topic">Open Core C1</button>
+            <button class="secondary-btn" type="button" data-dashboard-action="topic">Open Networking Basics</button>
           </article>
           <article class="path-card path-practice">
             <p>DSE Drill</p>
-            <h3>Open Programming Chapter</h3>
-            <span>Start from the correct programming chapter, review the details and traps, then try the checkpoint tasks. Simulations can be added later when the design is useful.</span>
-            <button class="primary-btn" type="button" data-dashboard-action="programming">Open D2 Chapter</button>
+            <h3>Algorithm Design</h3>
+            <span>Start from sequence and selection, review the details and traps, then try the checkpoint tasks. Simulations can be added later when the design is useful.</span>
+            <button class="primary-btn" type="button" data-dashboard-action="programming">Open Algorithm Design</button>
           </article>
         </section>
 
@@ -189,82 +192,85 @@
 
         <section class="area-grid" aria-label="Frequently examined ICT points">
           <article class="area-card core-a">
-            <p>Core A</p>
+            <p>Compulsory A · 資訊處理</p>
             <h3>Information Processing</h3>
-            <span>A1 information systems and IPO, A2 data hierarchy/control, A3 representation, A4 spreadsheet analysis and A5 simple database/DBMS operations.</span>
+            <span>Information systems, data organisation and control, data representation, spreadsheet analysis, and simple databases.</span>
           </article>
           <article class="area-card core-b">
-            <p>Core B</p>
-            <h3>Computer System Fundamentals</h3>
-            <span>CPU, memory, storage, operating system functions, utility software, system performance and suitable device selection.</span>
+            <p>Compulsory B · 電腦系統基礎</p>
+            <h3>Computer Systems Fundamentals</h3>
+            <span>Input/output devices, CPU, memory, storage, operating system functions, utility software and suitable device selection.</span>
           </article>
           <article class="area-card core-c">
-            <p>Core C</p>
-            <h3>Internet and Applications</h3>
-            <span>LAN/WAN, network hardware, internet access, TCP/IP, IP, DNS, URL, protocols, internet services, web authoring, threats and security measures.</span>
+            <p>Compulsory C · 互聯網及其應用</p>
+            <h3>Internet and its Applications</h3>
+            <span>Networking basics, internet protocols, internet services, elementary web authoring, threats and security measures.</span>
           </article>
           <article class="area-card core-d">
-            <p>Core D</p>
-            <h3>Programming</h3>
-            <span>Sequence, selection, iteration, arrays, basic algorithm tracing, Python basics, testing and debugging.</span>
+            <p>Compulsory D · 計算思維與程式編寫</p>
+            <h3>Computational Thinking and Programming</h3>
+            <span>Problem analysis, sequence, selection, iteration, arrays, Python basics, testing and debugging.</span>
           </article>
           <article class="area-card core-e">
-            <p>Core E</p>
-            <h3>Social Implications</h3>
-            <span>Privacy, personal data protection, copyright, software licensing, ergonomic practice, e-waste and ethical technology use.</span>
+            <p>Compulsory E · 資訊及通訊科技對社會的影響</p>
+            <h3>Social Implications of ICT</h3>
+            <span>Technological innovations, health and ethical issues, privacy, copyright and intellectual property.</span>
           </article>
           <article class="area-card elective-a">
-            <p>Elective A</p>
+            <p>Elective A · 數據庫</p>
             <h3>Databases</h3>
-            <span>SQL table maintenance, operators/functions, multi-table joins/subqueries, relational integrity, ER diagrams, normalisation and access rights.</span>
+            <span>SQL, relational database concepts, ER diagrams, normalisation and access rights.</span>
           </article>
           <article class="area-card elective-c">
-            <p>Elective C</p>
+            <p>Elective C · 算法與程式編寫</p>
             <h3>Algorithm and Programming</h3>
-            <span>Python review, advanced control, modular programming, data structures, searching/sorting/merging, text files and device/IoT applications.</span>
+            <span>Advanced control, sub-programs, data structures, searching/sorting, text files and real-life programming applications.</span>
           </article>
         </section>
       </section>
 
       <section id="topicPage" class="topic-page hidden" aria-live="polite">
-        <section class="chapter-section chapter-introduction">
+        <nav id="chapterJump" class="chapter-jump" hidden aria-label="Jump to chapter section"></nav>
+        <section class="chapter-section chapter-introduction" id="chapter-intro">
           <p class="eyebrow" id="topicGroupLabel">Topic</p>
+          <p class="chapter-ca-topic" id="topicCaTopicLabel" hidden></p>
           <h2 id="topicPageTitle">Topic page</h2>
+          <p class="topic-title-zh" id="topicPageTitleZh" lang="zh-Hant" hidden></p>
           <p id="topicPageDescription">Content for this topic will be added later.</p>
           <div id="topicStatGrid" class="topic-stat-grid"></div>
         </section>
 
-        <section class="chapter-section chapter-ca">
+        <section class="chapter-section chapter-ca" id="chapter-outcomes">
           <div class="chapter-section-heading">
             <p class="eyebrow">C&amp;A Guide</p>
-            <h3>Learning outcomes</h3>
+            <h3>Learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
           </div>
-          <p class="chapter-section-lead">What the HKDSE ICT Curriculum and Assessment Guide expects students to be able to do in this chapter.</p>
+          <p class="chapter-section-lead">What the HKDSE ICT Curriculum and Assessment Guide expects students to be able to do. Command words such as identify <span lang="zh-Hant">(識別)</span> and distinguish <span lang="zh-Hant">(區分)</span> tell you how to answer.</p>
           <div id="topicCaPanel" class="topic-ca-panel"></div>
         </section>
 
-        <section class="chapter-section chapter-keywords">
+        <section class="chapter-section chapter-keywords" id="chapter-keywords">
           <div class="chapter-section-heading">
             <p class="eyebrow">Revision focus</p>
-            <h3>Important keywords / concepts</h3>
+            <h3>Important keywords / concepts <span class="heading-zh" lang="zh-Hant">重要關鍵詞</span></h3>
           </div>
-          <p class="chapter-section-lead">Use these terms precisely in notes, oral explanation and Paper 1 / Paper 2 answers.</p>
+          <p class="chapter-section-lead">Tap a card to self-check, then reveal the DSE meaning. Harder words include a Chinese gloss.</p>
           <div id="topicKeywordGrid" class="topic-keyword-grid"></div>
         </section>
 
-        <section class="chapter-section chapter-mistakes">
+        <section class="chapter-section chapter-mistakes" id="chapter-mistakes">
           <div class="chapter-section-heading">
             <p class="eyebrow">Watch out</p>
-            <h3>Common mistakes (wrong → correct)</h3>
+            <h3>Common mistakes <span class="heading-zh" lang="zh-Hant">常見錯誤</span></h3>
           </div>
-          <p class="chapter-section-lead">Replace the left-hand trap with the right-hand DSE-safe statement.</p>
+          <p class="chapter-section-lead">Read the trap first, then tap the card to reveal the correct DSE-safe statement.</p>
           <div id="topicMisconceptionGrid" class="topic-misconception-grid"></div>
         </section>
 
-        <section class="chapter-section chapter-details">
+        <section class="chapter-section chapter-details" id="chapter-details">
           <div class="chapter-section-heading">
             <p class="eyebrow">Details</p>
-            <h3>Build the concept</h3>
+            <h3>Build the concept <span class="heading-zh" lang="zh-Hant">詳情</span></h3>
           </div>
           <div id="topicCardGrid" class="topic-card-grid"></div>
           <div id="topicKeypointGrid" class="topic-keypoint-grid"></div>
@@ -280,11 +286,11 @@
           </div>
         </section>
 
-        <section class="chapter-section chapter-activities">
+        <section class="chapter-section chapter-activities" id="chapter-practice">
           <div id="topicActivityPanel" class="topic-activity-panel hidden"></div>
         </section>
 
-        <section class="chapter-section chapter-checkpoint">
+        <section class="chapter-section chapter-checkpoint" id="chapter-checkpoint">
           <div id="topicPracticePanel" class="topic-practice-panel hidden"></div>
         </section>
       </section>
@@ -494,6 +500,7 @@
   </div>
 
   <script src="chapter-guides.js"></script>
+  <script src="chapter-study-ui.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
