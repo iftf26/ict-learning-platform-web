@@ -12684,8 +12684,11 @@ function initDashboardActions() {
   });
   document.querySelectorAll('[data-open-topic]').forEach(button => {
     button.addEventListener('click', () => {
-      const selector = `.nav-item[data-topic="${button.dataset.openTopic}"]`;
-      const topicButton = document.querySelector(selector);
+      const topicId = button.dataset.openTopic;
+      const groupId = button.dataset.openGroup;
+      const topicButton = Array.from(document.querySelectorAll('.nav-item[data-topic]')).find(item => (
+        item.dataset.topic === topicId && (!groupId || item.dataset.group === groupId)
+      ));
       if (topicButton) showTopicPage(topicButton);
     });
   });

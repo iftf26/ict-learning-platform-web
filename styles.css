@@ -6869,13 +6869,11 @@ button.mistake-card {
 }
 
 /* Study studio layout: calmer canvas, ink sidebar, chapter workbook */
-.study-studio {
+body:has(.study-studio) {
   --studio-ink: #101924;
   --studio-panel: #ffffff;
   --studio-mist: #e7edf5;
-}
-body:has(.study-studio) {
-  background: var(--studio-mist, #e7edf5);
+  background: var(--studio-mist);
 }
 .study-studio {
   grid-template-columns: 272px minmax(0, 1fr);
