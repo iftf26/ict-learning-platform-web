@@ -209,6 +209,8 @@ const topicPageTitle = document.getElementById('topicPageTitle');
 const topicPageDescription = document.getElementById('topicPageDescription');
 const topicStatGrid = document.getElementById('topicStatGrid');
 const topicCardGrid = document.getElementById('topicCardGrid');
+const topicCaPanel = document.getElementById('topicCaPanel');
+const topicKeywordGrid = document.getElementById('topicKeywordGrid');
 const topicKeypointGrid = document.getElementById('topicKeypointGrid');
 const topicMisconceptionGrid = document.getElementById('topicMisconceptionGrid');
 const topicFormulaPanel = document.getElementById('topicFormulaPanel');
@@ -4528,6 +4530,26 @@ const chapterBlueprints = [
 
 topicContent = makeChapterContent();
 
+function getGuideForChapter(chapter) {
+  const guideSource = (typeof getChapterGuide === 'function')
+    ? getChapterGuide(chapter.id)
+    : { caOutcomes: [], keywords: [], mistakes: [] };
+  return {
+    caOutcomes: guideSource.caOutcomes || [],
+    keywords: guideSource.keywords || [],
+    mistakes: (guideSource.mistakes || []).map(normaliseMistake)
+  };
+}
+
+function normaliseMistake(item) {
+  if (!item) return { wrong: '', correct: '' };
+  if (typeof item === 'string') return { wrong: item, correct: '' };
+  return {
+    wrong: item.wrong || item.trap || '',
+    correct: item.correct || item.fix || ''
+  };
+}
+
 function makeChapterContent() {
   return chapterBlueprints.reduce((result, chapter) => {
     const groupConfig = groupThemes[chapter.group] || groupThemes['Core A Information Processing'];
@@ -4535,6 +4557,7 @@ function makeChapterContent() {
       title: index === 0 ? 'Core idea' : index === 1 ? 'How it works' : 'Classroom example',
       body: concept
     }));
+    const guide = getGuideForChapter(chapter);
     result[chapter.id] = {
       id: chapter.id,
       group: chapter.group,
@@ -4545,7 +4568,9 @@ function makeChapterContent() {
       cards: conceptCards,
       keypoints: chapter.concepts || [],
       formulae: chapter.formulae || [],
-      misconceptions: chapter.misconceptions || makeCommonMisconceptions(chapter),
+      caOutcomes: guide.caOutcomes,
+      keywords: guide.keywords,
+      misconceptions: guide.mistakes.length ? guide.mistakes : (chapter.misconceptions || makeCommonMisconceptions(chapter)).map(normaliseMistake),
       exam: makeDseTransferItems(chapter),
       activities: chapter.activities || [],
       practice: chapter.practice || makeRandomPractice(chapter),
@@ -6362,6 +6387,8 @@ function showTopicPage(button) {
   topicPage.classList.remove('theme-a', 'theme-b', 'theme-c', 'theme-d', 'theme-e', 'theme-db', 'theme-ec');
   topicPage.classList.add(topicConfig.theme || groupConfig.theme);
   renderIntroductionSection(topicConfig, groupConfig, { group, topic });
+  renderCaOutcomesSection(topicConfig);
+  renderKeywordsSection(topicConfig);
   renderDetailsSection(topicConfig, groupConfig);
   renderCommonMistakesSection(topicConfig);
   renderActivitiesSection(topicConfig);
@@ -9432,8 +9459,32 @@ function renderC3DsePanel() {
   `;
 }
 
+function renderCaOutcomesSection(topicConfig) {
+  const items = topicConfig.caOutcomes || [];
+  if (!topicCaPanel) return;
+  topicCaPanel.innerHTML = items.map((item, index) => `
+    <article>
+      <strong>${String(index + 1).padStart(2, '0')}</strong>
+      <p>${escapeHtml(item)}</p>
+    </article>
+  `).join('');
+  setChapterSectionVisible(topicCaPanel, Boolean(items.length));
+}
+
+function renderKeywordsSection(topicConfig) {
+  const items = topicConfig.keywords || [];
+  if (!topicKeywordGrid) return;
+  topicKeywordGrid.innerHTML = items.map(item => `
+    <article class="keyword-card">
+      <strong>${escapeHtml(item.term || item)}</strong>
+      <p>${escapeHtml(item.meaning || '')}</p>
+    </article>
+  `).join('');
+  setChapterSectionVisible(topicKeywordGrid, Boolean(items.length));
+}
+
 function renderCommonMistakesSection(topicConfig) {
-  const items = topicConfig.misconceptions || [];
+  const items = (topicConfig.misconceptions || []).map(normaliseMistake).filter(item => item.wrong);
   renderTopicMisconceptions(items);
   setChapterSectionVisible(topicMisconceptionGrid, Boolean(items.length));
 }
@@ -9777,17 +9828,27 @@ function renderTopicKeypoints(items) {
 }
 
 function renderTopicMisconceptions(items) {
-  topicMisconceptionGrid.innerHTML = items.length ? `
-    <div class="topic-section-banner">
-      <p class="eyebrow">Common misconceptions</p>
-      <h3>Check the trap before playing</h3>
-    </div>
-  ` + items.map((item, index) => `
-    <article class="misconception-card">
-      <strong>Trap ${index + 1}</strong>
-      <p>${escapeHtml(item)}</p>
-    </article>
-  `).join('') : '';
+  topicMisconceptionGrid.innerHTML = items.length ? items.map((item, index) => {
+    const mistake = normaliseMistake(item);
+    const hasCorrect = Boolean(mistake.correct);
+    return `
+    <article class="${hasCorrect ? 'mistake-card' : 'misconception-card'}">
+      ${hasCorrect ? `
+        <div class="mistake-side mistake-wrong">
+          <span>Wrong ${index + 1}</span>
+          <p>${escapeHtml(mistake.wrong)}</p>
+        </div>
+        <div class="mistake-arrow" aria-hidden="true">→</div>
+        <div class="mistake-side mistake-correct">
+          <span>Correct</span>
+          <p>${escapeHtml(mistake.correct)}</p>
+        </div>
+      ` : `
+        <strong>Trap ${index + 1}</strong>
+        <p>${escapeHtml(mistake.wrong)}</p>
+      `}
+    </article>`;
+  }).join('') : '';
 }
 
 function renderTopicFormulae(items) {
