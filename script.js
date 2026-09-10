@@ -4607,7 +4607,7 @@ function makeChapterStats(chapter) {
   return [
     { value: words.slice(0, 3).join(' ') || 'Concept', label: 'Revision focus', kind: 'focus' },
     { value: 'C&A outcomes', label: 'What you should be able to do', kind: 'focus' },
-    { value: String(available || 'Practice'), label: 'Available activities', kind: 'focus' }
+    { value: String(available), label: 'Available activities now', kind: 'focus' }
   ];
 }
 
@@ -4931,7 +4931,7 @@ function renderChapterSidebar() {
           <span class="nav-emoji nav-strand">${escapeHtml(strand.icon || group.icon)}</span>
           <span>
             <strong>${escapeHtml(strand.titleEn || group.group)}</strong>
-            ${strand.titleZh ? `<small class="nav-item-zh">${escapeHtml(strand.titleZh)}</small>` : ''}
+            ${strand.titleZh ? `<small class="nav-item-zh" lang="zh-Hant">${escapeHtml(strand.titleZh)}</small>` : ''}
           </span>
         </button>
         <div class="topic-list" id="${group.id}">
@@ -9524,7 +9524,7 @@ function renderCaOutcomesSection(topicConfig) {
       <strong>${String(index + 1).padStart(2, '0')}</strong>
       <div>
         ${command ? `<span class="command-chip">${escapeHtml(command.en)} <small lang="zh-Hant">(${escapeHtml(command.zh)})</small></span>` : ''}
-        <p>${annotateStudyText(item)}</p>
+        <p>${annotateStudyText(command ? capitaliseStudySentence(command.rest) : item)}</p>
       </div>
     </article>`;
   }).join('');
@@ -12701,6 +12701,35 @@ function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function capitaliseStudySentence(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) return '';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
+function isStudyWordChar(character) {
+  return /[A-Za-z0-9#&]/.test(character || '');
+}
+
+function findStudyTermIndex(html, term) {
+  const haystack = html.toLowerCase();
+  const needle = term.toLowerCase();
+  let from = 0;
+  while (from <= haystack.length - needle.length) {
+    const index = haystack.indexOf(needle, from);
+    if (index === -1) return -1;
+    const beforeChar = index === 0 ? '' : html.charAt(index - 1);
+    const afterChar = html.charAt(index + term.length);
+    const before = html.slice(0, index);
+    const insideTag = (before.split('<').length - 1) !== (before.split('>').length - 1);
+    if (!insideTag && !isStudyWordChar(beforeChar) && !isStudyWordChar(afterChar) && afterChar !== ';') {
+      return index;
+    }
+    from = index + 1;
+  }
+  return -1;
+}
+
 function annotateStudyText(text) {
   if (!text) return '';
   let html = escapeHtml(text);
@@ -12711,14 +12740,11 @@ function annotateStudyText(text) {
     const key = term.toLowerCase();
     if (used.has(key)) continue;
     const escapedTerm = escapeHtml(term);
-    const pattern = new RegExp(`(?<![\\w#&])(${escapeRegExp(escapedTerm)})(?![\\w;])`, 'i');
-    if (!pattern.test(html)) continue;
-    html = html.replace(pattern, (match, word, offset) => {
-      const before = html.slice(0, offset);
-      if ((before.split('<').length - 1) !== (before.split('>').length - 1)) return match;
-      used.add(key);
-      return `<abbr class="term-gloss" title="${escapeHtml(zh)}">${word}<span class="term-zh" lang="zh-Hant"> (${escapeHtml(zh)})</span></abbr>`;
-    });
+    const index = findStudyTermIndex(html, escapedTerm);
+    if (index === -1) continue;
+    const word = html.slice(index, index + escapedTerm.length);
+    used.add(key);
+    html = `${html.slice(0, index)}<abbr class="term-gloss" title="${escapeHtml(zh)}">${word}<span class="term-zh" lang="zh-Hant"> (${escapeHtml(zh)})</span></abbr>${html.slice(index + escapedTerm.length)}`;
   }
   return html;
 }
