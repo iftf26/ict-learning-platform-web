@@ -9,7 +9,7 @@ const chapterGuides = {
     keywords: [
       { term: "Information system", meaning: "A system that uses hardware, software, data, people and procedures to produce useful output." },
       { term: "Data vs information", meaning: "Data is unorganised facts; information is data after processing and interpretation." },
-      { term: "IPO / information processes", meaning: "Collection, organisation, storage, processing, analysis, transmission and presentation." },
+      { term: "Information processes", meaning: "Collection, organisation, storage, processing, analysis, transmission and presentation." },
       { term: "Hardware vs software", meaning: "Hardware is physical devices; software is programs, including system and application software." },
       { term: "Information literacy", meaning: "Judge credibility, respect IP, protect privacy, and extract/organise information." },
       { term: "Multimedia data", meaning: "Text, images, audio and video stored and processed as data." },

@@ -503,7 +503,7 @@ const studyCommandWords = [
 const keywordChinese = {
   'Information system': '資訊系統',
   'Data vs information': '數據與資訊',
-  'IPO / information processes': '資訊處理過程',
+  'Information processes': '資訊處理過程',
   'Hardware vs software': '硬件與軟件',
   'Information literacy': '資訊素養',
   'Multimedia data': '多媒體數據',

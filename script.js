@@ -9519,13 +9519,12 @@ function renderCaOutcomesSection(topicConfig) {
   if (!topicCaPanel) return;
   topicCaPanel.innerHTML = items.map((item, index) => {
     const command = typeof matchStudyCommand === 'function' ? matchStudyCommand(item) : null;
-    const body = command ? command.rest : item;
     return `
     <article>
       <strong>${String(index + 1).padStart(2, '0')}</strong>
       <div>
         ${command ? `<span class="command-chip">${escapeHtml(command.en)} <small lang="zh-Hant">(${escapeHtml(command.zh)})</small></span>` : ''}
-        <p>${annotateStudyText(body)}</p>
+        <p>${annotateStudyText(item)}</p>
       </div>
     </article>`;
   }).join('');
