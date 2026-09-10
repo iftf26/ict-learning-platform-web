@@ -1,4 +1,4 @@
-# HKDSE ICT Study Hub — Mr Ivan Fung
+# HKDSE ICT Study Hub 
 
 This prototype is designed as a student-facing HKDSE ICT learning platform rather than a programming-only exercise page or tracking platform.
 
