@@ -193,6 +193,17 @@
       }
       return;
     }
+    if (hash.activity) {
+      const chapter = Object.values(topicContent || {}).find(item =>
+        (item.activities || []).some(activity => activity.mode === hash.activity || activity.demoKey === hash.activity)
+      );
+      const button = chapter ? findTopicButton(chapter.id) : null;
+      if (button) {
+        showTopicPage(button);
+        setTimeout(() => openActivity(hash.activity), 0);
+      }
+      return;
+    }
     if (hash.view === 'home' || hash.page === 'dashboard') showDashboardPage();
     } finally {
       global.__platformWritingHash = false;

@@ -951,6 +951,12 @@
       const fn = MODE_BINDERS[activity.mode];
       if (stage && fn) fn(stage);
     },
-    modes: Object.keys(MODE_RENDERERS)
+    register(mode, render, bind) {
+      MODE_RENDERERS[mode] = render;
+      MODE_BINDERS[mode] = bind;
+    },
+    get modes() {
+      return Object.keys(MODE_RENDERERS);
+    }
   };
 })(window);
