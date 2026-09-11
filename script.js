@@ -2164,7 +2164,17 @@ const chapterBlueprints = [
       'A report is for presentation, not for entering new records.',
       'Number is not always the best data type for numeric-looking data. Phone numbers and IDs are often text because arithmetic is not needed.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Simple Database Builder',
+        mode: 'a5Database',
+        status: 'Available now',
+        goal: 'Choose field types and a primary key, enter records through a form, then watch a SELECT / WHERE / ORDER BY query change the result table.',
+        misconception: 'Phone numbers are not Number fields. NULL is not 0. A form is not a query and a query is not a report.',
+        challenge: 'Trigger a duplicate primary key, compare blank vs 0, then filter the live result table.',
+        transfer: 'DSE transfer: choose table, form, query or report from an unfamiliar school task.'
+      }
+    ],
     practice: [
       {
         level: 'Level 1: Concept check',
@@ -3458,7 +3468,17 @@ const chapterBlueprints = [
       'Syntax, runtime and logic errors have different symptoms.',
       'Changing many lines at once makes debugging harder.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Bug Hunt Lab',
+        mode: 'd6BugHunt',
+        status: 'Available now',
+        goal: 'Observe a symptom, choose normal / boundary / erroneous test data, trace, name the error type, fix the line and rerun.',
+        misconception: 'A program that runs can still contain a logic error. Random editing hides the fault.',
+        challenge: 'Say why the chosen test reveals the bug before you apply the correction.',
+        transfer: 'DSE transfer: distinguish syntax, runtime and logic errors from a short HKDSE-level trace.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -3658,7 +3678,17 @@ const chapterBlueprints = [
       'Freeware and open-source software are not the same.',
       'Creative Commons does not mean no rules.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Can I Use This?',
+        mode: 'e3Licence',
+        status: 'Available now',
+        goal: 'Inspect a licence or usage condition, then decide permission, attribution and whether this stated use is allowed.',
+        misconception: 'Found on the internet is not the same as free to copy. Attribution does not always replace permission.',
+        challenge: 'Do not answer only legal / illegal. Name the condition (BY, NC, trial, freeware vs open source) that controls the decision.',
+        transfer: 'DSE transfer: apply copyright and licence terms to an unfamiliar school or software scenario.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -3999,7 +4029,17 @@ const chapterBlueprints = [
       'Normalisation is not just splitting tables randomly; it removes dependency problems.',
       'Giving every user administrator rights violates least privilege.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'ERD and Normalisation Studio',
+        mode: 'ea5Erd',
+        status: 'Available now',
+        goal: 'Identify entities and keys, resolve a many-to-many relationship, watch an update anomaly, then decompose toward 3NF.',
+        misconception: 'Normalisation is not splitting tables at random. An M:N link needs a bridge table, not a comma-separated field.',
+        challenge: 'Update one redundant copy and explain why the same fact must be stored once.',
+        transfer: 'DSE transfer: draw the binary ER idea and justify a 2NF/3NF decomposition from an unfamiliar scenario.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -10410,7 +10450,11 @@ function activityModeLabel(mode) {
     b2Fde: 'CPU cycle',
     c3Stream: 'stream lab',
     c4Html: 'HTML lab',
-    c4Path: 'path explorer'
+    c4Path: 'path explorer',
+    a5Database: 'database builder',
+    d6BugHunt: 'bug hunt',
+    e3Licence: 'licence lab',
+    ea5Erd: 'ERD studio'
   };
   return labels[mode] || mode;
 }

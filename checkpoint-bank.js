@@ -363,5 +363,155 @@ window.CHECKPOINT_BANK = {
       explanation: 'Name the threat, the weak point, the control, and what the control does not fix.',
       nextAction: 'Apply the same chain to ransomware (backup helps recovery; it does not block the first infection alone).'
     }
+  ],
+  A5: [
+    {
+      type: 'mc',
+      difficulty: 'standard',
+      title: 'Phone data type',
+      stem: 'A student table stores a mobile number such as 9123-4567. Which data type is most suitable?',
+      options: [
+        { text: 'Text', correct: true, why: 'Phone numbers are codes. Arithmetic is not required, and a Number type can drop leading zeros or symbols.' },
+        { text: 'Number', correct: false, why: 'Number is for quantities. A phone is not added or averaged in Core A5.' },
+        { text: 'Yes/No', correct: false, why: 'Yes/No stores a Boolean fact, not a phone string.' },
+        { text: 'OLE object', correct: false, why: 'That is not the HKDSE field-type decision here.' }
+      ],
+      hint: 'Will you calculate with it?',
+      explanation: 'Use Text for IDs and phone numbers. Use Number or Currency when the value is a quantity.',
+      nextAction: 'Name one reason 0 and NULL are different in a Fine field.'
+    },
+    {
+      type: 'mc',
+      difficulty: 'standard',
+      title: 'NULL vs 0',
+      stem: 'Fine is Currency. One student has Fine = 0 and another has Fine left blank. Which statement is DSE-safe?',
+      options: [
+        { text: '0 means the fine is zero; blank/NULL means the amount is unknown.', correct: true, why: 'NULL is missing data. 0 is a stored numeric value.' },
+        { text: 'They are always the same value.', correct: false, why: 'A query WHERE Fine = 0 does not return NULL fines.' },
+        { text: 'NULL is a type of primary key.', correct: false, why: 'A primary key must not be NULL.' },
+        { text: 'Blank means the student paid the largest possible fine.', correct: false, why: 'Blank means no value was stored.' }
+      ],
+      hint: 'Missing versus measured as zero.',
+      explanation: 'NULL ≠ 0. Design queries with that difference in mind.',
+      nextAction: 'State whether a primary key may be NULL.'
+    },
+    {
+      type: 'mc',
+      difficulty: 'stretch',
+      title: 'Form query report',
+      stem: 'Office staff must type one new student at a time. Later they need a printable class list. Which pair is most suitable?',
+      options: [
+        { text: 'Form for entry; report for the printable list', correct: true, why: 'A form supports record entry/viewing. A report presents selected data for printing. A query can feed the report but is not itself the printable layout.' },
+        { text: 'Report for typing; form for printing', correct: false, why: 'That swaps the objects’ purposes.' },
+        { text: 'Primary key for both jobs', correct: false, why: 'A key identifies records; it is not an output object.' },
+        { text: 'Only a programming loop, not database objects', correct: false, why: 'This is Core A5 database object choice.' }
+      ],
+      hint: 'Match the object to the task.',
+      explanation: 'Table stores. Form enters/views. Query selects. Report presents.',
+      nextAction: 'Read a SELECT … WHERE … ORDER BY query and say what the user sees.'
+    },
+    {
+      type: 'short',
+      difficulty: 'stretch',
+      title: 'Explain the query',
+      stem: 'Explain what this query returns: SELECT Name FROM Student WHERE Class = "5A" ORDER BY Name',
+      marks: [
+        { point: 'It lists student names (not every field).', keywords: ['name'] },
+        { point: 'Only records with Class 5A are included.', keywords: ['5a', 'class', 'where'] },
+        { point: 'The names are sorted.', keywords: ['order', 'sort'] }
+      ],
+      hint: 'Read SELECT, then WHERE, then ORDER BY.',
+      explanation: 'SELECT chooses fields, WHERE filters rows, ORDER BY sorts. The query does not delete or update data.',
+      nextAction: 'Change WHERE to Fine IS NULL and say which students appear.'
+    }
+  ],
+  D6: [
+    {
+      type: 'mc',
+      difficulty: 'standard',
+      title: 'Which test reveals the fault',
+      stem: 'A validation loop should reject mark=150 but it accepts 150 and still runs. Which test data is most useful, and why?',
+      options: [
+        { text: 'Erroneous 150, because it should be rejected and the actual result shows it is not.', correct: true, why: 'The revealing test is the case that should fail. Normal 72 can hide a broken validation condition.' },
+        { text: 'Only mark=72, because typical data is enough.', correct: false, why: 'Normal data may pass even when the loop condition is wrong.' },
+        { text: 'No test data is needed if the code looks neat.', correct: false, why: 'Debugging compares expected and actual output using planned tests.' },
+        { text: 'A copyright sample file.', correct: false, why: 'Copyright is Core E, not program testing.' }
+      ],
+      hint: 'Choose data that should expose the invalid case.',
+      explanation: 'Normal, boundary and erroneous data have different jobs. Use the case that should fail when testing validation.',
+      nextAction: 'Name the error type if the program runs but accepts 150.'
+    },
+    {
+      type: 'order',
+      difficulty: 'standard',
+      title: 'Debug order',
+      stem: 'Put the debugging steps in a sensible order.',
+      items: ['Observe the symptom', 'Choose suitable test data', 'Trace until expected and actual differ', 'Identify the error type', 'Correct the line and rerun'],
+      hint: 'Do not edit first.',
+      explanation: 'Guessing edits without a test and a trace hides the fault.',
+      nextAction: 'State one difference between runtime and logic errors.'
+    }
+  ],
+  E3: [
+    {
+      type: 'mc',
+      difficulty: 'standard',
+      title: 'CC BY-NC flyer',
+      stem: 'A photo is licensed CC BY-NC. A tutor prints it on a paid course flyer and credits the author. Is this allowed?',
+      options: [
+        { text: 'No. NC forbids commercial use; credit does not cancel NC.', correct: true, why: 'BY is satisfied by attribution, but NC still blocks a paid flyer.' },
+        { text: 'Yes, because any Creative Commons photo is free for all uses.', correct: false, why: 'CC licences have conditions. CC does not mean no rules.' },
+        { text: 'Yes, because attribution always replaces permission.', correct: false, why: 'Attribution is not a substitute for a missing right, such as commercial use.' },
+        { text: 'No, because school staff can never use CC photos.', correct: false, why: 'A non-commercial school presentation could be allowed; the paid flyer is the problem.' }
+      ],
+      hint: 'Inspect NC separately from BY.',
+      explanation: 'Read each CC letter. BY = credit. NC = non-commercial.',
+      nextAction: 'Contrast freeware with open-source rights.'
+    },
+    {
+      type: 'mc',
+      difficulty: 'stretch',
+      title: 'Freeware vs open source',
+      stem: 'A utility is freeware. Students may install it, but the licence forbids selling copies and does not provide source code. Which statement is correct?',
+      options: [
+        { text: 'Free to use is not the same as open source, and selling copies can still be forbidden.', correct: true, why: 'Freeware may be no-cost to run without source access. Open-source licences are a different bundle of rights.' },
+        { text: 'Freeware always allows modifying and selling the program.', correct: false, why: 'Those rights belong to some open-source licences, not to freeware by default.' },
+        { text: 'If software is free, copyright does not apply.', correct: false, why: 'Copyright still exists. The licence says what you may do.' },
+        { text: 'Shareware and freeware are identical to MIT licences.', correct: false, why: 'Shareware is try-then-buy. MIT is an open-source licence with a notice condition.' }
+      ],
+      hint: 'Inspect the condition, not the word “free”.',
+      explanation: 'Name the licence type and the action: use, modify, sell, or keep a notice.',
+      nextAction: 'Decide whether downloading a YouTube file and re-uploading it as the school’s own video is allowed.'
+    }
+  ],
+  EA5: [
+    {
+      type: 'mc',
+      difficulty: 'standard',
+      title: 'Resolve M:N',
+      stem: 'Students join many clubs and each club has many students. How should the M:N relationship be implemented?',
+      options: [
+        { text: 'Add an associative table such as Membership with StudentID and ClubID.', correct: true, why: 'The bridge table stores one membership pair and creates two 1:M relationships.' },
+        { text: 'Store all club names in one Student field separated by commas.', correct: false, why: 'Repeating groups break 1NF and make queries unreliable.' },
+        { text: 'Give every student administrator rights.', correct: false, why: 'Access rights are a different EA5 idea (least privilege).' },
+        { text: 'Use a nested programming loop instead of tables.', correct: false, why: 'This is database design, not Elective C programming.' }
+      ],
+      hint: 'Use a bridge / associative table.',
+      explanation: 'Binary ER stays between two entity types. M:N becomes two 1:M links through a new table.',
+      nextAction: 'Give one update-anomaly example from duplicated teacher office or supplier phone.'
+    },
+    {
+      type: 'short',
+      difficulty: 'stretch',
+      title: 'Explain 3NF move',
+      stem: 'Course rows store TeacherName and Office, and the same teacher appears with two different offices. Explain why Office should move to a Teacher table.',
+      marks: [
+        { point: 'Office depends on the teacher, not on the course.', keywords: ['teacher', 'depend', 'office'] },
+        { point: 'Storing it on every course/enrolment row duplicates data and causes update anomalies.', keywords: ['anomal', 'duplic', 'inconsist', 'update'] }
+      ],
+      hint: 'Transitive dependency: course → teacher → office.',
+      explanation: '3NF removes non-key attributes that depend on another non-key attribute. Store Office once with TeacherID.',
+      nextAction: 'State what 2NF removes (partial dependence on part of a composite key).'
+    }
   ]
 };

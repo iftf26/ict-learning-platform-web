@@ -13,7 +13,13 @@ This prototype is designed as a student-facing HKDSE ICT learning platform rathe
   - B2 Fetch–Decode–Execute visualiser
   - C3 Streaming buffer simulator (bitrate vs throughput)
   - C4 Mini HTML Live Lab and Relative Path Explorer
-- Deep links: `#demo=linearSearch`, `#chapter=C1`, `#practice`, `#practice=B2`, `#activity=c1Network`.
+- Phase 2 activities (same checkpoint engine and activity shell):
+  - A5 Simple Database Builder + live SELECT / WHERE / ORDER BY result predictor
+  - D6 Bug Hunt Lab (test data → error type → faulty line → fix → rerun)
+  - E3 “Can I Use This?” licence lab (permission, attribution, this use)
+  - EA5 ERD + Normalisation Studio (binary ER, resolve M:N, update anomaly, 1NF–3NF)
+- The **DSE Practice Hub** is unchanged as a single hub; Phase 2 adds extra A5 / D6 / E3 / EA5 items to the shared question bank.
+- Deep links: `#demo=linearSearch`, `#chapter=C1`, `#practice`, `#practice=B2`, `#activity=c1Network`, `#activity=a5Database`, `#activity=d6BugHunt`, `#activity=e3Licence`, `#activity=ea5Erd`.
 
 ## Earlier study-hub work
 
