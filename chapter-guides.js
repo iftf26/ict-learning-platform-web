@@ -52,7 +52,6 @@ const chapterGuides = {
       "Convert integers among denary, binary and hexadecimal; use two’s complement for negative integers.",
       "Perform binary addition/subtraction and analyse overflow errors.",
       "Know how characters are represented by ASCII, Big-5, GB and Unicode.",
-      "Know briefly how multimedia elements are digitised, convert file formats and compare them for storing the same data.",
     ],
     keywords: [
       { term: "Bit / byte", meaning: "A bit is 0 or 1. 1 byte = 8 bits. Storage uses 1024 (1 KB = 1024 B)." },
@@ -60,20 +59,34 @@ const chapterGuides = {
       { term: "Two’s complement", meaning: "A method for representing signed integers. The two’s complement of X represents −X." },
       { term: "Overflow", meaning: "The result is outside the range that the available bits can represent." },
       { term: "ASCII / Big-5 / GB / Unicode", meaning: "ASCII mainly English; Big-5 Traditional Chinese; GB Simplified Chinese; Unicode many languages." },
-      { term: "Analog vs digital", meaning: "Analog is continuous; digital uses discrete symbols." },
-      { term: "Lossless vs lossy", meaning: "Lossless restores the original exactly; lossy removes less noticeable data." },
       { term: "Hexadecimal", meaning: "Base 16. One hex digit = 4 bits." },
     ],
     mistakes: [
       { wrong: "1 KB = 1000 bytes, just like 1 kbps = 1000 bps.", correct: "Storage usually uses 1024 (1 KB = 1024 B). Transfer rates use 1000 (1 kbps = 1000 bps)." },
       { wrong: "8-bit two’s complement values range from 0 to 255.", correct: "Unsigned 8-bit is 0 to 255. 8-bit two’s complement is −128 to 127." },
       { wrong: "One hexadecimal digit represents 8 bits.", correct: "One hex digit represents 4 bits." },
-      { wrong: "More colour depth means more pixels.", correct: "Colour depth is bits per pixel and controls possible colours, not the number of pixels." },
-      { wrong: "Lossy compression can always restore the original file exactly.", correct: "Only lossless compression restores the original exactly." },
       { wrong: "Overflow means the program crashed.", correct: "Overflow means the result is outside the representable range; the stored bits may wrap or be incorrect." },
     ]
   },
-  "A4 Spreadsheet / Data Manipulation and Analysis": {
+  "A4 Multimedia Elements and Digitalisation": {
+    caOutcomes: [
+      "Distinguish analog and digital data, and state situations needing analog–digital conversion.",
+      "Know briefly how multimedia elements are digitised, convert file formats and compare them for storing the same data.",
+      "Explain quality versus file-size trade-offs using sampling rate, bit depth, resolution and compression.",
+    ],
+    keywords: [
+      { term: "Analog vs digital", meaning: "Analog is continuous; digital uses discrete symbols." },
+      { term: "Digitisation", meaning: "Sampling, quantisation and coding turn real-world media into a file." },
+      { term: "Lossless vs lossy", meaning: "Lossless restores the original exactly; lossy removes less noticeable data." },
+      { term: "Colour depth", meaning: "Bits per pixel. More colour depth means more possible colours, not more pixels." },
+    ],
+    mistakes: [
+      { wrong: "More colour depth means more pixels.", correct: "Colour depth is bits per pixel and controls possible colours, not the number of pixels." },
+      { wrong: "Lossy compression can always restore the original file exactly.", correct: "Only lossless compression restores the original exactly." },
+      { wrong: "The most famous format is always the best.", correct: "Choose by purpose: exact recovery, small size, transparency or sharing." },
+    ]
+  },
+  "A5 Spreadsheet and Data Analysis": {
     caOutcomes: [
       "Describe and use basic spreadsheet features, including cell references, formulas, functions and operators, to solve problems.",
       "Demonstrate data manipulation techniques such as filtering, searching and sorting using single or multiple criteria.",
@@ -96,12 +109,11 @@ const chapterGuides = {
       { wrong: "Typing 1.1 into a formula is the same as referring to the tax-rate cell.", correct: "Use cell references so copied formulas and later changes stay correct." },
     ]
   },
-  "A5 Simple Database": {
+  "A6 Simple Database": {
     caOutcomes: [
       "Apply data-organisation concepts to create and maintain a simple database using a DBMS tool.",
       "Create and use a form for data entry.",
       "Practise data extraction and manipulation by querying a single table and creating reports.",
-      "Trace and interpret simple SQL statements for selection, filtering and sorting.",
     ],
     keywords: [
       { term: "Field / record / table", meaning: "A field is one category; a record is one item; a table stores related records." },
@@ -109,7 +121,6 @@ const chapterGuides = {
       { term: "Data type", meaning: "Controls the kind of value stored, such as text, number, date/time or Yes/No." },
       { term: "Form / query / report", meaning: "Form for entry/viewing; query for selecting records; report for formatted output." },
       { term: "NULL", meaning: "A missing or unknown value; it is not the same as 0." },
-      { term: "Simple SQL", meaning: "SELECT fields FROM table WHERE condition ORDER BY field." },
     ],
     mistakes: [
       { wrong: "A person’s name is a good primary key.", correct: "Names can be duplicated. Use a unique ID, or a composite key if needed." },
@@ -119,7 +130,24 @@ const chapterGuides = {
       { wrong: "A report is used to enter new records.", correct: "A form is for entering/viewing; a report is for presentation." },
     ]
   },
-  "B1 Input and Output Devices": {
+  "A6.4 Structured Query Language": {
+    caOutcomes: [
+      "Trace and interpret simple SQL statements for selection, filtering and sorting.",
+      "Reconnect table, record, field and key with SELECT, FROM, WHERE and ORDER BY.",
+      "Treat this chapter as the S6 bridge into Elective A, not a second copy of A6.",
+    ],
+    keywords: [
+      { term: "SELECT / FROM / WHERE", meaning: "SELECT chooses fields; FROM names the table; WHERE filters rows." },
+      { term: "ORDER BY", meaning: "Sorts the result set. It does not change stored table order by itself." },
+      { term: "Result set", meaning: "The table of matching rows returned by a query." },
+    ],
+    mistakes: [
+      { wrong: "SQL is a new kind of database.", correct: "SQL is the language for asking questions of the tables from A6." },
+      { wrong: "If the statement runs, the answer must be correct.", correct: "Valid SQL can still ask the wrong question and return the wrong students." },
+      { wrong: "SELECT deletes records that do not match.", correct: "SELECT retrieves. DELETE is a different command taught with Elective A DML." },
+    ]
+  },
+  "B3 Input and Output Devices": {
     caOutcomes: [
       "Explain the functions of input and output devices within a computer system.",
       "Describe features, advantages, disadvantages and applications of input and output devices.",
@@ -141,33 +169,44 @@ const chapterGuides = {
       { wrong: "A printer can be used to input Chinese characters.", correct: "A printer is an output device." },
     ]
   },
-  "B2 Computer Hardware": {
+  "B1 System Unit": {
     caOutcomes: [
-      "Explain the functions of processing units, buses and storage devices in a computer system.",
+      "Explain the functions of processing units and buses in a computer system.",
       "Explain the structure and functions of a CPU and its components, including how CPU speed is measured.",
       "Outline the fetch–decode–execute cycle and the roles of registers and buses.",
-      "Describe RAM, ROM and cache, and relate memory size, address, word length and performance.",
-      "Describe storage devices in terms of random/sequential access, volatility, transfer rate and capacity.",
-      "Outline latest developments in processors, memory, storage and data communications without requiring technical trivia.",
+      "Outline latest developments in processors without requiring technical trivia.",
     ],
     keywords: [
       { term: "CPU", meaning: "Processes data and instructions; includes ALU, CU and registers." },
       { term: "Fetch–decode–execute", meaning: "The machine cycle for carrying out instructions." },
       { term: "Clock rate / word length", meaning: "Clock rate is cycles per second; word length is bits processed at one time." },
-      { term: "RAM vs ROM vs storage", meaning: "RAM is volatile working memory; ROM is non-volatile firmware; secondary storage is persistent." },
-      { term: "Cache / registers", meaning: "Very fast, small, expensive memory close to the CPU." },
-      { term: "HDD vs SSD vs tape", meaning: "SSD is usually faster for access; tape is typically sequential and used for backup/archive." },
       { term: "Bottleneck", meaning: "The component that limits overall system performance." },
     ],
     mistakes: [
       { wrong: "A higher clock speed always means a better computer.", correct: "Task, cores, RAM, storage and bottlenecks also matter. Compare against the user’s needs." },
-      { wrong: "RAM and hard disk are the same kind of memory.", correct: "RAM is volatile working memory; secondary storage keeps data persistently." },
-      { wrong: "More storage capacity makes processing faster.", correct: "Capacity is not the same as processing speed. A bottleneck may be CPU, RAM or disk access." },
       { wrong: "Fetch–decode–execute is how files are copied.", correct: "It is the CPU instruction cycle, not a file-copy process." },
       { wrong: "A 64-bit processor is twice as efficient as a 32-bit processor.", correct: "Word length is not a simple 2× efficiency claim." },
     ]
   },
-  "B3 Computer Software": {
+  "B2 Main Memory and Secondary Storage": {
+    caOutcomes: [
+      "Describe RAM, ROM and cache, and relate memory size, address, word length and performance.",
+      "Describe storage devices in terms of random/sequential access, volatility, transfer rate and capacity.",
+      "Choose storage by trade-off, not a single fastest-to-slowest ranking.",
+    ],
+    keywords: [
+      { term: "RAM vs ROM vs storage", meaning: "RAM is volatile working memory; ROM is non-volatile firmware; secondary storage is persistent." },
+      { term: "Cache / registers", meaning: "Very fast, small, expensive memory close to the CPU." },
+      { term: "HDD vs SSD vs tape", meaning: "SSD is usually faster for access; tape is typically sequential and used for backup/archive." },
+      { term: "Volatile", meaning: "Contents are lost when power is removed, as with typical RAM." },
+    ],
+    mistakes: [
+      { wrong: "RAM and hard disk are the same kind of memory.", correct: "RAM is volatile working memory; secondary storage keeps data persistently." },
+      { wrong: "More storage capacity makes processing faster.", correct: "Capacity is not the same as processing speed. A bottleneck may be CPU, RAM or disk access." },
+      { wrong: "Always pick the fastest device.", correct: "Cost, capacity, volatility and the job still matter." },
+    ]
+  },
+  "B4 System Software": {
     caOutcomes: [
       "Know the functions of system software and applications software, and the relationship among hardware, system software, applications software and users.",
       "Outline the basic functions of an operating system and compare common operating systems at a simple level.",
@@ -191,13 +230,11 @@ const chapterGuides = {
       { wrong: "Virus checking is a main function of the operating system.", correct: "Virus checking is done by utility/security software." },
     ]
   },
-  "C1 Networking and Internet Basics": {
+  "C1 Networking and Internet Basics I": {
     caOutcomes: [
       "Define and compare LAN and WAN.",
       "Discuss common services in a networked environment, such as internal communications and resource sharing.",
       "Explain the functions of network hardware, including communication links, NIC, modem, switch and router.",
-      "Compare common Internet-access methods in terms of speed, cost, security and availability.",
-      "Understand simple concepts of communications software, protocols and wireless ideas such as frequency, bandwidth, interference and roaming.",
     ],
     keywords: [
       { term: "LAN vs WAN", meaning: "LAN covers a limited area, often one organisation; WAN links networks over a larger area." },
@@ -205,7 +242,6 @@ const chapterGuides = {
       { term: "Switch vs router", meaning: "A switch forwards within a local network; a router forwards between networks." },
       { term: "NIC / MAC", meaning: "A network interface card has a MAC address identifying the network interface." },
       { term: "Packet switching", meaning: "Data is sent in packets that may take different routes and are reassembled." },
-      { term: "Bandwidth / interference", meaning: "Bandwidth is data capacity; interference can reduce wireless quality." },
     ],
     mistakes: [
       { wrong: "LAN and WAN differ only by the number of computers.", correct: "They differ by coverage, ownership/management and typically the technologies used." },
@@ -214,7 +250,25 @@ const chapterGuides = {
       { wrong: "Peer-to-peer means there is no network.", correct: "P2P still uses a network; there is no dedicated central server for that service." },
     ]
   },
-  "C2 Internet Protocols": {
+  "C2 Networking and Internet Basics II": {
+    caOutcomes: [
+      "Compare common Internet-access methods in terms of speed, cost, security and availability.",
+      "Understand wireless ideas such as frequency, bandwidth, interference and roaming.",
+      "Choose a transmission method from a stated requirement and name the trade-off.",
+    ],
+    keywords: [
+      { term: "Bandwidth / interference", meaning: "Bandwidth is data capacity; interference can reduce wireless quality." },
+      { term: "Roaming", meaning: "A wireless NIC can switch AP automatically when APs share the same SSID." },
+      { term: "Wired vs wireless", meaning: "Cables are usually more stable; radio is flexible but shared and interference-prone." },
+      { term: "Access method", meaning: "FTTH, leased line, cellular, satellite or hotspot — choose by requirement, not by a famous name." },
+    ],
+    mistakes: [
+      { wrong: "Bandwidth and latency are the same thing.", correct: "Bandwidth is capacity. Latency is delay." },
+      { wrong: "The newest wireless standard is always the classroom answer.", correct: "State the requirement, then the relevant characteristic, then the trade-off." },
+      { wrong: "Wi-Fi congestion means the AP is broken.", correct: "Shared wireless capacity and interference can slow a working AP." },
+    ]
+  },
+  "C3 Communication Software and Protocols": {
     caOutcomes: [
       "Know the formats and functions of IPv4 and IPv6 at a simple level.",
       "Understand the need for communications software and protocols, including simple TCP/IP ideas.",
@@ -236,7 +290,7 @@ const chapterGuides = {
       { wrong: "HTTPS is only a padlock icon and does not change the protocol.", correct: "HTTPS uses encryption and certificates; URLs begin with https:// and usually use port 443." },
     ]
   },
-  "C3 Internet Services and Applications": {
+  "C4 Internet Services and Applications": {
     caOutcomes: [
       "Formulate an effective Web search strategy and critically analyse sources of information.",
       "Identify graphics, audio and video formats suitable for web pages, and use plug-ins/players for multimedia.",
@@ -259,7 +313,7 @@ const chapterGuides = {
       { wrong: "The first search result is always the most reliable source.", correct: "Evaluate authority, evidence and corroboration, not rank alone." },
     ]
   },
-  "C4 Elementary Web Authoring": {
+  "C5 Elementary Web Authoring": {
     caOutcomes: [
       "Recognise the basic constructs of HTML as a means to address cross-platform issues. Memorising HTML codes is not required.",
       "Discuss the organisation of web pages for an intended audience, including navigation, links, tables, multimedia, colour, fonts and accessibility, and upload them onto the WWW.",
@@ -279,29 +333,42 @@ const chapterGuides = {
       { wrong: "Images do not need alt text if the picture is obvious.", correct: "Alt text is needed for accessibility and when the image cannot be seen." },
     ]
   },
-  "C5 Network Security and Privacy Threats": {
+  "C6 Online Threats and Security I": {
     caOutcomes: [
       "Describe potential risks caused by common network security threats such as virus, worm, Trojan, spyware, ransomware, unauthorised access, interception, intrusion and DoS.",
-      "Discuss possible privacy threats on the Internet, including eavesdropping, hacking, phishing, spamming and junk mail, and suggest ways to maintain privacy.",
-      "Be aware of legal consequences related to unauthorised access to computers.",
+      "Propose effective measures after naming the threat, including anti-malware, firewall, wireless security and software updates.",
     ],
     keywords: [
       { term: "Virus / worm / Trojan", meaning: "A virus attaches to files; a worm can spread more independently; a Trojan disguises itself as legitimate software." },
       { term: "Ransomware", meaning: "Encrypts or locks data and demands payment." },
-      { term: "Phishing", meaning: "Tricks users into giving data through fake messages or sites. Look for urgency, mismatched links and unexpected attachments." },
       { term: "DoS", meaning: "Floods a service so legitimate users cannot access it." },
-      { term: "Spyware / tracking", meaning: "Collects user activity or data, often through software or cookies, without proper awareness." },
       { term: "Public Wi-Fi risk", meaning: "Traffic may be intercepted; use HTTPS/VPN and avoid sensitive transactions." },
     ],
     mistakes: [
-      { wrong: "Antivirus stops every security threat.", correct: "Antivirus helps against some malware but not phishing, weak passwords, or all network attacks." },
-      { wrong: "A strong password protects you even if you type it into a fake site.", correct: "Phishing captures the password. Check the URL and do not enter secrets on suspicious pages." },
+      { wrong: "Antivirus stops every security threat.", correct: "Antivirus helps against some malware but not every network attack or careless disclosure." },
       { wrong: "Public Wi-Fi with a familiar name is automatically safe.", correct: "Names can be spoofed. Prefer HTTPS/VPN and avoid banking on public Wi-Fi." },
       { wrong: "Ransomware is just advertising pop-ups.", correct: "Ransomware can lock or encrypt files and demand payment." },
-      { wrong: "Deleting a phishing email is enough to protect everyone.", correct: "Report it so others can be protected; deleting it only removes it from your inbox." },
+      { wrong: "Start by listing security products.", correct: "Name the threat and mechanism first, then the matching control." },
     ]
   },
-  "C6 Network Security Measures": {
+  "C7 Online Threats and Security II": {
+    caOutcomes: [
+      "Discuss possible privacy threats on the Internet, including eavesdropping, hacking, phishing, spamming and junk mail, and suggest ways to maintain privacy.",
+      "Be aware of legal consequences related to unauthorised access to computers.",
+      "Explain tracking, cookies, account protection and responsible sharing of personal data.",
+    ],
+    keywords: [
+      { term: "Phishing", meaning: "Tricks users into giving data through fake messages or sites. Look for urgency, mismatched links and unexpected attachments." },
+      { term: "Spyware / tracking", meaning: "Collects user activity or data, often through software or cookies, without proper awareness." },
+      { term: "MFA / privacy settings", meaning: "Extra factors and tighter sharing settings reduce account and profile exposure." },
+    ],
+    mistakes: [
+      { wrong: "A strong password protects you even if you type it into a fake site.", correct: "Phishing captures the password. Check the URL and do not enter secrets on suspicious pages." },
+      { wrong: "Deleting a phishing email is enough to protect everyone.", correct: "Report it so others can be protected; deleting it only removes it from your inbox." },
+      { wrong: "A cookie is always malware.", correct: "Cookies can store useful settings and can also support tracking." },
+    ]
+  },
+  "C8 Online Threats and Security III": {
     caOutcomes: [
       "Propose effective measures to improve network security, including browser settings, anti-malware, authentication, access rights, firewall, wireless security such as WPA, and VPN.",
       "Be aware of information encryption technologies, including public/private keys and the idea that a longer key can increase security.",
@@ -785,6 +852,10 @@ const chapterGuides = {
 };
 
 function getChapterGuide(topicId) {
-  return chapterGuides[topicId] || { caOutcomes: [], keywords: [], mistakes: [] };
+  if (chapterGuides[topicId]) return chapterGuides[topicId];
+  if (typeof resolveChapterId === 'function' && chapterGuides[resolveChapterId(topicId)]) {
+    return chapterGuides[resolveChapterId(topicId)];
+  }
+  return { caOutcomes: [], keywords: [], mistakes: [] };
 }
 

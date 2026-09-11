@@ -94,7 +94,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Ask whether a request to the school server must pass the router.'
     }
   ],
-  B2: [
+  B1: [
     {
       type: 'mc',
       difficulty: 'standard',
@@ -175,7 +175,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Contrast FETCH with EXECUTE for an ADD instruction.'
     }
   ],
-  C3: [
+  C4: [
     {
       type: 'mc',
       difficulty: 'standard',
@@ -246,7 +246,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Give one privacy risk of putting every parent in To.'
     }
   ],
-  C4: [
+  C5: [
     {
       type: 'mc',
       difficulty: 'standard',
@@ -330,7 +330,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Give one verification method for a typed student ID.'
     }
   ],
-  A4: [
+  A5: [
     {
       type: 'mc',
       difficulty: 'standard',
@@ -347,7 +347,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Predict a mixed reference $A2 copied one column right.'
     }
   ],
-  C6: [
+  C8: [
     {
       type: 'mc',
       difficulty: 'stretch',
@@ -364,7 +364,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'Apply the same chain to ransomware (backup helps recovery; it does not block the first infection alone).'
     }
   ],
-  A5: [
+  A6: [
     {
       type: 'mc',
       difficulty: 'standard',
@@ -372,7 +372,7 @@ window.CHECKPOINT_BANK = {
       stem: 'A student table stores a mobile number such as 9123-4567. Which data type is most suitable?',
       options: [
         { text: 'Text', correct: true, why: 'Phone numbers are codes. Arithmetic is not required, and a Number type can drop leading zeros or symbols.' },
-        { text: 'Number', correct: false, why: 'Number is for quantities. A phone is not added or averaged in Core A5.' },
+        { text: 'Number', correct: false, why: 'Number is for quantities. A phone is not added or averaged in Core A6.' },
         { text: 'Yes/No', correct: false, why: 'Yes/No stores a Boolean fact, not a phone string.' },
         { text: 'OLE object', correct: false, why: 'That is not the HKDSE field-type decision here.' }
       ],

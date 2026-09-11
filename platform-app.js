@@ -54,10 +54,16 @@
   }
 
   function findTopicButton(topic) {
+    const resolved = (typeof resolveChapterId === 'function' ? resolveChapterId(topic) : topic) || topic;
     const items = [...document.querySelectorAll('.nav-item[data-topic]')];
-    return items.find(item => item.dataset.topic === topic)
-      || items.find(item => item.dataset.topic.startsWith(`${topic} `))
-      || items.find(item => (global.CheckpointEngine?.chapterCode(item.dataset.topic) === topic));
+    const codeOf = value => global.CheckpointEngine?.chapterCode(value) || '';
+    return items.find(item => item.dataset.topic === resolved)
+      || items.find(item => item.dataset.topic === topic)
+      || items.find(item => item.dataset.topic.startsWith(`${resolved} `) || item.dataset.topic.startsWith(`${topic} `))
+      || items.find(item => {
+        const code = codeOf(item.dataset.topic);
+        return code && (code === resolved || code === topic || code === codeOf(resolved));
+      });
   }
 
   function showPracticeHub(filter = {}) {
@@ -244,11 +250,6 @@
         </div>
       </section>
     `).join(''));
-    document.querySelectorAll('.curriculum-heading').forEach(button => {
-      if (button.dataset.labBound) return;
-      button.dataset.labBound = 'true';
-      button.addEventListener('click', () => toggleNavGroup(button));
-    });
   }
 
   function bindPlatformNav() {

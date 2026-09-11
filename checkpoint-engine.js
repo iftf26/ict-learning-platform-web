@@ -11,7 +11,7 @@
   }
 
   function chapterCode(id) {
-    const match = String(id || '').match(/^(EA|EC|[A-E])\d+/);
+    const match = String(id || '').match(/^(EA|EC|[A-E])\d+(?:\.\d+)?/);
     return match ? match[0] : '';
   }
 
