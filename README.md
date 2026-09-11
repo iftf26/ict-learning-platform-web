@@ -2,6 +2,18 @@
 
 This prototype is designed as a student-facing HKDSE ICT learning platform rather than a programming-only exercise page or tracking platform.
 
+## 2026–27 SOW content pass
+
+Chapter names, grouping and teaching sequence now follow the school S4–S6 SOW (new textbook). Useful older content was moved, not deleted.
+
+- **Core A:** A1 Information Processing → A2 Data Organisation and Data Control → A3 Data Representation (numbers/codes) → **A4 Multimedia Elements and Digitalisation** → A5 Spreadsheet → A6 Simple Database (non-SQL) → **A6.4 SQL bridge** (S6).
+- **Core B:** **B1 System Unit** (FDE) → **B2 Main Memory and Secondary Storage** → B3 I/O devices → B4 System Software.
+- **Core C:** C1 Networking I → **C2 Networking II** (transmission/access) → C3 Protocols as one URL journey → C4 Services → C5 Web authoring → C6 Threats I → **C7 Privacy/Threats II** → C8 Threats III (crypto/transaction).
+- Each chapter Details section starts with a **Big idea / backbone** and a causal flow. Concept cards are linked with “Then →” so they read as one process, not a pile of definitions.
+- Existing labs stay: C1 network, B1 FDE visualiser (mode `b2Fde`), C4 streaming, C5 HTML/path, A6/A6.4 database builder, D6 bug hunt, E3 licence, EA5 ERD. No new games in this pass.
+
+Activity *mode names* such as `b2Fde`, `c3Stream` and `a5Database` are unchanged so deep links keep working. Chapter *codes* in the DSE checkpoint bank follow the new SOW (`B1`, `C4`, `C5`, `A5`, `A6`, `C8`).
+
 ## What changed in this version
 
 - Restored the **Programming Visual Lab** as a first-class area: sidebar groups (Core D and Elective C demos), homepage tile, visible demo picker, and shareable `#demo=sequence` links. The lab was always in the page; chapter navigation had hidden every way to open it.
@@ -10,15 +22,15 @@ This prototype is designed as a student-facing HKDSE ICT learning platform rathe
 - Added a **DSE Practice Hub** that uses the same question pools, with strand, chapter, type and difficulty filters.
 - Phase 1 activities (not click-only quizzes):
   - C1 Build a School Network + packet-journey predictions
-  - B2 Fetch–Decode–Execute visualiser
-  - C3 Streaming buffer simulator (bitrate vs throughput)
-  - C4 Mini HTML Live Lab and Relative Path Explorer
+  - B1 Fetch–Decode–Execute visualiser (activity mode still `b2Fde`)
+  - C4 Streaming buffer simulator (bitrate vs throughput; mode still `c3Stream`)
+  - C5 Mini HTML Live Lab and Relative Path Explorer (modes still `c4Html` / `c4Path`)
 - Phase 2 activities (same checkpoint engine and activity shell):
-  - A5 Simple Database Builder + live SELECT / WHERE / ORDER BY result predictor
+  - A6 Simple Database Builder + live SELECT / WHERE / ORDER BY result predictor
   - D6 Bug Hunt Lab (test data → error type → faulty line → fix → rerun)
   - E3 “Can I Use This?” licence lab (permission, attribution, this use)
   - EA5 ERD + Normalisation Studio (binary ER, resolve M:N, update anomaly, 1NF–3NF)
-- The **DSE Practice Hub** is unchanged as a single hub; Phase 2 adds extra A5 / D6 / E3 / EA5 items to the shared question bank.
+- The **DSE Practice Hub** is unchanged as a single hub; extra items now sit under the new chapter codes (spreadsheet `A5`, database `A6`, FDE `B1`, streaming `C4`, HTML `C5`, security measures `C8`).
 - Deep links: `#demo=linearSearch`, `#chapter=C1`, `#practice`, `#practice=B2`, `#activity=c1Network`, `#activity=a5Database`, `#activity=d6BugHunt`, `#activity=e3Licence`, `#activity=ea5Erd`.
 
 ## Earlier study-hub work

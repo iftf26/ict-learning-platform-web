@@ -504,7 +504,7 @@
               title: 'DSE transfer',
               lead: 'Interpret the cycle, buses and memory — not brand names.',
               count: 3,
-              filter: { chapter: 'B2' }
+              filter: { chapter: 'B1' }
             });
             return;
           }
@@ -652,7 +652,7 @@
           title: 'DSE transfer',
           lead: 'Apply bitrate, throughput and buffering to an unfamiliar streaming scenario.',
           count: 3,
-          filter: { chapter: 'C3' }
+          filter: { chapter: 'C4' }
         });
       }
     }
@@ -904,7 +904,7 @@
           title: 'DSE transfer',
           lead: 'Repair paths and attributes from an unfamiliar folder tree.',
           count: 3,
-          filter: { chapter: 'C4' }
+          filter: { chapter: 'C5' }
         });
       }
     });

@@ -61,9 +61,9 @@ const chapterStudyMeta = {
     caTopicEn: 'Introduction to Information Processing',
     caTopicZh: '資訊處理簡介',
     focuses: [
-      { en: 'Information system', zh: '資訊系統', detail: 'Hardware, software, data, people and procedures' },
-      { en: 'Data becomes information', zh: '數據變資訊', detail: 'Raw facts become meaningful after processing' },
-      { en: 'Processing stages', zh: '處理階段', detail: 'Collection through to presentation' }
+      { en: 'Raw data to information', zh: '數據變資訊', detail: 'Raw facts become meaningful after processing' },
+      { en: 'IPO and storage', zh: '輸入處理輸出', detail: 'How the transformation is carried out' },
+      { en: 'Information system', zh: '資訊系統', detail: 'People, data, procedures, hardware and software' }
     ]
   },
   'A2 Data Organisation and Data Control': {
@@ -72,9 +72,9 @@ const chapterStudyMeta = {
     caTopicEn: 'Data Organisation and Data Control',
     caTopicZh: '數據組織及數據控制',
     focuses: [
-      { en: 'Validation', zh: '驗證', detail: 'Check whether input follows rules' },
-      { en: 'Verification', zh: '核實', detail: 'Check accurate copying or entry' },
-      { en: 'Error detection', zh: '錯誤偵測', detail: 'Check digit and parity check' }
+      { en: 'Organise data', zh: '組織數據', detail: 'Hierarchy, records and keys' },
+      { en: 'Access data', zh: '存取數據', detail: 'Sequential and direct access' },
+      { en: 'Control errors', zh: '控制錯誤', detail: 'Validation, verification and parity' }
     ]
   },
   'A3 Data Representation': {
@@ -85,10 +85,21 @@ const chapterStudyMeta = {
     focuses: [
       { en: 'Number systems', zh: '數制', detail: 'Binary, hexadecimal and two’s complement' },
       { en: 'Character codes', zh: '字元編碼', detail: 'ASCII, Big-5, GB and Unicode' },
-      { en: 'Digital media', zh: '數碼媒體', detail: 'Digitisation, formats and compression' }
+      { en: 'Units', zh: '單位', detail: 'Bits, bytes, storage and transfer rate' }
     ]
   },
-  'A4 Spreadsheet / Data Manipulation and Analysis': {
+  'A4 Multimedia Elements and Digitalisation': {
+    titleEn: 'Multimedia Elements and Digitalisation',
+    titleZh: '多媒體元素與數碼化',
+    caTopicEn: 'Data Representation',
+    caTopicZh: '數據表示',
+    focuses: [
+      { en: 'Digitisation', zh: '數碼化', detail: 'Sampling, quantisation and coding' },
+      { en: 'Formats', zh: '檔案格式', detail: 'Choose by purpose, not by a famous name' },
+      { en: 'Compression', zh: '壓縮', detail: 'Quality versus file-size trade-off' }
+    ]
+  },
+  'A5 Spreadsheet and Data Analysis': {
     titleEn: 'Spreadsheet and Data Analysis',
     titleZh: '試算表與數據分析',
     caTopicEn: 'Data Manipulation and Analysis',
@@ -99,7 +110,7 @@ const chapterStudyMeta = {
       { en: 'Analyse data', zh: '分析數據', detail: 'Sort, filter, pivot tables and what-if' }
     ]
   },
-  'A5 Simple Database': {
+  'A6 Simple Database': {
     titleEn: 'Simple Database',
     titleZh: '簡易數據庫',
     caTopicEn: 'Data Organisation and Data Control',
@@ -110,7 +121,18 @@ const chapterStudyMeta = {
       { en: 'Query', zh: '查詢', detail: 'Select, sort and filter records' }
     ]
   },
-  'B1 Input and Output Devices': {
+  'A6.4 Structured Query Language': {
+    titleEn: 'Structured Query Language',
+    titleZh: '結構化查詢語言',
+    caTopicEn: 'Data Organisation and Data Control',
+    caTopicZh: '數據組織及數據控制',
+    focuses: [
+      { en: 'Ask in SQL', zh: '用SQL提問', detail: 'SELECT, FROM and WHERE on a known table' },
+      { en: 'Result set', zh: '結果集', detail: 'Valid syntax can still be the wrong question' },
+      { en: 'Bridge to EA', zh: '銜接選修A', detail: 'Joins and design continue in Elective A' }
+    ]
+  },
+  'B3 Input and Output Devices': {
     titleEn: 'Input and Output Devices',
     titleZh: '輸入及輸出裝置',
     caTopicEn: 'Basic Machine Organisation',
@@ -121,20 +143,31 @@ const chapterStudyMeta = {
       { en: 'Output devices', zh: '輸出裝置', detail: 'Monitor, printer, projector and audio' }
     ]
   },
-  'B2 Computer Hardware': {
-    titleEn: 'Computer Hardware',
-    titleZh: '電腦硬件',
+  'B1 System Unit': {
+    titleEn: 'System Unit',
+    titleZh: '系統單元',
     caTopicEn: 'Basic Machine Organisation',
     caTopicZh: '基本機器組織',
     focuses: [
-      { en: 'System unit', zh: '系統單元', detail: 'CPU, memory, storage and motherboard' },
+      { en: 'System unit', zh: '系統單元', detail: 'CPU, buses, motherboard and PSU' },
       { en: 'Machine cycle', zh: '機器週期', detail: 'Fetch, decode and execute' },
-      { en: 'Memory hierarchy', zh: '記憶層次', detail: 'Registers, cache, RAM and secondary storage' }
+      { en: 'Performance', zh: '效能', detail: 'Clock rate, cores, word length and bottlenecks' }
     ]
   },
-  'B3 Computer Software': {
-    titleEn: 'Computer Software',
-    titleZh: '電腦軟件',
+  'B2 Main Memory and Secondary Storage': {
+    titleEn: 'Main Memory and Secondary Storage',
+    titleZh: '主記憶體與輔助儲存',
+    caTopicEn: 'Basic Machine Organisation',
+    caTopicZh: '基本機器組織',
+    focuses: [
+      { en: 'Working memory', zh: '工作記憶', detail: 'RAM, ROM and cache' },
+      { en: 'Persistent storage', zh: '持久儲存', detail: 'HDD, SSD, optical, flash and cloud' },
+      { en: 'Trade-off', zh: '取捨', detail: 'Speed, capacity, cost and volatility' }
+    ]
+  },
+  'B4 System Software': {
+    titleEn: 'System Software',
+    titleZh: '系統軟件',
     caTopicEn: 'System Software',
     caTopicZh: '系統軟件',
     focuses: [
@@ -143,7 +176,7 @@ const chapterStudyMeta = {
       { en: 'Processing modes', zh: '處理模式', detail: 'Batch, real-time, parallel and virtualisation' }
     ]
   },
-  'C1 Networking and Internet Basics': {
+  'C1 Networking and Internet Basics I': {
     titleEn: 'Networking and Internet Basics',
     titleZh: '建網及互聯網基本知識',
     caTopicEn: 'Networking and Internet Basics',
@@ -151,12 +184,23 @@ const chapterStudyMeta = {
     focuses: [
       { en: 'Local and wide area networks', zh: '區域網與廣域網', detail: 'Scope, cost and transfer rate' },
       { en: 'Network devices', zh: '網絡裝置', detail: 'Switch, router, access point and NIC' },
-      { en: 'Internet access', zh: '互聯網接達', detail: 'Cables, wireless methods and ISP' }
+      { en: 'Data path', zh: '數據路徑', detail: 'How a packet crosses the school network' }
     ]
   },
-  'C2 Internet Protocols': {
-    titleEn: 'Internet Protocols',
-    titleZh: '互聯網協議',
+  'C2 Networking and Internet Basics II': {
+    titleEn: 'Networking and Internet Basics II',
+    titleZh: '建網及互聯網基本知識（二）',
+    caTopicEn: 'Networking and Internet Basics',
+    caTopicZh: '建網及互聯網基本知識',
+    focuses: [
+      { en: 'Transmission', zh: '傳輸特性', detail: 'Wired/wireless, frequency and interference' },
+      { en: 'Bandwidth', zh: '頻寬', detail: 'Capacity is not the same as latency' },
+      { en: 'Access methods', zh: '接達方法', detail: 'Requirement, characteristic and trade-off' }
+    ]
+  },
+  'C3 Communication Software and Protocols': {
+    titleEn: 'Communication Software and Protocols',
+    titleZh: '通訊軟件與協議',
     caTopicEn: 'Internet Services and Applications',
     caTopicZh: '互聯網服務及應用',
     focuses: [
@@ -165,7 +209,7 @@ const chapterStudyMeta = {
       { en: 'Web and mail protocols', zh: '網頁與電郵協議', detail: 'HTTP, HTTPS, SMTP, POP3 and IMAP' }
     ]
   },
-  'C3 Internet Services and Applications': {
+  'C4 Internet Services and Applications': {
     titleEn: 'Internet Services and Applications',
     titleZh: '互聯網服務及應用',
     caTopicEn: 'Internet Services and Applications',
@@ -176,7 +220,7 @@ const chapterStudyMeta = {
       { en: 'Search and media', zh: '搜尋與媒體', detail: 'Operators, streaming and conferencing' }
     ]
   },
-  'C4 Elementary Web Authoring': {
+  'C5 Elementary Web Authoring': {
     titleEn: 'Elementary Web Authoring',
     titleZh: '初級網頁創作',
     caTopicEn: 'Elementary Web Authoring',
@@ -187,20 +231,31 @@ const chapterStudyMeta = {
       { en: 'Accessibility', zh: '無障礙', detail: 'Meaningful links, alt text and headings' }
     ]
   },
-  'C5 Network Security and Privacy Threats': {
-    titleEn: 'Internet Threats and Privacy',
-    titleZh: '網上威脅及私隱',
+  'C6 Online Threats and Security I': {
+    titleEn: 'Online Threats and Security I',
+    titleZh: '網上威脅與保安（一）',
     caTopicEn: 'Internet Threats and Security',
     caTopicZh: '網上威脅及保安',
     focuses: [
       { en: 'Malware', zh: '惡意軟件', detail: 'Virus, worm, Trojan and ransomware' },
-      { en: 'Phishing', zh: '網絡釣魚', detail: 'Fake messages that steal data' },
-      { en: 'Privacy threats', zh: '私隱威脅', detail: 'Spyware, tracking and public Wi-Fi' }
+      { en: 'Network attacks', zh: '網絡攻擊', detail: 'Unauthorised access, eavesdropping and DoS' },
+      { en: 'Matching controls', zh: '對應措施', detail: 'Anti-malware, firewall, backup and updates' }
     ]
   },
-  'C6 Network Security Measures': {
-    titleEn: 'Network Security Measures',
-    titleZh: '網絡保安措施',
+  'C7 Online Threats and Security II': {
+    titleEn: 'Online Threats and Security II',
+    titleZh: '網上威脅與保安（二）',
+    caTopicEn: 'Internet Threats and Security',
+    caTopicZh: '網上威脅及保安',
+    focuses: [
+      { en: 'Phishing', zh: '網絡釣魚', detail: 'Fake messages that steal data' },
+      { en: 'Tracking', zh: '追蹤', detail: 'Cookies, leakage and privacy settings' },
+      { en: 'Legal behaviour', zh: '法律責任', detail: 'Unauthorised access has consequences' }
+    ]
+  },
+  'C8 Online Threats and Security III': {
+    titleEn: 'Online Threats and Security III',
+    titleZh: '網上威脅與保安（三）',
     caTopicEn: 'Internet Threats and Security',
     caTopicZh: '網上威脅及保安',
     focuses: [
@@ -809,11 +864,16 @@ const studyGlossary = {
 };
 
 function stripChapterCode(text) {
-  return String(text || '').replace(/^(EA|EC|[A-E])\d+\s+/, '').trim();
+  return String(text || '').replace(/^(EA|EC|[A-E])\d+(?:\.\d+)?\s+/, '').trim();
 }
 
 function getChapterStudyMeta(topicId) {
-  return chapterStudyMeta[topicId] || null;
+  if (chapterStudyMeta[topicId]) return chapterStudyMeta[topicId];
+  if (typeof resolveChapterId === 'function') {
+    const resolved = resolveChapterId(topicId);
+    if (chapterStudyMeta[resolved]) return chapterStudyMeta[resolved];
+  }
+  return null;
 }
 
 function getStrandStudyMeta(groupName) {

@@ -373,7 +373,7 @@
 
     lab.querySelector('[data-a5-to-dse]').addEventListener('click', () => {
       show('dse');
-      mountDse(lab.querySelector('[data-a5-dse]'), 'A5', 'Apply table, form, query, report, primary key and NULL vs 0 to an unfamiliar school database.');
+      mountDse(lab.querySelector('[data-a5-dse]'), 'A6', 'Apply table, form, query, report, primary key and NULL vs 0 to an unfamiliar school database.');
     });
   }
 

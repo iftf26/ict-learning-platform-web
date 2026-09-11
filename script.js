@@ -1405,8 +1405,8 @@ const arcadeData = {
     total: 7
   },
   spreadsheetLab: {
-    group: 'Core A / A4 Data Manipulation and Analysis',
-    title: 'A4 Formula Mission Room',
+    group: 'Core A / A5 Spreadsheet and Data Analysis',
+    title: 'A5 Formula Mission Room',
     description: 'Practise HKDSE spreadsheet formula writing, formula copying, absolute/mixed references, sorting/filtering, what-if analysis and pivot-style summaries.',
     total: 7
   },
@@ -1433,8 +1433,10 @@ const chapterStructure = [
       ['A1 Introduction to Information Processing', 'A1 Introduction to Information Processing'],
       ['A2 Data Organisation and Data Control', 'A2 Data Organisation and Data Control'],
       ['A3 Data Representation', 'A3 Data Representation'],
-      ['A4 Spreadsheet / Data Manipulation and Analysis', 'A4 Spreadsheet / Data Manipulation and Analysis'],
-      ['A5 Simple Database', 'A5 Simple Database']
+      ['A4 Multimedia Elements and Digitalisation', 'A4 Multimedia Elements and Digitalisation'],
+      ['A5 Spreadsheet and Data Analysis', 'A5 Spreadsheet and Data Analysis'],
+      ['A6 Simple Database', 'A6 Simple Database'],
+      ['A6.4 Structured Query Language', 'A6.4 Structured Query Language']
     ]
   },
   {
@@ -1442,9 +1444,10 @@ const chapterStructure = [
     icon: 'B',
     group: 'Core B Computer System Fundamentals',
     chapters: [
-      ['B1 Input and Output Devices', 'B1 Input and Output Devices'],
-      ['B2 Computer Hardware', 'B2 Computer Hardware'],
-      ['B3 Computer Software', 'B3 Computer Software']
+      ['B1 System Unit', 'B1 System Unit'],
+      ['B2 Main Memory and Secondary Storage', 'B2 Main Memory and Secondary Storage'],
+      ['B3 Input and Output Devices', 'B3 Input and Output Devices'],
+      ['B4 System Software', 'B4 System Software']
     ]
   },
   {
@@ -1452,12 +1455,14 @@ const chapterStructure = [
     icon: 'C',
     group: 'Core C Internet and its Applications',
     chapters: [
-      ['C1 Networking and Internet Basics', 'C1 Networking and Internet Basics'],
-      ['C2 Internet Protocols', 'C2 Internet Protocols'],
-      ['C3 Internet Services and Applications', 'C3 Internet Services and Applications'],
-      ['C4 Elementary Web Authoring', 'C4 Elementary Web Authoring'],
-      ['C5 Network Security and Privacy Threats', 'C5 Network Security and Privacy Threats'],
-      ['C6 Network Security Measures', 'C6 Network Security Measures']
+      ['C1 Networking and Internet Basics I', 'C1 Networking and Internet Basics I'],
+      ['C2 Networking and Internet Basics II', 'C2 Networking and Internet Basics II'],
+      ['C3 Communication Software and Protocols', 'C3 Communication Software and Protocols'],
+      ['C4 Internet Services and Applications', 'C4 Internet Services and Applications'],
+      ['C5 Elementary Web Authoring', 'C5 Elementary Web Authoring'],
+      ['C6 Online Threats and Security I', 'C6 Online Threats and Security I'],
+      ['C7 Online Threats and Security II', 'C7 Online Threats and Security II'],
+      ['C8 Online Threats and Security III', 'C8 Online Threats and Security III']
     ]
   },
   {
@@ -1517,19 +1522,14 @@ const chapterBlueprints = [
     id: 'A1 Introduction to Information Processing',
     group: 'Core A Information Processing',
     title: 'A1 Introduction to Information Processing',
-    focus: 'Understand how information systems use hardware, software, data and processing stages to convert raw data into meaningful information.',
-    stats: [
-      { value: 'IS', label: 'Information system' },
-      { value: 'D→I', label: 'Data becomes information' },
-      { value: '7', label: 'Processing stages' }
-    ],
+    focus: 'See one flow: raw data is processed into meaningful information so people can decide and act. IPO, storage, the information system and information literacy all sit on that flow.',
     cards: [
-      { title: 'Information system', body: 'An information system is implemented to automate processes, reduce human errors and improve efficiency. It uses hardware, software, data, people and procedures to produce useful output.' },
-      { title: 'Hardware and software', body: 'Hardware means the physical devices used in the system. Software means the programs running in the system, including system software, utility programs, drivers and application software.' },
-      { title: 'Data and information', body: 'Data is a collection of unorganised facts which may have no meaning on its own. After processing, data is put into context and converted into meaningful information.' },
-      { title: 'Multimedia data', body: 'Text, digital images, audio and video are all data types. Images are captured or edited digitally; audio can be converted from analogue signals; videos combine images and audio.' },
-      { title: 'Information processing', body: 'The seven stages are collection, organisation, storage, processing, analysis, transmission and presentation. The exact order may depend on the system.' },
-      { title: 'Information Age and literacy', body: 'Better microcomputers, internet, search engines, mobile devices and telecommunication improve access to information. Students also need information literacy: intellectual property, data privacy, credibility, extraction and organisation.' }
+      { title: 'Raw data', body: 'Unorganised facts with little meaning by themselves. 72, 68, 91, or a watch log of 08:10 / 76 bpm / 6200 steps, are data until someone processes them for a purpose.' },
+      { title: 'Processing', body: 'The action that gives data meaning: sort, calculate, classify, validate, summarise. In DSE, name the verb. “The computer processes the data” is too weak.' },
+      { title: 'Meaningful information', body: 'Processed data that is useful for a decision. Ada scored 72 and passed. The watch report says the student is below the daily step target.' },
+      { title: 'IPO and storage', body: 'Input captures data, processing transforms it, output presents information. Storage keeps data or results for later. An error message is feedback into the next input.' },
+      { title: 'Information system', body: 'People, data, procedures, hardware and software run this cycle together — eClass, Octopus, a supermarket checkout.' },
+      { title: 'Information Age and literacy', body: 'Society depends on these systems. Information is still only as reliable as its source: check who published it and whether the claim has evidence.' }
     ],
     concepts: [
       'Information systems are used to automate processes, reduce human errors and improve efficiency.',
@@ -1663,20 +1663,18 @@ const chapterBlueprints = [
     id: 'A3 Data Representation',
     group: 'Core A Information Processing',
     title: 'A3 Data Representation',
-    focus: 'Represent data using units, number systems, character codes, machine-readable codes and media formats, then reason about capacity, transfer rate, overflow, digitisation and compression.',
+    focus: 'Computers store and process binary patterns. Number bases, signed representation and character codes are rules for giving those patterns meaning. Multimedia digitisation continues in A4.',
     detailsLayout: 'dataRepresentationLearningPath',
     stats: [
       { value: 'NUMBERS', label: 'Binary, hexadecimal, two’s complement and overflow', kind: 'word' },
       { value: 'CODES', label: 'Characters, barcode, QR code and Unicode', kind: 'word' },
-      { value: 'MEDIA', label: 'Digitisation, file formats, compression and file size', kind: 'word' }
+      { value: 'UNITS', label: 'Bits, bytes, storage and transfer-rate units', kind: 'word' }
     ],
     cards: [
-      { title: 'Data units and transfer rate', body: 'Bit is the basic unit and stores 0 or 1. 1 byte = 8 bits. Storage units use 1024: KB, MB, GB and TB. Data transfer rate units use 1000: kbps, Mbps, Gbps and Tbps.' },
-      { title: 'Number representation', body: 'Binary and hexadecimal use place values. The number of patterns from b bits is 2^b. Unsigned integers store zero and positive values; signed integers may store negative values.' },
-      { title: 'Two’s complement and overflow', body: 'Two’s complement represents signed integers. To represent -X using N bits, use 2^N - X or invert the bits of X and add 1. Overflow occurs when the result is outside the range representable by the bits.' },
-      { title: 'Character and barcode encoding', body: 'ASCII, Big5, GB and Unicode represent text characters. Barcodes and QR codes represent machine-readable data; QR codes can store more characters and have stronger error correction.' },
-      { title: 'Analog, digital and digitisation', body: 'Analog data has continuous physical values, such as sound waves or drawings. Digital data uses discrete symbols such as 0 and 1 and is suitable for computer storage and processing.' },
-      { title: 'Text, image, audio and video formats', body: 'File formats differ by compression, transparency, animation and media type. Students should match a format to a purpose, such as exact recovery, small file size, transparency or animation.' }
+      { title: 'Why binary', body: 'Hardware works with two states. Everything a computer stores is a bit pattern. Units (bit, byte, KB) describe how much pattern is stored.' },
+      { title: 'Number representation', body: 'Denary, binary and hexadecimal are the same value in different clothes. One hex digit is four bits. The number of patterns from b bits is 2^b.' },
+      { title: 'Two’s complement and overflow', body: 'Negative values need a signed rule such as two’s complement. Overflow occurs when the result is outside the range representable by the bits.' },
+      { title: 'Character and barcode encoding', body: 'Text also needs numeric codes: ASCII, Big-5, GB and Unicode. Barcodes and QR codes represent machine-readable data.' }
     ],
     concepts: [
       'Unit of data: bit (bit or b) is the most basic unit and can be 0 or 1; byte (B) is 8 bits; 1 KB = 1024 B; 1 MB = 1024 KB; 1 GB = 1024 MB; 1 TB = 1024 GB.',
@@ -1692,13 +1690,7 @@ const chapterBlueprints = [
       'ASCII mainly represents English characters and uses 7 bits to 1 byte per character. Big5 and GB codes commonly use 2 bytes for Traditional and Simplified Chinese respectively. Unicode supports most world languages and may use 1 to 4 bytes per character.',
       'Barcode can be scanned only from two angles such as 0 degrees or 180 degrees, usually represents ASCII characters or numbers only, and has a small character limit of around 50.',
       'QR code can be scanned from any direction even at an angle, can often restore up to 30% of data, can represent Unicode characters, and can store at least 1000 characters.',
-      'Analog data is represented physically with continuous values. Digital data is represented using discrete symbols and is usually stored and processed by computers and smartphones.',
-      'Text formats: TXT is plain text; RTF, DOC/DOCX, ODT, PAGES and PDF are formatted text.',
-      'Image formats: BMP is uncompressed bitmap; JPEG/JPG is lossy bitmap; GIF is lossless bitmap with transparency and animation; PNG is lossless bitmap with transparency; WebP may be lossless or lossy and supports transparency and animation; TIFF/TIF is lossless bitmap; SVG is vector and uncompressed.',
-      'Audio formats: WAV/WAVE and MIDI are uncompressed; MP3, AAC and OGG are lossy; WMA may be lossy or lossless; FLAC and ALAC are lossless.',
-      'Video formats: AVI is uncompressed; MPEG4/MP4, WMV, MOV and MKV are lossy; WebM and FLV may be lossy or lossless.',
-      'File size calculations require careful units: bits, bytes, KB and MB must not be mixed.',
-      'Lossless compression restores the original exactly; lossy compression removes less noticeable data and is only suitable when exact recovery is not required.'
+      'Multimedia digitisation, file formats and compression belong mainly to A4, not this chapter.'
     ],
     formulae: [
       '1 B = 8 bits',
@@ -1706,8 +1698,6 @@ const chapterBlueprints = [
       '1 kbps = 1000 bps; 1 Mbps = 1000 kbps; 1 Gbps = 1000 Mbps; 1 Tbps = 1000 Gbps',
       'Number of patterns = 2^b, where b is the number of bits',
       'Bits needed = log2 P, where P is the number of patterns needed',
-      'Image size = width x height x colour depth / 8 bytes',
-      'Audio size = sampling rate x bit depth x channels x duration / 8 bytes',
       'n-bit unsigned range = 0 to 2^n - 1',
       'n-bit two’s complement range = -2^(n-1) to 2^(n-1) - 1',
       'Two’s complement representation of -X = 2^N - X',
@@ -1716,8 +1706,8 @@ const chapterBlueprints = [
     misconceptions: [
       'Data storage units and data transfer-rate units use different multipliers: 1 KB = 1024 B, but 1 kbps = 1000 bps.',
       'Do not use the unsigned range for two’s complement values.',
-      'More colour depth means more possible colours, not more pixels.',
-      'File-size calculations must keep bits and bytes separate.'
+      'Overflow means the result is outside the representable range; the stored bits may wrap or be incorrect.',
+      'One character does not always use one byte in Unicode/UTF-8.'
     ],
     activities: [
       {
@@ -1728,24 +1718,6 @@ const chapterBlueprints = [
         misconception: 'A bit pattern has a different value when interpreted as unsigned or as two’s complement.',
         challenge: 'Convert denary to binary, interpret signed values, animate invert-and-add-1, and choose overflow cases.',
         transfer: 'DSE transfer: state the bit width, signed range, binary representation and overflow reason.'
-      },
-      {
-        title: 'Quantization Visualizer',
-        mode: 'a3QuantizationLab',
-        status: 'Available now',
-        goal: 'Adjust sampling rate and bit depth to see how analog data becomes digital.',
-        misconception: 'Sampling rate and bit depth improve different parts of the digitised signal.',
-        challenge: 'Move the sliders and compare the smooth analog wave with sampled, quantized points.',
-        transfer: 'DSE transfer: explain that digitisation involves sampling, quantization and coding.'
-      },
-      {
-        title: 'RGB Bitmap and Colour Depth Lab',
-        mode: 'a3BitmapLab',
-        status: 'Available now',
-        goal: 'See how resolution and RGB bits per channel affect image detail, number of colours and file size.',
-        misconception: 'Higher resolution and higher colour depth both increase file size, but for different reasons.',
-        challenge: 'Adjust RGB values, bits per channel and resolution, then inspect the quantised pixel and file-size calculation.',
-        transfer: 'DSE transfer: show width x height x colour depth, then divide by 8 to convert bits to bytes.'
       },
       {
         title: 'UTF-8 Binary Encoder',
@@ -1843,48 +1815,6 @@ const chapterBlueprints = [
         solution: 'Unicode supports a wide range of characters from different languages, including English and Chinese. ASCII mainly supports basic English characters and symbols.'
       },
       {
-        level: 'Level 2: Calculate',
-        title: 'Calculate image file size',
-        stem: 'A 200 x 100 pixel image uses 24-bit colour. What is the uncompressed file size in bytes?',
-        tag: 'image-file-size',
-        options: [
-          { text: '20,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' },
-          { text: '60,000 bytes', correct: true, feedback: 'Correct. The image needs 480,000 bits, which is 60,000 bytes.' },
-          { text: '480,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' },
-          { text: '4,800,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' }
-        ],
-        hint: 'Use width x height x colour depth, then divide by 8 to convert bits to bytes.',
-        solution: 'File size = 200 x 100 x 24 bits = 480,000 bits. Convert to bytes: 480,000 / 8 = 60,000 bytes.'
-      },
-      {
-        level: 'Level 2: Calculate',
-        title: 'Calculate audio file size',
-        stem: 'An uncompressed mono audio file is recorded for 10 seconds with a sampling rate of 8000 samples per second and a bit depth of 16 bits. What is the file size in bytes?',
-        tag: 'audio-file-size',
-        options: [
-          { text: '16,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' },
-          { text: '80,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' },
-          { text: '160,000 bytes', correct: true, feedback: 'Correct. The file size is 160,000 bytes.' },
-          { text: '1,280,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' }
-        ],
-        hint: 'Use sampling rate x bit depth x duration x number of channels, then divide by 8.',
-        solution: 'File size = 8000 x 16 x 10 x 1 bits = 1,280,000 bits. Convert to bytes: 1,280,000 / 8 = 160,000 bytes.'
-      },
-      {
-        level: 'Level 2: Apply',
-        title: 'Choose a compression method',
-        stem: 'A hospital stores medical scan images. The images must be reconstructed exactly later. Which compression method is more suitable?',
-        tag: 'compression-choice',
-        options: [
-          { text: 'Lossy compression', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' },
-          { text: 'Lossless compression', correct: true, feedback: 'Correct. Lossless compression is needed when exact reconstruction is required.' },
-          { text: 'Reducing colour depth only', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' },
-          { text: 'Using lower resolution only', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' }
-        ],
-        hint: 'The keyword is exactly.',
-        solution: 'Lossless compression allows the original data to be reconstructed exactly. This is important for medical images where details must not be lost.'
-      },
-      {
         level: 'Level 1: Concept check',
         title: 'QR code and barcode',
         stem: 'Why can a QR code usually store more information than a traditional barcode?',
@@ -1901,9 +1831,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'A4 Spreadsheet / Data Manipulation and Analysis',
+    id: 'A5 Spreadsheet and Data Analysis',
     group: 'Core A Information Processing',
-    title: 'A4 Spreadsheet / Data Manipulation and Analysis',
+    title: 'A5 Spreadsheet and Data Analysis',
     focus: 'Use spreadsheet structure, formatting, formulae, operators, cell references, sorting, filtering, charts, pivot tables and what-if tools to analyse data and present results clearly.',
     detailsLayout: 'spreadsheetLearningPath',
     stats: [
@@ -2126,21 +2056,21 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'A5 Simple Database',
+    id: 'A6 Simple Database',
     group: 'Core A Information Processing',
-    title: 'A5 Simple Database',
-    focus: 'Use simple database objects, field data types, input masks, keys and queries to store, filter, summarise and present records accurately.',
+    title: 'A6 Simple Database',
+    focus: 'A DBMS stores structured records so people can enter, find and present data safely. Forms, queries and reports are different jobs on the same tables. Writing SQL continues in A6.4.',
     detailsLayout: 'simpleDatabaseLearningPath',
     stats: [
       { value: 'OBJECTS', label: 'Table, form, query and report', kind: 'word', step: '1' },
       { value: 'FIELDS', label: 'Data type, field size, mask and key', kind: 'word', step: '2' },
-      { value: 'QUERY', label: 'SELECT, criteria, sorting and functions', kind: 'word', step: '3' }
+      { value: 'CONTROL', label: 'Keys, rights and reliable records', kind: 'word', step: '3' }
     ],
     cards: [
       { title: 'Table', body: 'A table stores and displays data in rows and columns. Each row is a record and each column is a field.' },
       { title: 'Form', body: 'A form gives users a friendly interface for entering, editing and viewing one record at a time.' },
       { title: 'Report', body: 'A report displays and summarises data in a customised printable format.' },
-      { title: 'Query', body: 'A query filters, sorts, summarises, updates or deletes data in a table. In Core A5, focus on reading simple query meaning.' }
+      { title: 'Query', body: 'A query asks a question of the table: which records, in which order. Writing the SQL sentence itself continues in A6.4 and Elective A.' }
     ],
     concepts: [
       'A record stores data about one item, such as one student or one book.',
@@ -2150,11 +2080,11 @@ const chapterBlueprints = [
       'A data type controls the kind of value a field can store, such as text, number, date/time, currency, AutoNumber or Yes/No.',
       'An input mask restricts user input to a required pattern, such as 0000-0000 for a phone number.',
       'A form is mainly for entering and viewing records; a query is for selecting records; a report is for formatted output.',
-      'Sorting changes record order. Filtering or a WHERE condition selects records that match criteria.',
-      'Simple SQL should be read by identifying the fields after SELECT, the table after FROM, the condition after WHERE, the grouping field after GROUP BY and the sorting field after ORDER BY.',
+      'Sorting changes record order. Filtering selects records that match criteria.',
+      'Simple SQL reading and writing belong to A6.4 (S6) and then Elective A. This chapter stays on tables, keys, forms, queries and reports.',
       'NULL means a missing or unknown value. It is not the same as 0.'
     ],
-    formulae: ['SELECT field-list FROM table WHERE condition', 'GROUP BY field', 'ORDER BY field ASC or DESC', 'WHERE field IS NULL', 'WHERE field LIKE "A%"', 'Primary key = unique identifier for each record'],
+    formulae: ['Primary key = unique identifier for each record', 'NULL ≠ 0', 'Form = enter/view; Query = retrieve; Report = present'],
     misconceptions: [
       'A table name is not the same as a field name.',
       'A primary key should identify records uniquely; a name is often unsuitable because different people may share the same name.',
@@ -2203,19 +2133,6 @@ const chapterBlueprints = [
         solution: 'StudentID is usually the best primary key.'
       },
       {
-        level: 'Level 2: SQL reading',
-        title: 'Interpret WHERE',
-        stem: 'What does this query do?\nSELECT Name FROM Student WHERE Class = "5A"',
-        options: [
-          { text: 'It shows the names of students in class 5A.', correct: true, feedback: 'Correct. SELECT chooses Name and WHERE filters Class = "5A".' },
-          { text: 'It deletes all students not in 5A.', correct: false, feedback: 'SELECT does not delete records.' },
-          { text: 'It changes every student to class 5A.', correct: false, feedback: 'There is no UPDATE command here.' },
-          { text: 'It shows every field of every student.', correct: false, feedback: 'Only Name is selected, and records are filtered by class.' }
-        ],
-        hint: 'Read SELECT first, then WHERE.',
-        solution: 'It shows the names of students whose Class is 5A.'
-      },
-      {
         level: 'Level 3: DSE transfer',
         title: 'Choose the object',
         stem: 'A clerk needs a printable list of overdue library books grouped by class. Which database object is most suitable for the final output?',
@@ -2257,9 +2174,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'B1 Input and Output Devices',
+    id: 'B3 Input and Output Devices',
     group: 'Core B Computer System Fundamentals',
-    title: 'B1 Input and Output Devices',
+    title: 'B3 Input and Output Devices',
     focus: 'Explain the input-process-output cycle and choose suitable input, automatic input and output devices by task, connection method, media type and user needs.',
     detailsLayout: 'inputOutputLearningPath',
     stats: [
@@ -2392,21 +2309,21 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'B2 Computer Hardware',
+    id: 'B1 System Unit',
     group: 'Core B Computer System Fundamentals',
-    title: 'B2 Computer Hardware',
-    focus: 'Understand system-unit components, CPU operation, buses, memory, storage devices and performance ideas through realistic specification decisions.',
+    title: 'B1 System Unit',
+    focus: 'Understand system-unit components, CPU operation, buses and performance ideas through the fetch–decode–execute cycle. Memory and storage continue in B2.',
     detailsLayout: 'computerHardwareLearningPath',
     stats: [
-      { value: 'UNIT', label: 'Motherboard, CPU, memory, storage and PSU', kind: 'word', step: '1' },
-      { value: 'CPU', label: 'Machine cycle, buses, clock rate and cores', kind: 'word', step: '2' },
-      { value: 'STORE', label: 'Memory hierarchy and secondary storage', kind: 'word', step: '3' }
+      { value: 'UNIT', label: 'Motherboard, CPU, buses and PSU', kind: 'word', step: '1' },
+      { value: 'CPU', label: 'ALU, CU, registers and the machine cycle', kind: 'word', step: '2' },
+      { value: 'SPEED', label: 'Clock rate, cores, word length and bottlenecks', kind: 'word', step: '3' }
     ],
     cards: [
-      { title: 'System unit components', body: 'CPU, main memory, storage, motherboard, expansion cards, ports and buses work together to process and move data.' },
+      { title: 'System unit components', body: 'CPU, motherboard, expansion cards, ports and buses work together to process and move data. Main memory sits here so the CPU can fetch instructions.' },
       { title: 'Fetch-decode-execute', body: 'The CPU fetches an instruction from memory, decodes what operation is required and executes it using registers and control signals.' },
-      { title: 'Buses and memory', body: 'Data bus carries data, address bus identifies memory locations and control bus carries timing and control signals.' },
-      { title: 'Performance and bottlenecks', body: 'Performance depends on CPU, RAM, storage speed, cache, graphics, network and software requirements. One weak component can limit the whole system.' }
+      { title: 'Buses', body: 'Data bus carries data, address bus identifies memory locations and control bus carries timing and control signals.' },
+      { title: 'Performance and bottlenecks', body: 'Performance depends on CPU, RAM, storage speed, cache, graphics, network and software requirements. One weak component can limit the whole system. RAM vs storage detail continues in B2.' }
     ],
     concepts: [
       'CPU clock speed, number of cores and cache affect performance, but the best specification depends on the task.',
@@ -2415,21 +2332,16 @@ const chapterBlueprints = [
       'System buses transfer control signals, memory addresses, data and instructions between components.',
       'Clock rate is the number of clock cycles a CPU performs in one second.',
       'Word length is the number of bits processed by the CPU each time.',
-      'RAM stores programs and data currently in use; secondary storage stores data persistently.',
-      'RAM is volatile and can be rewritten at high speed; ROM is non-volatile and usually cannot be rewritten.',
-      'In the memory hierarchy, registers and cache have high access rates but small capacity and high unit price.',
-      'SSD storage usually gives faster access than HDD storage, especially for starting systems and loading files.',
-      'Magnetic tape usually uses sequential access; hard disk, SSD and optical disk can use direct access.',
       'A bottleneck is the component that limits overall performance.',
+      'GPU / latest processor developments extend processor roles for graphics and parallel work.',
+      'Main memory and secondary storage — including RAM, ROM, cache, HDD and SSD — continue in B2.',
       'Specification comparison should use principles and user needs, not brand or product trivia.'
     ],
     misconceptions: [
       'A higher single specification does not guarantee a better computer for every task.',
-      'RAM and secondary storage are different; RAM is volatile while storage is persistent.',
-      'More storage capacity does not automatically make processing faster.',
       'Fetch-decode-execute is a cycle for instructions, not a file-copying process.',
       'A 64-bit processor is not simply twice as efficient as a 32-bit processor.',
-      'Direct access storage can still read data sequentially when needed.'
+      'RAM versus persistent storage is taught in B2; FETCH still copies the next instruction from main memory, not from disk.'
     ],
     activities: [
       {
@@ -2457,32 +2369,6 @@ const chapterBlueprints = [
         solution: 'After fetch, the CPU decodes the instruction.'
       },
       {
-        level: 'Checkpoint',
-        title: 'RAM or storage',
-        stem: 'Why can adding RAM improve performance when many applications are open?',
-        options: [
-          { text: 'More programs and data can be kept in main memory.', correct: true, feedback: 'Correct. This reduces the need to swap data to slower storage.' },
-          { text: 'It permanently stores more photos.', correct: false, feedback: 'Permanent file storage is secondary storage, not RAM.' },
-          { text: 'It increases the monitor resolution.', correct: false, feedback: 'Resolution depends on display and graphics hardware, not RAM alone.' },
-          { text: 'It replaces the CPU.', correct: false, feedback: 'RAM supports processing but does not perform CPU operations.' }
-        ],
-        hint: 'RAM is working memory.',
-        solution: 'More RAM helps keep active programs and data in main memory.'
-      },
-      {
-        level: 'Checkpoint',
-        title: 'Bottleneck',
-        stem: 'A video editor has a fast CPU but very little RAM, causing frequent slowdowns when editing large clips. What is the likely bottleneck?',
-        options: [
-          { text: 'RAM', correct: true, feedback: 'Correct. The limited RAM is restricting the system for this workload.' },
-          { text: 'Keyboard', correct: false, feedback: 'The keyboard is not limiting video editing performance here.' },
-          { text: 'Printer', correct: false, feedback: 'Printing is unrelated to editing large video clips.' },
-          { text: 'More brand recognition', correct: false, feedback: 'DSE explanations should refer to hardware principles, not brand reputation.' }
-        ],
-        hint: 'Find the weak component that limits the task.',
-        solution: 'RAM is the bottleneck.'
-      },
-      {
         level: 'Level 2: Bus role',
         title: 'System bus',
         stem: 'Which system bus transfers memory addresses?',
@@ -2502,7 +2388,7 @@ const chapterBlueprints = [
         options: [
           { text: 'It can address more memory and handle more complex functions, but performance is not simply doubled.', correct: true, feedback: 'Correct. Word length affects capability, but performance is not linearly proportional.' },
           { text: 'It is always exactly twice as efficient as a 32-bit processor.', correct: false, feedback: 'This is the common misconception. Efficiency is not simply doubled.' },
-          { text: 'It cannot run any 32-bit software.', correct: false, feedback: 'Compatibility depends on system support; this is not the key B2 point.' },
+          { text: 'It cannot run any 32-bit software.', correct: false, feedback: 'Compatibility depends on system support; this is not the key B1 point.' },
           { text: 'It only affects the monitor resolution.', correct: false, feedback: 'Word length is a CPU concept, not just display output.' }
         ],
         hint: 'The screenshot warns against a direct 2x efficiency claim.',
@@ -2511,9 +2397,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'B3 Computer Software',
+    id: 'B4 System Software',
     group: 'Core B Computer System Fundamentals',
-    title: 'B3 Computer Software',
+    title: 'B4 System Software',
     focus: 'Connect system software, application software, operating systems, utilities, drivers, user interfaces and processing modes to user scenarios.',
     detailsLayout: 'computerSoftwareLearningPath',
     stats: [
@@ -2630,28 +2516,29 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C1 Networking and Internet Basics',
+    id: 'C1 Networking and Internet Basics I',
     group: 'Core C Internet and its Applications',
-    title: 'C1 Networking and Internet Basics',
-    focus: 'Build network diagrams, compare LAN and WAN, and visualise how data moves across network devices.',
+    title: 'C1 Networking and Internet Basics I',
+    focus: 'Build network diagrams, compare LAN and WAN, and follow a data path across NIC, switch, AP, router and modem. Transmission characteristics continue in C2.',
     detailsLayout: 'networkingBasicsLearningPath',
     stats: [
       { value: 'LAN/WAN', label: 'Scope, cost and data transfer rate', kind: 'word', step: '1' },
-      { value: 'DEVICE', label: 'NIC, switch, AP, router and modem roles', kind: 'word', step: '2' },
-      { value: 'ACCESS', label: 'Cables, wireless methods and ISP access', kind: 'word', step: '3' }
+      { value: 'MODEL', label: 'Client-server and peer-to-peer', kind: 'word', step: '2' },
+      { value: 'PATH', label: 'NIC, switch, AP, router and modem', kind: 'word', step: '3' }
     ],
     cards: [
       { title: 'Network scope and models', body: 'LAN covers a small local area. WAN covers a wider geographical area. Client-server uses central services; peer-to-peer shares resources directly between peers.' },
       { title: 'Network devices', body: 'Switches connect devices within a LAN, routers connect networks, wireless access points provide Wi-Fi and modems connect to an ISP service where needed.' },
-      { title: 'Packet journey', body: 'Data is split into packets, addressed, routed through network devices and reassembled at the destination.' },
-      { title: 'Internet access choices', body: 'Access methods should be compared simply by speed, coverage, stability, mobility, cost and suitability for the location.' }
+      { title: 'Packet journey', body: 'Data is split into packets, addressed, routed through network devices and reassembled at the destination. Follow the path, do not memorise boxes in isolation.' },
+      { title: 'Then C2', body: 'Once the path exists, C2 asks which transmission method and access technology fit the requirement.' }
     ],
     concepts: [
       'A LAN is usually owned or managed by one organisation in a limited area; a WAN links networks over a larger area.',
       'Client-server centralises services and control; peer-to-peer allows peers to share resources directly.',
       'A switch forwards data within a local network, while a router forwards data between networks.',
       'Packet switching sends data in smaller packets that may take different routes.',
-      'Internet access choice should be scenario-based, not based on one universally best method.'
+      'NIC / MAC identify a device interface inside the LAN. The modem/ONT is the ISP access box where that role is separate.',
+      'Internet access methods, wireless standards, bandwidth and interference continue in C2.'
     ],
     misconceptions: [
       'LAN and WAN are about coverage and ownership, not simply the number of computers.',
@@ -2713,9 +2600,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C2 Internet Protocols',
+    id: 'C3 Communication Software and Protocols',
     group: 'Core C Internet and its Applications',
-    title: 'C2 Internet Protocols',
+    title: 'C3 Communication Software and Protocols',
     focus: 'Dissect URLs, map protocols to internet actions, diagnose DNS and packet problems, and connect services to ports.',
     detailsLayout: 'internetProtocolsLearningPath',
     stats: [
@@ -2796,9 +2683,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C3 Internet Services and Applications',
+    id: 'C4 Internet Services and Applications',
     group: 'Core C Internet and its Applications',
-    title: 'C3 Internet Services and Applications',
+    title: 'C4 Internet Services and Applications',
     focus: 'Use internet services wisely by understanding email, search, cloud services, IoT, e-commerce and file sharing risks.',
     detailsLayout: 'internetServicesLearningPath',
     stats: [
@@ -2879,9 +2766,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C4 Elementary Web Authoring',
+    id: 'C5 Elementary Web Authoring',
     group: 'Core C Internet and its Applications',
-    title: 'C4 Elementary Web Authoring',
+    title: 'C5 Elementary Web Authoring',
     focus: 'Build simple web pages, repair broken paths and links, and make layout and accessibility decisions for a target audience.',
     cards: [
       { title: 'HTML structure', body: 'HTML uses tags such as html, head, title, body, h1, p, a, img, ul, ol, li and table elements to structure content.' },
@@ -2965,44 +2852,32 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C5 Network Security and Privacy Threats',
+    id: 'C6 Online Threats and Security I',
     group: 'Core C Internet and its Applications',
-    title: 'C5 Network Security and Privacy Threats',
-    focus: 'Recognise malware, network attacks and online privacy threats before choosing a suitable protection method.',
+    title: 'C6 Online Threats and Security I',
+    focus: 'Recognise malware, unauthorised access and network attacks, then match a control to the mechanism. Personal-data privacy, phishing and tracking continue in C7.',
     cards: [
+      { title: 'Threat first', body: 'Name the attack or weakness before naming a product. Antivirus is a control, not the start of the chapter.' },
       { title: 'Malware behaviour', body: 'Viruses, worms, trojans, spyware, ransomware and adware differ by spread method, disguise and damage.' },
-      { title: 'Phishing and social engineering', body: 'Phishing tricks users into giving credentials, payment details or personal data through fake messages or websites.' },
       { title: 'Network threats', body: 'Threats include unauthorised access, eavesdropping, malicious links, denial-of-service and unsafe public Wi-Fi use.' },
-      { title: 'Threat-control matching', body: 'The right control depends on the threat: antivirus, backup, firewall, strong passwords, MFA, encryption, HTTPS and user awareness all solve different problems.' }
+      { title: 'Then a control', body: 'The right control depends on the threat: anti-malware, backup, firewall, authentication, access control, VPN and updates solve different problems.' }
     ],
     concepts: [
       'A virus usually attaches to files or programs; a worm can spread across networks more independently.',
       'A trojan disguises itself as legitimate software.',
       'Ransomware encrypts or locks data and demands payment.',
-      'Phishing indicators include suspicious sender, urgent pressure, mismatched links, unexpected attachments and requests for sensitive data.',
-      'Public Wi-Fi risk can be reduced by HTTPS, VPN, avoiding sensitive transactions and not ignoring certificate warnings.'
+      'Public Wi-Fi risk can be reduced by HTTPS, VPN, avoiding sensitive transactions and not ignoring certificate warnings.',
+      'Social engineering that targets personal data, phishing pages, cookies and privacy law continue in C7.',
+      'A control addresses a mechanism. Remaining limitations still exist after one product is installed.'
     ],
     misconceptions: [
       'Antivirus alone does not stop every security threat.',
-      'A strong password does not protect data if the user gives it to a phishing site.',
+      'Begin with the attack mechanism, then name the control.',
       'Public Wi-Fi is not automatically safe just because it has a familiar name.',
       'Ransomware is not just annoying advertising; it can block access to data.'
     ],
     activities: [],
     practice: [
-      {
-        level: 'Checkpoint',
-        title: 'Phishing clue',
-        stem: 'An email asks a student to click a shortened link and enter the school account password urgently. What is the main risk?',
-        options: [
-          { text: 'Phishing', correct: true, feedback: 'Correct. The message is trying to trick the user into revealing credentials.' },
-          { text: 'OMR error', correct: false, feedback: 'OMR is for reading shaded marks, not email threats.' },
-          { text: 'Printer jam', correct: false, feedback: 'A printer jam is a hardware/output problem.' },
-          { text: 'Two’s complement overflow', correct: false, feedback: 'Overflow is a data representation issue, not this email risk.' }
-        ],
-        hint: 'Look for password stealing by deception.',
-        solution: 'This is phishing.'
-      },
       {
         level: 'Checkpoint',
         title: 'Ransomware',
@@ -3032,9 +2907,9 @@ const chapterBlueprints = [
     ]
   },
   {
-    id: 'C6 Network Security Measures',
+    id: 'C8 Online Threats and Security III',
     group: 'Core C Internet and its Applications',
-    title: 'C6 Network Security Measures',
+    title: 'C8 Online Threats and Security III',
     focus: 'Apply encryption, authentication and online-transaction safeguards to reduce security risks in realistic network scenarios.',
     cards: [
       { title: 'Authentication and authorisation', body: 'Authentication checks identity. Authorisation checks what an authenticated user is allowed to access or do.' },
@@ -4617,6 +4492,426 @@ const chapterBlueprints = [
         solution: 'The motor opening is an output/action.'
       }
     ]
+  },
+  {
+    id: 'A4 Multimedia Elements and Digitalisation',
+    group: 'Core A Information Processing',
+    title: 'A4 Multimedia Elements and Digitalisation',
+    focus: 'Real-world media is digitised into files. Format and compression choices then trade quality against size, compatibility and the job.',
+    detailsLayout: 'multimediaLearningPath',
+    stats: [
+      { value: 'MEDIA', label: 'Text, image, audio and video as data', kind: 'word', step: '1' },
+      { value: 'DIGITISE', label: 'Sampling, quantisation and coding', kind: 'word', step: '2' },
+      { value: 'TRADE-OFF', label: 'Format, compression, quality and size', kind: 'word', step: '3' }
+    ],
+    cards: [
+      { title: 'Multimedia elements', body: 'Text, graphics, images, audio, video and animation are all data once stored. They start as real-world media.' },
+      { title: 'Analogue vs digital', body: 'Analogue varies continuously, such as a sound wave. Digital uses discrete samples that a computer can store and process.' },
+      { title: 'Digitisation', body: 'Sampling, quantisation and encoding turn a wave or picture into a binary file. Settings change quality and size together.' },
+      { title: 'Format and compression', body: 'File formats exist because uses differ. Lossless restores the original; lossy discards less noticeable data to shrink the file.' }
+    ],
+    concepts: [
+      'Analog data is represented physically with continuous values. Digital data is represented using discrete symbols and is usually stored and processed by computers and smartphones.',
+      'Digitisation involves sampling, quantisation and coding.',
+      'Text formats: TXT is plain text; RTF, DOC/DOCX, ODT, PAGES and PDF are formatted text.',
+      'Image formats: BMP is uncompressed bitmap; JPEG/JPG is lossy bitmap; GIF is lossless bitmap with transparency and animation; PNG is lossless bitmap with transparency; WebP may be lossless or lossy and supports transparency and animation; TIFF/TIF is lossless bitmap; SVG is vector and uncompressed.',
+      'Audio formats: WAV/WAVE and MIDI are uncompressed; MP3, AAC and OGG are lossy; WMA may be lossy or lossless; FLAC and ALAC are lossless.',
+      'Video formats: AVI is uncompressed; MPEG4/MP4, WMV, MOV and MKV are lossy; WebM and FLV may be lossy or lossless.',
+      'File size calculations require careful units: bits, bytes, KB and MB must not be mixed.',
+      'Lossless compression restores the original exactly; lossy compression removes less noticeable data and is only suitable when exact recovery is not required.',
+      'Choose a format for the task: print, web, archive or streaming — not because a name is famous.'
+    ],
+    formulae: [
+      'Image size = width x height x colour depth / 8 bytes',
+      'Audio size = sampling rate x bit depth x channels x duration / 8 bytes'
+    ],
+    misconceptions: [
+      'More colour depth means more possible colours, not more pixels.',
+      'File-size calculations must keep bits and bytes separate.',
+      'Lossy compression cannot restore the original file exactly.',
+      'A smaller file is not always better; the task may need exact recovery or transparency.'
+    ],
+    activities: [
+      {
+        title: 'Quantization Visualizer',
+        mode: 'a3QuantizationLab',
+        status: 'Available now',
+        goal: 'Adjust sampling rate and bit depth to see how analog data becomes digital.',
+        misconception: 'Sampling rate and bit depth improve different parts of the digitised signal.',
+        challenge: 'Move the sliders and compare the smooth analog wave with sampled, quantized points.',
+        transfer: 'DSE transfer: explain that digitisation involves sampling, quantization and coding.'
+      },
+      {
+        title: 'RGB Bitmap and Colour Depth Lab',
+        mode: 'a3BitmapLab',
+        status: 'Available now',
+        goal: 'See how resolution and RGB bits per channel affect image detail, number of colours and file size.',
+        misconception: 'Higher resolution and higher colour depth both increase file size, but for different reasons.',
+        challenge: 'Adjust RGB values, bits per channel and resolution, then inspect the quantised pixel and file-size calculation.',
+        transfer: 'DSE transfer: show width x height x colour depth, then divide by 8 to convert bits to bytes.'
+      }
+    ],
+    practice: [
+      {
+        level: 'Level 2: Calculate',
+        title: 'Calculate image file size',
+        stem: 'A 200 x 100 pixel image uses 24-bit colour. What is the uncompressed file size in bytes?',
+        tag: 'image-file-size',
+        options: [
+          { text: '20,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' },
+          { text: '60,000 bytes', correct: true, feedback: 'Correct. The image needs 480,000 bits, which is 60,000 bytes.' },
+          { text: '480,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' },
+          { text: '4,800,000 bytes', correct: false, feedback: 'Not quite. Remember to convert bits to bytes by dividing by 8.' }
+        ],
+        hint: 'Use width x height x colour depth, then divide by 8 to convert bits to bytes.',
+        solution: 'File size = 200 x 100 x 24 bits = 480,000 bits. Convert to bytes: 480,000 / 8 = 60,000 bytes.'
+      },
+      {
+        level: 'Level 2: Calculate',
+        title: 'Calculate audio file size',
+        stem: 'An uncompressed mono audio file is recorded for 10 seconds with a sampling rate of 8000 samples per second and a bit depth of 16 bits. What is the file size in bytes?',
+        tag: 'audio-file-size',
+        options: [
+          { text: '16,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' },
+          { text: '80,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' },
+          { text: '160,000 bytes', correct: true, feedback: 'Correct. The file size is 160,000 bytes.' },
+          { text: '1,280,000 bytes', correct: false, feedback: 'Not quite. Check whether you included duration, number of channels and the conversion from bits to bytes.' }
+        ],
+        hint: 'Use sampling rate x bit depth x duration x number of channels, then divide by 8.',
+        solution: 'File size = 8000 x 16 x 10 x 1 bits = 1,280,000 bits. Convert to bytes: 1,280,000 / 8 = 160,000 bytes.'
+      },
+      {
+        level: 'Level 2: Apply',
+        title: 'Choose a compression method',
+        stem: 'A hospital stores medical scan images. The images must be reconstructed exactly later. Which compression method is more suitable?',
+        tag: 'compression-choice',
+        options: [
+          { text: 'Lossy compression', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' },
+          { text: 'Lossless compression', correct: true, feedback: 'Correct. Lossless compression is needed when exact reconstruction is required.' },
+          { text: 'Reducing colour depth only', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' },
+          { text: 'Using lower resolution only', correct: false, feedback: 'Not quite. Lossy compression, lower resolution and reduced colour depth may lose detail, so they are not suitable when exact reconstruction is required.' }
+        ],
+        hint: 'The keyword is exactly.',
+        solution: 'Lossless compression allows the original data to be reconstructed exactly. This is important for medical images where details must not be lost.'
+      },
+      {
+        level: 'Level 1: Concept check',
+        title: 'Why digitise',
+        stem: 'Why do computers usually store sound and pictures as digital data?',
+        options: [
+          { text: 'Digital data uses discrete symbols that computers can store and process.', correct: true, feedback: 'Correct. Digitisation turns continuous media into bit patterns.' },
+          { text: 'Analogue waves take no storage at all.', correct: false, feedback: 'Analogue media still exist; computers need a digital representation.' },
+          { text: 'JPEG is the only legal format in HKDSE.', correct: false, feedback: 'Format choice depends on the task, not one compulsory name.' },
+          { text: 'Digital files never need compression.', correct: false, feedback: 'Compression is often used because digital media files can be large.' }
+        ],
+        hint: 'Think about what a computer can store.',
+        solution: 'Computers store discrete digital samples, not a continuous analogue wave.'
+      }
+    ]
+  },
+  {
+    id: 'A6.4 Structured Query Language',
+    group: 'Core A Information Processing',
+    title: 'A6.4 Structured Query Language',
+    focus: 'Ask a data question of tables you already understand, express it in SQL, and read the result set. This S6 bridge leads into Elective A.',
+    stats: [
+      { value: 'ASK', label: 'Turn a data question into SQL', kind: 'word', step: '1' },
+      { value: 'FILTER', label: 'SELECT, FROM and WHERE', kind: 'word', step: '2' },
+      { value: 'SORT', label: 'ORDER BY the useful result', kind: 'word', step: '3' }
+    ],
+    cards: [
+      { title: 'Reconnect A6 objects', body: 'Table, record, field and key are still the objects. SQL is the language for asking questions of that structure.' },
+      { title: 'SELECT / FROM / WHERE', body: 'SELECT chooses fields. FROM names the table. WHERE filters rows. A valid statement can still return the wrong students.' },
+      { title: 'ORDER BY', body: 'Sort the result after filtering. Sorting the result is not the same as changing how the table is stored.' },
+      { title: 'Into Elective A', body: 'Joins, aggregates, transactions and ER modelling continue in EA1–EA5. Do not dump every SQL keyword here.' }
+    ],
+    concepts: [
+      'SQL asks which rows and columns you want from a known table structure.',
+      'Read a statement by identifying fields after SELECT, the table after FROM, the condition after WHERE and the sorting field after ORDER BY.',
+      'GROUP BY groups records before aggregate results are shown.',
+      'A query result is a table of matching rows. Wrong WHERE conditions return the wrong story, not always an error message.',
+      'INSERT, UPDATE and DELETE change stored data and belong with Elective A data manipulation, after this bridge.'
+    ],
+    formulae: ['SELECT field-list FROM table WHERE condition', 'ORDER BY field ASC or DESC', 'WHERE field IS NULL', 'WHERE field LIKE "A%"'],
+    misconceptions: [
+      'SQL is not a new kind of database; it talks to the tables from A6.',
+      'SELECT does not delete records.',
+      'FROM names the table; WHERE filters rows. Swapping those words changes the meaning.',
+      'A syntactically valid query can still be the wrong question.'
+    ],
+    activities: [
+      {
+        title: 'Simple Database Builder',
+        mode: 'a5Database',
+        status: 'Available now',
+        goal: 'Watch a SELECT / WHERE / ORDER BY query change the result table on a structure you already designed.',
+        misconception: 'A query retrieves matching records. Wrong criteria give a wrong result set, not a crash.',
+        challenge: 'Filter the live result table, then explain which clause chose the fields and which clause chose the rows.',
+        transfer: 'DSE transfer: read SELECT, FROM and WHERE before writing more SQL in Elective A.'
+      }
+    ],
+    practice: [
+      {
+        level: 'Level 2: SQL reading',
+        title: 'Interpret WHERE',
+        stem: 'What does this query do?\\nSELECT Name FROM Student WHERE Class = "5A"',
+        options: [
+          { text: 'It shows the names of students in class 5A.', correct: true, feedback: 'Correct. SELECT chooses Name and WHERE filters Class = "5A".' },
+          { text: 'It deletes all students not in 5A.', correct: false, feedback: 'SELECT does not delete records.' },
+          { text: 'It changes every student to class 5A.', correct: false, feedback: 'There is no UPDATE command here.' },
+          { text: 'It shows every field of every student.', correct: false, feedback: 'Only Name is selected, and records are filtered by class.' }
+        ],
+        hint: 'Read SELECT first, then WHERE.',
+        solution: 'It shows the names of students whose Class is 5A.'
+      },
+      {
+        level: 'Checkpoint',
+        title: 'FROM vs WHERE',
+        stem: 'In SQL, which clause names the table that contains the records?',
+        options: [
+          { text: 'FROM', correct: true, feedback: 'Correct. FROM names the table. WHERE then filters rows in that table.' },
+          { text: 'WHERE', correct: false, feedback: 'WHERE filters rows. It does not name the table.' },
+          { text: 'ORDER BY', correct: false, feedback: 'ORDER BY sorts the result.' },
+          { text: 'PRIMARY KEY', correct: false, feedback: 'A key identifies records; it is not the table-name clause.' }
+        ],
+        hint: 'The table comes FROM somewhere.',
+        solution: 'FROM names the table.'
+      },
+      {
+        level: 'Level 3: DSE transfer',
+        title: 'Valid but wrong',
+        stem: 'A clerk wants names of students who failed (mark < 50). The statement SELECT Name FROM Student WHERE mark >= 50 is valid SQL. Why is it still wrong for this task?',
+        options: [
+          { text: 'The WHERE condition asks the opposite question.', correct: true, feedback: 'Correct. Valid syntax can still return the wrong set of students.' },
+          { text: 'SQL cannot select names.', correct: false, feedback: 'SELECT Name is allowed if Name is a field.' },
+          { text: 'FROM is missing.', correct: false, feedback: 'FROM Student is present.' },
+          { text: 'The query will always crash.', correct: false, feedback: 'It can run and still be the wrong question.' }
+        ],
+        hint: 'Syntax is not the same as the intended question.',
+        solution: 'The condition keeps passing students instead of failing students.'
+      }
+    ]
+  },
+  {
+    id: 'B2 Main Memory and Secondary Storage',
+    group: 'Core B Computer System Fundamentals',
+    title: 'B2 Main Memory and Secondary Storage',
+    focus: 'The CPU needs fast working data in main memory. That store is limited and often volatile, so secondary storage is chosen by speed, capacity, cost, volatility and access method.',
+    detailsLayout: 'memoryStorageLearningPath',
+    stats: [
+      { value: 'RAM', label: 'Fast working memory for the CPU', kind: 'word', step: '1' },
+      { value: 'STORE', label: 'Persistent secondary storage', kind: 'word', step: '2' },
+      { value: 'TRADE-OFF', label: 'Speed, capacity, cost and volatility', kind: 'word', step: '3' }
+    ],
+    cards: [
+      { title: 'Why main memory', body: 'Programs and data in use sit in RAM so the CPU can reach them quickly. Cache is even closer and smaller.' },
+      { title: 'Temporary vs persistent', body: 'RAM is usually volatile. When power goes, unsaved work can be lost. Files need secondary storage.' },
+      { title: 'Choose by trade-off', body: 'HDD, SSD, optical, flash, tape and cloud solve different jobs. Do not rank them on one “fastest” list only.' },
+      { title: 'Access method', body: 'Magnetic tape is typically sequential. Disk and SSD can use direct access. Match the method to backup, portability or speed needs.' }
+    ],
+    concepts: [
+      'RAM stores programs and data currently in use; secondary storage stores data persistently.',
+      'RAM is volatile and can be rewritten at high speed; ROM is non-volatile and usually cannot be rewritten.',
+      'In the memory hierarchy, registers and cache have high access rates but small capacity and high unit price.',
+      'SSD storage usually gives faster access than HDD storage, especially for starting systems and loading files.',
+      'Magnetic tape usually uses sequential access; hard disk, SSD and optical disk can use direct access.',
+      'Cloud storage is convenient for sharing and off-site copies, but it depends on a network and access rights.',
+      'Specification comparison should use purpose and trade-off, not a single fastest-to-slowest ranking.'
+    ],
+    misconceptions: [
+      'RAM and secondary storage are different; RAM is volatile while storage is persistent.',
+      'More storage capacity does not automatically make processing faster.',
+      'SSD is not always the only acceptable answer; cost, capacity and the job still matter.',
+      'Volatile is a purpose difference, not an insult to the technology.'
+    ],
+    activities: [],
+    practice: [
+      {
+        level: 'Checkpoint',
+        title: 'RAM or storage',
+        stem: 'Why can adding RAM improve performance when many applications are open?',
+        options: [
+          { text: 'More programs and data can be kept in main memory.', correct: true, feedback: 'Correct. This reduces the need to swap data to slower storage.' },
+          { text: 'It permanently stores more photos.', correct: false, feedback: 'Permanent file storage is secondary storage, not RAM.' },
+          { text: 'It increases the monitor resolution.', correct: false, feedback: 'Resolution depends on display and graphics hardware, not RAM alone.' },
+          { text: 'It replaces the CPU.', correct: false, feedback: 'RAM supports processing but does not perform CPU operations.' }
+        ],
+        hint: 'RAM is working memory.',
+        solution: 'More RAM helps keep active programs and data in main memory.'
+      },
+      {
+        level: 'Checkpoint',
+        title: 'Bottleneck',
+        stem: 'A video editor has a fast CPU but very little RAM, causing frequent slowdowns when editing large clips. What is the likely bottleneck?',
+        options: [
+          { text: 'RAM', correct: true, feedback: 'Correct. The limited RAM is restricting the system for this workload.' },
+          { text: 'Keyboard', correct: false, feedback: 'The keyboard is not limiting video editing performance here.' },
+          { text: 'Printer', correct: false, feedback: 'Printing is unrelated to editing large video clips.' },
+          { text: 'More brand recognition', correct: false, feedback: 'DSE explanations should refer to hardware principles, not brand reputation.' }
+        ],
+        hint: 'Find the weak component that limits the task.',
+        solution: 'RAM is the bottleneck.'
+      },
+      {
+        level: 'Level 2: Apply',
+        title: 'SSD or HDD',
+        stem: 'A school wants faster start-up and application loading on classroom PCs, and can accept a higher unit cost. Which storage is usually the better fit?',
+        options: [
+          { text: 'SSD', correct: true, feedback: 'Correct. SSDs typically give faster access for starting systems and loading files.' },
+          { text: 'Magnetic tape only', correct: false, feedback: 'Tape is sequential and used mainly for backup/archive.' },
+          { text: 'A larger monitor', correct: false, feedback: 'Display size is not secondary storage.' },
+          { text: 'More USB ports only', correct: false, feedback: 'Ports do not replace the system disk.' }
+        ],
+        hint: 'Match the need to access speed.',
+        solution: 'SSD is the usual fit when faster access matters more than lowest cost per GB.'
+      }
+    ]
+  },
+  {
+    id: 'C2 Networking and Internet Basics II',
+    group: 'Core C Internet and its Applications',
+    title: 'C2 Networking and Internet Basics II',
+    focus: 'A communication requirement has transmission characteristics. Frequency, interference, bandwidth and access method decide connection quality and suitability.',
+    detailsLayout: 'networkingTransmissionLearningPath',
+    stats: [
+      { value: 'NEED', label: 'Speed, mobility, coverage, cost', kind: 'word', step: '1' },
+      { value: 'SIGNAL', label: 'Wired vs wireless, frequency, interference', kind: 'word', step: '2' },
+      { value: 'ACCESS', label: 'Choose a method by trade-off', kind: 'word', step: '3' }
+    ],
+    cards: [
+      { title: 'Wired vs wireless', body: 'Cables are usually more stable. Radio is flexible but shares spectrum and can suffer interference.' },
+      { title: 'Bandwidth and interference', body: 'Bandwidth is how much data can pass. Interference and congestion reduce useful throughput.' },
+      { title: 'Roaming and standards', body: 'Wireless standards use frequency bands. Roaming lets a device keep service as it moves between APs or cells.' },
+      { title: 'Internet access methods', body: 'Choose FTTH, leased line, 4G/5G, satellite or Wi-Fi from requirement → characteristic → trade-off, not one universal winner.' }
+    ],
+    concepts: [
+      'Internet access choice should be scenario-based, not based on one universally best method.',
+      '2.4 GHz Wi-Fi often has longer range but more interference; 5 GHz is typically faster with shorter range.',
+      'Bandwidth is capacity. Latency is delay. They are not the same measurement.',
+      'Roaming uses the same SSID so a wireless NIC can switch AP automatically within the network.',
+      'Leased line often has high bandwidth and security at high cost; a public hotspot is low cost but weaker security and availability.'
+    ],
+    misconceptions: [
+      'Bandwidth is not the same as latency.',
+      'Wi-Fi is not always slower than wired; congestion and interference can make it slower in practice.',
+      'The newest wireless name is not automatically the classroom answer without a stated requirement.',
+      'Technology names without a requirement are incomplete answers.'
+    ],
+    activities: [],
+    practice: [
+      {
+        level: 'Checkpoint',
+        title: 'Why Wi-Fi slows',
+        stem: 'Why can classroom Wi-Fi become slower at peak times even when the AP still works?',
+        options: [
+          { text: 'Many devices share the same wireless capacity and cause congestion.', correct: true, feedback: 'Correct. Bandwidth is shared. Interference and congestion reduce useful throughput.' },
+          { text: 'The switch inside the LAN becomes a WAN.', correct: false, feedback: 'LAN/WAN is about scope, not this peak-time slowdown.' },
+          { text: 'HTTPS always halves the radio speed.', correct: false, feedback: 'HTTPS encrypts content; it is not the usual cause of peak-time Wi-Fi congestion.' },
+          { text: 'DNS stores the webpages locally.', correct: false, feedback: 'DNS resolves names; it does not explain shared wireless capacity.' }
+        ],
+        hint: 'Wireless capacity is shared.',
+        solution: 'Congestion and shared bandwidth reduce useful speed.'
+      },
+      {
+        level: 'Checkpoint',
+        title: 'Roaming',
+        stem: 'What does wireless roaming mainly solve in a school with several access points?',
+        options: [
+          { text: 'A device can keep network service as it moves between APs.', correct: true, feedback: 'Correct. Same SSID lets the NIC switch AP without the user rebuilding the network idea.' },
+          { text: 'It encrypts every file on the school server.', correct: false, feedback: 'Encryption of stored files is not roaming.' },
+          { text: 'It replaces the need for a router.', correct: false, feedback: 'Roaming is about AP hand-off, not routing between networks.' },
+          { text: 'It turns a LAN into the World Wide Web.', correct: false, feedback: 'The Web is a service; roaming is a wireless access behaviour.' }
+        ],
+        hint: 'Moving between APs.',
+        solution: 'Roaming keeps service as the device moves between APs.'
+      },
+      {
+        level: 'Level 2: Apply',
+        title: 'Access method',
+        stem: 'A remote field centre has no fibre and needs Internet for email, with weather sometimes affecting the link. Which access method is a realistic candidate?',
+        options: [
+          { text: 'Satellite', correct: true, feedback: 'Correct. Satellite is useful where wired connection is difficult, with weather as a known limitation.' },
+          { text: 'A second switch in the same room only', correct: false, feedback: 'A switch does not provide Internet access to a remote site with no ISP path.' },
+          { text: 'OCR', correct: false, feedback: 'OCR is an input method, not Internet access.' },
+          { text: 'Primary key', correct: false, feedback: 'That is a database idea.' }
+        ],
+        hint: 'No wired path, wide coverage.',
+        solution: 'Satellite is a realistic remote access method, with trade-offs.'
+      }
+    ]
+  },
+  {
+    id: 'C7 Online Threats and Security II',
+    group: 'Core C Internet and its Applications',
+    title: 'C7 Online Threats and Security II',
+    focus: 'Personal data can be exposed, used for deception, or tracked. Protection, privacy settings and legal/responsible behaviour follow the harm.',
+    stats: [
+      { value: 'DATA', label: 'Personal data at risk', kind: 'word', step: '1' },
+      { value: 'HARM', label: 'Leakage, phishing, tracking', kind: 'word', step: '2' },
+      { value: 'PROTECT', label: 'Settings, MFA and the law', kind: 'word', step: '3' }
+    ],
+    cards: [
+      { title: 'Exposure and deception', body: 'Leaked data and phishing sites trick people into giving secrets. The harm starts with the person, not the product name.' },
+      { title: 'Tracking', body: 'Cookies and trackers can follow browsing across sites. Convenience can become a privacy cost.' },
+      { title: 'Account protection', body: 'Unique passwords, MFA and privacy settings protect the person after the threat is understood.' },
+      { title: 'Legal and responsible use', body: 'Do not share others’ data. Accessing accounts without permission has legal consequences.' }
+    ],
+    concepts: [
+      'Phishing indicators include suspicious sender, urgent pressure, mismatched links, unexpected attachments and requests for sensitive data.',
+      'A strong password does not protect data if the user gives it to a phishing site.',
+      'Cookies can store useful site settings and can also support tracking.',
+      'Privacy settings and MFA reduce account takeover after a password leak, but they do not make phishing impossible.',
+      'Unauthorised access to accounts or personal data can have legal consequences.'
+    ],
+    misconceptions: [
+      'Phishing is social/technical deception, not “a weak antivirus” only.',
+      'A cookie is not automatically malware; the risk is tracking and unexpected data use.',
+      'Antivirus alone does not stop a user typing a password into a fake site.',
+      'Legal rules still apply when the data is “only a screenshot of a classmate’s profile”.'
+    ],
+    activities: [],
+    practice: [
+      {
+        level: 'Checkpoint',
+        title: 'Phishing clue',
+        stem: 'An email asks a student to click a shortened link and enter the school account password urgently. What is the main risk?',
+        options: [
+          { text: 'Phishing', correct: true, feedback: 'Correct. The message is trying to trick the user into revealing credentials.' },
+          { text: 'OMR error', correct: false, feedback: 'OMR is for reading shaded marks, not email threats.' },
+          { text: 'Printer jam', correct: false, feedback: 'A printer jam is a hardware/output problem.' },
+          { text: 'Two’s complement overflow', correct: false, feedback: 'Overflow is a data representation issue, not this email risk.' }
+        ],
+        hint: 'Look for password stealing by deception.',
+        solution: 'This is phishing.'
+      },
+      {
+        level: 'Checkpoint',
+        title: 'Cookie risk',
+        stem: 'Why can a cookie be useful and still a privacy concern?',
+        options: [
+          { text: 'It can remember a setting, and it can also help track the same browser across sites.', correct: true, feedback: 'Correct. Use and tracking are both possible.' },
+          { text: 'Cookies always encrypt the hard disk.', correct: false, feedback: 'Disk encryption is a different control.' },
+          { text: 'A cookie is the same as ransomware.', correct: false, feedback: 'Ransomware locks data and demands payment.' },
+          { text: 'Cookies replace the need for passwords.', correct: false, feedback: 'Login credentials are still required for accounts.' }
+        ],
+        hint: 'Convenience versus tracking.',
+        solution: 'Cookies can store settings and support tracking.'
+      },
+      {
+        level: 'Level 2: Apply',
+        title: 'Unexpected SMS code',
+        stem: 'A website you did not open asks you to type a one-time SMS code “to keep the account”. What should you do?',
+        options: [
+          { text: 'Do not enter the code; treat it as a possible account-takeover attempt.', correct: true, feedback: 'Correct. MFA codes prove a login. Giving the code away can authorise someone else.' },
+          { text: 'Send the code to any caller who sounds official.', correct: false, feedback: 'Official-sounding pressure is a social-engineering mark.' },
+          { text: 'Turn off all backups permanently.', correct: false, feedback: 'Backups are unrelated to this deception.' },
+          { text: 'Post the code in a class group so friends can check it.', correct: false, feedback: 'Sharing the code spreads the secret.' }
+        ],
+        hint: 'The code is a key to the account.',
+        solution: 'Do not give away the one-time code.'
+      }
+    ]
+
   }
 ];
 
@@ -5060,7 +5355,7 @@ function renderChapterSidebar() {
 }
 
 function stripChapterCodeSafe(text) {
-  return typeof stripChapterCode === 'function' ? stripChapterCode(text) : String(text || '').replace(/^(EA|EC|[A-E])\d+\s+/, '').trim();
+  return typeof stripChapterCode === 'function' ? stripChapterCode(text) : String(text || '').replace(/^(EA|EC|[A-E])\d+(?:\.\d+)?\s+/, '').trim();
 }
 
 function randInt(min, max) {
@@ -7599,61 +7894,57 @@ function renderIntroductionSection(topicConfig, groupConfig, meta) {
 }
 
 function renderDetailsSection(topicConfig, groupConfig) {
-  if (topicConfig.detailsLayout === 'dataControlLearningPath') {
-    renderA2DataControlDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'dataRepresentationLearningPath') {
-    renderA3DataRepresentationDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'spreadsheetLearningPath') {
-    renderA4SpreadsheetDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'simpleDatabaseLearningPath') {
-    renderA5SimpleDatabaseDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'inputOutputLearningPath') {
-    renderB1InputOutputDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'computerHardwareLearningPath') {
-    renderB2ComputerHardwareDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'computerSoftwareLearningPath') {
-    renderB3ComputerSoftwareDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'networkingBasicsLearningPath') {
-    renderC1NetworkingBasicsDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'internetProtocolsLearningPath') {
-    renderC2InternetProtocolsDetails(topicConfig);
-    return;
-  }
-  if (topicConfig.detailsLayout === 'internetServicesLearningPath') {
-    renderC3InternetServicesDetails(topicConfig);
+  const special = topicConfig.detailsLayout;
+  const handlers = {
+    dataControlLearningPath: renderA2DataControlDetails,
+    dataRepresentationLearningPath: renderA3DataRepresentationDetails,
+    spreadsheetLearningPath: renderA4SpreadsheetDetails,
+    simpleDatabaseLearningPath: renderA5SimpleDatabaseDetails,
+    multimediaLearningPath: renderA4MultimediaDetails,
+    memoryStorageLearningPath: renderB2MemoryStorageDetails,
+    inputOutputLearningPath: renderB1InputOutputDetails,
+    computerHardwareLearningPath: renderB2ComputerHardwareDetails,
+    computerSoftwareLearningPath: renderB3ComputerSoftwareDetails,
+    networkingBasicsLearningPath: renderC1NetworkingBasicsDetails,
+    internetProtocolsLearningPath: renderC2InternetProtocolsDetails,
+    internetServicesLearningPath: renderC3InternetServicesDetails,
+    networkingTransmissionLearningPath: renderC2NetworkingIIDetails
+  };
+  const handler = handlers[special];
+  if (handler) {
+    handler(topicConfig);
+    prependChapterBackbone(topicConfig);
     return;
   }
   renderUniversalChapterDetails(topicConfig, groupConfig);
 }
 
+function prependChapterBackbone(topicConfig) {
+  if (typeof renderChapterBackbone !== 'function' || !topicCardGrid) return;
+  const html = renderChapterBackbone(topicConfig);
+  if (html) topicCardGrid.insertAdjacentHTML('afterbegin', html);
+}
+
 const chapterCurriculumRoutes = {
-  A1: ['S4 C5-C6', 'Core A: 37 hours', ['Raw data', 'Information processing', 'Useful information'], 'Classify data, information, process and output in realistic information-system scenarios.', 'Use IPOS language to explain school and daily-life systems.'],
-  A5: ['S6 C1', 'Core A: 37 hours', ['Table idea', 'Records and fields', 'Simple database use'], 'Explain table, record, field, data type, primary key and simple DBMS objects.', 'Connect Core A database basics to Elective A relational database design.'],
-  B1: ['S4 C1-C2', 'Core B: 20 hours', ['Capture data', 'Choose device', 'Justify fit'], 'Select suitable input/output devices and justify by accuracy, speed, cost, environment and data type.', 'Compare OCR, OMR, MICR, barcode readers, sensors, printers and displays through scenarios.'],
-  B2: ['S4 C3-C4', 'Core B: 20 hours', ['Component role', 'Data movement', 'Performance choice'], 'Explain CPU, memory, storage, buses and bottlenecks without relying on brand names.', 'Use upgrade cases to connect specifications to actual user needs.'],
-  B3: ['S4 C4-C5', 'Core B: 20 hours', ['System software', 'OS services', 'User scenario'], 'Distinguish OS, utility software, drivers, processing modes and licence terms.', 'Match software roles to maintenance, device control and legal-use situations.'],
-  C1: ['S5 C18-C19', 'Core C: 31 hours', ['Network scope', 'Device role', 'Packet journey'], 'Compare LAN/WAN, client-server/P2P and network devices using diagram-style reasoning.', 'Draw and diagnose simple school, home and organisation networks.'],
-  C2: ['S5 C19-C20', 'Core C: 31 hours', ['Address', 'Protocol', 'Data exchange'], 'Identify URL parts and map HTTP/HTTPS, FTP, SMTP, POP3/IMAP, TCP/IP and DNS to tasks.', 'Trace what happens when a user visits a website or sends email.'],
-  C3: ['S5 C20-C21', 'Core C: 31 hours', ['Internet service', 'Data sharing', 'User risk'], 'Evaluate email, search, cloud, IoT and online service scenarios with specific controls.', 'Use permissions, Bcc, search operators and IoT data flow in classroom examples.'],
-  C4: ['S5 C21-C22', 'Core C: 31 hours', ['HTML structure', 'Path tracing', 'Repair output'], 'Read and repair simple HTML, links, images, relative paths and page structure.', 'Build small pages where every tag, path and alt text has a purpose.'],
-  C5: ['S5 C22-C23', 'Core C: 31 hours', ['Threat clue', 'Likely harm', 'Suitable control'], 'Recognise malware, phishing, DoS, hacking and privacy threats from scenario evidence.', 'Analyse suspicious messages, public Wi-Fi cases and malware symptoms.'],
-  C6: ['S5 C23-C24', 'Core C: 31 hours', ['Authenticate', 'Protect transmission', 'Control access'], 'Apply encryption, HTTPS/TLS, certificates, authentication, firewall and transaction safeguards.', 'Explain why a technical control fits the specific online risk.'],
+  A1: ['S4 C5-C6', 'Core A: 37 hours', ['Raw data', 'Processing', 'Useful information'], 'Classify data, information, process and output in realistic information-system scenarios.', 'Use IPOS language to explain school and daily-life systems.'],
+  A2: ['S4', 'Core A: 37 hours', ['Organise data', 'Access records', 'Control errors'], 'Explain hierarchy, keys, access methods, validation, verification and parity.', 'Valid data is not automatically correct data.'],
+  A3: ['S4', 'Core A: 37 hours', ['Human value', 'Representation rule', 'Binary pattern'], 'Convert among denary, binary and hex; use two’s complement; choose a character code.', 'Multimedia digitisation is A4, not an extra A3 topic.'],
+  A4: ['S4', 'Core A: 37 hours', ['Real-world media', 'Digitisation', 'Format trade-off'], 'Explain sampling, formats and compression by purpose, quality and size.', 'Choose a format for the task, not by memorising a name.'],
+  A5: ['S4', 'Core A: 37 hours', ['Input data', 'Formulae', 'Analyse and decide'], 'Treat a spreadsheet as a data model with references, functions, sort/filter, charts and what-if tools.', 'Relative vs absolute references exist so copied formulae stay true.'],
+  A6: ['S4', 'Core A: 37 hours', ['Structured records', 'DBMS objects', 'Controlled use'], 'Explain table, record, field, data type, primary key, form, query and report.', 'Writing SQL is A6.4 in S6, then Elective A.'],
+  'A6.4': ['S6 C1', 'Core A: 37 hours', ['Known table', 'SQL question', 'Result set'], 'Read and write SELECT / FROM / WHERE / ORDER BY on a known structure.', 'This bridge reconnects A6 objects to Elective A SQL.'],
+  B1: ['S4 C3', 'Core B: 20 hours', ['System unit', 'Fetch-decode-execute', 'Performance'], 'Explain CPU, ALU, CU, registers, buses and bottlenecks without brand names.', 'FETCH copies the next instruction from main memory, not a file from disk.'],
+  B2: ['S4 C4', 'Core B: 20 hours', ['Working memory', 'Persistent storage', 'Trade-off'], 'Compare RAM/ROM/cache and secondary storage by speed, capacity, cost and volatility.', 'Do not rank technologies on a single fastest-to-slowest list.'],
+  B3: ['S4 C1-C2', 'Core B: 20 hours', ['Real-world data', 'Choose device', 'Justify fit'], 'Select input/output devices by task, data type, accuracy, speed, volume and environment.', 'Compare OCR, OMR, MICR, barcode readers, sensors, printers and displays through scenarios.'],
+  B4: ['S4 C5', 'Core B: 20 hours', ['User', 'OS / utilities / drivers', 'Hardware'], 'Distinguish OS, utility software, drivers, processing modes and how layers interact.', 'Do not treat OS, utilities, drivers and applications as unrelated lists.'],
+  C1: ['S5 C18-C19', 'Core C: 31 hours', ['Network scope', 'Device role', 'Data path'], 'Compare LAN/WAN, client-server/P2P and network devices using diagram-style reasoning.', 'Draw and diagnose simple school, home and organisation networks.'],
+  C2: ['S5 C19', 'Core C: 31 hours', ['Requirement', 'Transmission trait', 'Suitable access'], 'Compare wired/wireless, bandwidth, interference, roaming and Internet access methods.', 'Requirement → characteristic → choice → trade-off.'],
+  C3: ['S5 C20', 'Core C: 31 hours', ['URL', 'DNS / IP', 'HTTP response'], 'Trace one journey: URL → DNS → IP/routing → TCP/IP → HTTP/HTTPS → browser.', 'Do not list TCP, IP, DNS and HTTP as unrelated definitions.'],
+  C4: ['S5 C21', 'Core C: 31 hours', ['User need', 'Internet service', 'How data arrives'], 'Evaluate search, email, cloud, streaming and other services with specific controls.', 'Streaming: incoming data → buffer → playback.'],
+  C5: ['S5 C22', 'Core C: 31 hours', ['HTML structure', 'Links and paths', 'Publish'], 'Read and repair simple HTML, links, images, relative paths and accessibility.', 'HTML is structure first; CSS is not required as a memorised language.'],
+  C6: ['S5 C23', 'Core C: 31 hours', ['Threat', 'Mechanism', 'Control'], 'Recognise malware, unauthorised access and network attacks, then match a control.', 'Begin with the attack, not a list of security products.'],
+  C7: ['S5 C23', 'Core C: 31 hours', ['Personal data', 'Exposure / tracking', 'Protect and the law'], 'Explain leakage, phishing, cookies/tracking, MFA/privacy settings and legal consequences.', 'A password typed into a fake site is not “saved by antivirus”.'],
+  C8: ['S5 C24', 'Core C: 31 hours', ['Identity', 'Protect data', 'Complete the transaction'], 'Distinguish encryption, authentication, authorisation, digital signature and certificate, then combine them.', 'These functions are different and work together in an e-transaction.'],
   D1: ['S4 C13', 'Core D: 48 hours', ['Understand problem', 'Extract IPO', 'Plan algorithm'], 'Identify inputs, processing, outputs, decomposition and abstraction before coding.', 'Turn word problems into traceable algorithm requirements.'],
   D2: ['S4 C14-C15', 'Core D: 48 hours', ['Sequence', 'Selection', 'Trace table'], 'Trace assignment, IF/ELSE, Boolean expressions and outputs step by step.', 'Use trace tables to prove branch behaviour, especially at boundary values.'],
   D3: ['S4 C16-C20', 'Core D: 48 hours', ['Loop control', 'List index', 'Search/update'], 'Trace loops, counters, accumulators, one-dimensional arrays and linear search.', 'Practise off-by-one checks and list operations visually.'],
@@ -7713,13 +8004,8 @@ function renderUniversalChapterDetails(topicConfig, groupConfig) {
   const formulae = topicConfig.formulae || [];
   topicCardGrid.onclick = null;
   topicCardGrid.innerHTML = `
-    <div class="topic-section-banner universal-section-banner">
-      <p class="eyebrow">HKDSE learning path</p>
-      <h3>${escapeHtml(meta.code)}: learn, apply, transfer</h3>
-      <p>${escapeHtml(topicConfig.focus || topicConfig.description || groupConfig.description || '')}</p>
-    </div>
+    ${typeof renderChapterBackbone === 'function' ? renderChapterBackbone(topicConfig) : ''}
     <section class="universal-learning-path">
-      ${renderUniversalRoute(meta)}
       ${renderUniversalZoneCards(cards)}
       ${renderUniversalConceptBlocks(concepts)}
       ${renderUniversalRuleCards(formulae)}
@@ -7748,17 +8034,23 @@ function renderUniversalZoneCards(cards) {
   return `
     <section class="universal-detail-section">
       <div class="universal-section-copy">
-        <p class="eyebrow">Concept zones</p>
-        <h3>Build the chapter in exam-sized pieces</h3>
+        <p class="eyebrow">Follow the flow</p>
+        <h3>Each idea leads to the next</h3>
       </div>
       <div class="universal-zone-grid">
-        ${cards.map((item, index) => `
+        ${cards.map((item, index) => {
+          const title = typeof item === 'string' ? item : item.title;
+          const body = typeof item === 'string' ? 'Use this zone to connect the key idea with a DSE-style example.' : item.body;
+          const next = cards[index + 1];
+          const nextTitle = next ? (typeof next === 'string' ? next : next.title) : '';
+          return `
           <article class="universal-zone-card">
             <span class="universal-zone-index">${String(index + 1).padStart(2, '0')}</span>
-            <h4>${escapeHtml(typeof item === 'string' ? item : item.title)}</h4>
-            <p>${escapeHtml(typeof item === 'string' ? 'Use this zone to connect the key idea with a DSE-style example.' : item.body)}</p>
-          </article>
-        `).join('')}
+            <h4>${escapeHtml(title)}</h4>
+            <p>${escapeHtml(body)}</p>
+            ${nextTitle ? `<p class="universal-zone-then">Then → ${escapeHtml(nextTitle)}</p>` : '<p class="universal-zone-then">Then use the definitions and examples on this page.</p>'}
+          </article>`;
+        }).join('')}
       </div>
     </section>
   `;
@@ -8119,16 +8411,14 @@ function renderA3DataRepresentationDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner a3-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>NUMBERS → CODES → MEDIA</h3>
-      <p>Build the number foundations first, then connect character/coded data and media file-size decisions.</p>
+      <p class="eyebrow">Then practise</p>
+      <h3>Number systems and character codes</h3>
+      <p>Human values become binary patterns through a representation rule. Multimedia digitisation continues in A4.</p>
     </div>
     <div class="a3-learning-zones">
       ${renderA3NumberSystemsSection()}
       ${renderA3TextAndCodesSection()}
-      ${renderA3DigitisationSection()}
       ${renderA3FormulaShelf()}
-      ${renderA3FormatChooser()}
     </div>
   `;
   bindA3DataRepresentationDetails(topicConfig);
@@ -8141,6 +8431,7 @@ function renderA3NumberSystemsSection() {
       <div class="a4-section-copy">
         <p class="eyebrow">A. NUMBERS</p>
         <h3>Binary, hexadecimal, two’s complement and overflow</h3>
+        <p>Human values become binary through a representation rule. Then character codes use the same idea for text. Multimedia digitisation continues in A4.</p>
       </div>
       <div class="a3-number-grid">
         ${[
@@ -8169,6 +8460,7 @@ function renderA3TextAndCodesSection() {
       <div class="a4-section-copy">
         <p class="eyebrow">B. CODES</p>
         <h3>Characters, QR codes, barcodes and units</h3>
+        <p>After numbers, text still needs a numeric code. ASCII, Big-5, GB and Unicode are different rules for the same problem.</p>
       </div>
       <div class="a3-code-grid">
         <article><strong>ASCII</strong><p>Mainly basic English characters; 7 bits to 1 byte per character.</p></article>
@@ -8192,7 +8484,8 @@ function renderA3DigitisationSection() {
     <section class="a3-detail-section a3-digitisation-flow">
       <div class="a4-section-copy">
         <p class="eyebrow">C. MEDIA</p>
-        <h3>Digitisation and media data</h3>
+        <h3>Digitisation turns a wave or picture into bits</h3>
+        <p>Sampling how often, then quantisation how many levels, then coding into a file. Settings exist because quality and size move together.</p>
       </div>
       <div class="a3-media-flow">
         ${['Analogue source', 'sampling', 'Samples', 'quantisation', 'Numeric levels', 'coding', 'Binary data'].map((item, index) => `
@@ -8214,10 +8507,10 @@ function renderA3DigitisationSection() {
 
 function renderA3FormulaShelf() {
   const cards = [
-    ['Image', 'width x height x colour depth / 8', 'bytes', 'Do not forget to divide by 8 when converting bits to bytes.'],
-    ['Audio', 'sampling rate x bit depth x channels x duration / 8', 'bytes', 'Keep duration in seconds unless the question says otherwise.'],
     ['Ranges', 'two’s complement: -2^(n-1) to 2^(n-1)-1', 'integers', 'Do not use the unsigned range for signed values.'],
-    ['Patterns', '2^b', 'patterns', 'Round up when a whole number of bits is required.']
+    ['Patterns', '2^b', 'patterns', 'Round up when a whole number of bits is required.'],
+    ['Hex', '1 hex digit = 4 bits', 'bits', 'Count digits first, then multiply by 4.'],
+    ['Units', '1 KB = 1024 B; 1 kbps = 1000 bps', 'storage vs rate', 'Do not mix 1024 storage prefixes with 1000 transfer-rate prefixes.']
   ];
   return `
     <section class="a3-detail-section a3-formula-shelf">
@@ -8283,23 +8576,81 @@ function renderA3FormatChooser() {
   `;
 }
 
+function renderA4MediaFormulaShelf() {
+  const cards = [
+    ['Image', 'width x height x colour depth / 8', 'bytes', 'Do not forget to divide by 8 when converting bits to bytes.'],
+    ['Audio', 'sampling rate x bit depth x channels x duration / 8', 'bytes', 'Keep duration in seconds unless the question says otherwise.']
+  ];
+  return `
+    <section class="a3-detail-section a3-formula-shelf">
+      <div class="a4-section-copy">
+        <p class="eyebrow">Then calculate</p>
+        <h3>File size follows the digitisation settings</h3>
+      </div>
+      <div class="a3-formula-grid">
+        ${cards.map(([title, formula, unit, trap]) => `
+          <article>
+            <strong>${escapeHtml(title)}</strong>
+            <code>${escapeHtml(formula)}</code>
+            <span>Unit: ${escapeHtml(unit)}</span>
+            <small>${escapeHtml(trap)}</small>
+          </article>
+        `).join('')}
+      </div>
+    </section>
+  `;
+}
+
 function bindA3DataRepresentationDetails(topicConfig) {
+  topicCardGrid.onclick = null;
+}
+
+function renderA4MultimediaDetails(topicConfig) {
+  resetCustomDetailPanels();
+  topicCardGrid.innerHTML = `
+    <div class="topic-section-banner a3-section-banner">
+      <p class="eyebrow">Then digitise</p>
+      <h3>Real-world media → file → format / compression → quality vs size</h3>
+      <p>A3 explained binary patterns. A4 explains why media files look and sound the way they do.</p>
+    </div>
+    <div class="a3-learning-zones">
+      ${renderA3DigitisationSection()}
+      ${renderA4MediaFormulaShelf()}
+      ${renderA3FormatChooser()}
+    </div>
+  `;
   topicCardGrid.onclick = event => {
     const tab = event.target.closest('[data-a3-format-category]');
-    if (tab) {
-      a3DetailsState.formatCategory = tab.dataset.a3FormatCategory;
-      renderA3DataRepresentationDetails(topicConfig);
-    }
+    if (!tab) return;
+    a3DetailsState.formatCategory = tab.dataset.a3FormatCategory;
+    renderA4MultimediaDetails(topicConfig);
+    prependChapterBackbone(topicConfig);
   };
+  setChapterSectionVisible(topicCardGrid, true);
+}
+
+function renderB2MemoryStorageDetails(topicConfig) {
+  resetCustomDetailPanels();
+  topicCardGrid.innerHTML = `
+    <div class="topic-section-banner b2-section-banner">
+      <p class="eyebrow">Then store</p>
+      <h3>CPU needs working data → main memory → persistent storage → trade-off</h3>
+      <p>Do not rank devices from fastest to slowest as the whole answer. Name the job, then the trade-off.</p>
+    </div>
+    <div class="b2-learning-path">
+      ${renderB2MemoryStorage()}
+    </div>
+  `;
+  setChapterSectionVisible(topicCardGrid, true);
 }
 
 function renderA5SimpleDatabaseDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner a5-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>Database objects → fields → queries</h3>
-      <p>Use tables, forms, queries and reports with suitable field settings so records can be entered, filtered, summarised and printed accurately.</p>
+      <p class="eyebrow">S4 non-SQL portion</p>
+      <h3>Structured records → design → form / query / report</h3>
+      <p>A query retrieves matching records. Writing the SQL sentence itself continues in A6.4 (S6) and Elective A.</p>
     </div>
     <div class="a5-learning-path">
       ${renderA5ObjectStudio()}
@@ -8397,8 +8748,8 @@ function renderA5QueryAnatomy() {
     <section class="a5-detail-section">
       <div class="a4-section-copy">
         <p class="eyebrow">3. Query reading</p>
-        <h3>Read SQL as a labelled sentence</h3>
-        <p>Core A5 students should identify the fields, table, criteria, grouping and sorting before worrying about advanced syntax.</p>
+        <h3>A query asks a question of the table</h3>
+        <p>In S4, identify which object retrieves records. The labelled SQL sentence below is a preview; writing it is A6.4.</p>
       </div>
       <div class="a5-query-strip" aria-label="SQL query anatomy">
         ${parts.map(([keyword, value, label]) => `
@@ -8665,14 +9016,13 @@ function renderB2ComputerHardwareDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner b2-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>System unit -> CPU operation -> storage choice</h3>
-      <p>Link each hardware component to its role, then use buses, memory hierarchy and storage attributes to explain performance and suitability.</p>
+      <p class="eyebrow">Then practise</p>
+      <h3>System unit and the machine cycle</h3>
+      <p>Name each part by its role in fetch, decode and execute. Memory and storage continue in B2.</p>
     </div>
     <div class="b2-learning-path">
       ${renderB2SystemUnit()}
       ${renderB2CpuAndBus()}
-      ${renderB2MemoryStorage()}
       ${renderB2MisconceptionPanel()}
       ${renderB2DsePanel()}
     </div>
@@ -8814,13 +9164,13 @@ function renderB2MemoryStorage() {
   return `
     <section class="b2-detail-section">
       <div class="a4-section-copy">
-        <p class="eyebrow">3. Memory and storage</p>
+        <p class="eyebrow">1. Memory and storage</p>
         <h3>Fast, large and cheap cannot all be maximised</h3>
       </div>
       <div class="b2-memory-layout">
         <article class="b2-memory-pyramid" aria-label="Memory hierarchy">
           ${b2MemoryLevels.map((level, index) => `<span style="--level:${index + 1}">${escapeHtml(level)}</span>`).join('')}
-          <p>Upwards: higher access rate, smaller capacity and higher unit price per capacity.</p>
+        <p>Upwards: higher access rate, smaller capacity and higher unit price per capacity. This is a trade-off picture, not a “best device” ranking.</p>
         </article>
         <article class="b2-table-card">
           <strong>Main memory</strong>
@@ -9054,14 +9404,13 @@ function renderC1NetworkingBasicsDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner c-section-banner c1-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>Network scope -> device role -> access method</h3>
-      <p>Use scenario clues to compare LAN/WAN, client-server/P2P, network devices, transmission media and Internet access methods.</p>
+      <p class="eyebrow">Then follow the path</p>
+      <h3>Need to share → network structure → device on the path</h3>
+      <p>LAN/WAN and client-server/P2P set the scope. Then name each device by where the packet is. Transmission characteristics continue in C2.</p>
     </div>
     <div class="c-learning-path">
       ${renderC1NetworkScope()}
       ${renderC1DeviceRoles()}
-      ${renderC1TransmissionAndAccess()}
       ${renderC1MisconceptionPanel()}
       ${renderC1DsePanel()}
     </div>
@@ -9121,6 +9470,7 @@ function renderC1TransmissionAndAccess() {
       <div class="a4-section-copy">
         <p class="eyebrow">3. Transmission and access</p>
         <h3>Choose by distance, mobility, interference, cost and speed</h3>
+        <p>C1 placed the devices. Now match a requirement to a characteristic, then to a suitable method.</p>
       </div>
       <div class="c-two-col">
         <article>
@@ -9166,9 +9516,8 @@ function renderC1MisconceptionPanel() {
 function renderC1DsePanel() {
   const prompts = [
     ['Scenario comparison', 'LAN: small coverage, lower setup cost, higher data transfer rate. WAN: larger coverage, higher setup cost, lower transfer rate.'],
-    ['Roaming', 'All APs in the same network should use the same SSID so a wireless NIC can switch AP automatically.'],
-    ['Access method', 'Leased line has highest bandwidth/security/cost; Wi-Fi hotspot is low cost but lowest security and availability.'],
-    ['Device wording', 'Switch = MAC address in LAN. Router = IP address between networks. NIC = MAC address stored in hardware.']
+    ['Device wording', 'Switch = MAC address in LAN. Router = IP address between networks. NIC = MAC address stored in hardware.'],
+    ['Then C2', 'Wired vs wireless, bandwidth, roaming and ISP access methods are chosen after the path exists.']
   ];
   return `
     <section class="c-detail-section c-dse-panel c1-dse-panel">
@@ -9183,13 +9532,49 @@ function renderC1DsePanel() {
   `;
 }
 
+function renderC2NetworkingIIDetails(topicConfig) {
+  resetCustomDetailPanels();
+  topicCardGrid.innerHTML = `
+    <div class="topic-section-banner c-section-banner c2-section-banner">
+      <p class="eyebrow">Then choose the technology</p>
+      <h3>Requirement → characteristic → suitable choice → trade-off</h3>
+      <p>C1 built the path. C2 asks which wired/wireless method and Internet access fit the job.</p>
+    </div>
+    <div class="c-learning-path">
+      ${renderC1TransmissionAndAccess()}
+      ${renderC2AccessDsePanel()}
+    </div>
+  `;
+  topicCardGrid.onclick = null;
+  setChapterSectionVisible(topicCardGrid, true);
+}
+
+function renderC2AccessDsePanel() {
+  const prompts = [
+    ['Roaming', 'All APs in the same network should use the same SSID so a wireless NIC can switch AP automatically.'],
+    ['Access method', 'Leased line has highest bandwidth/security/cost; Wi-Fi hotspot is low cost but lowest security and availability.'],
+    ['Selection logic', 'State the requirement first. Then name the relevant characteristic. Then choose, and name the trade-off.']
+  ];
+  return `
+    <section class="c-detail-section c-dse-panel">
+      <div class="a4-section-copy">
+        <p class="eyebrow">DSE transfer</p>
+        <h3>How C2 is examined</h3>
+      </div>
+      <div class="c-dse-grid">
+        ${prompts.map(([title, body]) => `<article><strong>${escapeHtml(title)}</strong><p>${escapeHtml(body)}</p></article>`).join('')}
+      </div>
+    </section>
+  `;
+}
+
 function renderC2InternetProtocolsDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner c-section-banner c2-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>Packets -> addresses -> protocols</h3>
-      <p>Trace how TCP/IP sends data, then identify IP addresses, FQDN/URL parts, DNS name resolution and the correct application protocol.</p>
+      <p class="eyebrow">One communication journey</p>
+      <h3>URL → DNS → IP / routing → TCP/IP → HTTP/HTTPS → browser</h3>
+      <p>Each protocol is a different job on the same journey, not a separate definition card.</p>
     </div>
     <div class="c-learning-path">
       ${renderC2TcpIpFlow()}
@@ -9487,9 +9872,9 @@ function renderC3InternetServicesDetails(topicConfig) {
   resetCustomDetailPanels();
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner c-section-banner c3-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>Cloud services -> communication -> media delivery</h3>
-      <p>Connect cloud/IoT services with email privacy, file transfer, search techniques, multimedia formats, streaming and conferencing scenarios.</p>
+      <p class="eyebrow">Then choose a service</p>
+      <h3>User need → suitable Internet service → data arrives in an appropriate way</h3>
+      <p>Search, email, cloud, chat and streaming are different answers to different needs. Streaming: incoming data → buffer → playback.</p>
     </div>
     <div class="c-learning-path">
       ${renderC3CloudPanel()}
@@ -9573,7 +9958,8 @@ function renderC3StreamingPanel() {
     <section class="c-detail-section c3-detail-section">
       <div class="a4-section-copy">
         <p class="eyebrow">4. Streaming and communication services</p>
-        <h3>Quality depends on data size and bandwidth</h3>
+        <h3>Incoming data → buffer → playback</h3>
+        <p>Playback pauses when the buffer is empty, not merely because the file is large.</p>
       </div>
       <div class="c-two-col">
         <article>
@@ -9727,9 +10113,9 @@ function renderA4SpreadsheetDetails(topicConfig) {
   setChapterSectionVisible(topicSteps, false);
   topicCardGrid.innerHTML = `
     <div class="topic-section-banner a4-section-banner">
-      <p class="eyebrow">DSE syllabus focus</p>
-      <h3>Spreadsheet learning path</h3>
-      <p>Build formulae first, control copied references next, then analyse records with the right tool.</p>
+      <p class="eyebrow">Then model the data</p>
+      <h3>Input → formulae / references → recalculation → analyse → decide</h3>
+      <p>A spreadsheet is a data model, not only a grid of cells. Copied references exist so the model stays true.</p>
     </div>
     <div class="a4-learning-path">
       ${renderA4Foundations()}
@@ -12794,7 +13180,7 @@ function initDashboardActions() {
         return;
       }
       if (action === 'topic') {
-        const topicButton = document.querySelector('.nav-item[data-topic="C1 Networking and Internet Basics"]');
+        const topicButton = document.querySelector('.nav-item[data-topic="C1 Networking and Internet Basics I"]');
         if (topicButton) showTopicPage(topicButton);
         return;
       }
@@ -12806,7 +13192,7 @@ function initDashboardActions() {
   });
   document.querySelectorAll('[data-open-topic]').forEach(button => {
     button.addEventListener('click', () => {
-      const topicId = button.dataset.openTopic;
+      const topicId = typeof resolveChapterId === 'function' ? resolveChapterId(button.dataset.openTopic) : button.dataset.openTopic;
       const groupId = button.dataset.openGroup;
       const topicButton = Array.from(document.querySelectorAll('.nav-item[data-topic]')).find(item => (
         item.dataset.topic === topicId && (!groupId || item.dataset.group === groupId)
