@@ -250,11 +250,6 @@
         </div>
       </section>
     `).join(''));
-    document.querySelectorAll('.curriculum-heading').forEach(button => {
-      if (button.dataset.labBound) return;
-      button.dataset.labBound = 'true';
-      button.addEventListener('click', () => toggleNavGroup(button));
-    });
   }
 
   function bindPlatformNav() {

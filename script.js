@@ -13169,6 +13169,17 @@ function toggleNavGroup(button) {
   group.classList.toggle('is-open', !expanded);
 }
 
+function bindCurriculumGroupToggles() {
+  const nav = document.querySelector('.module-nav');
+  if (!nav || nav.dataset.headingBound) return;
+  nav.dataset.headingBound = 'true';
+  nav.addEventListener('click', event => {
+    const heading = event.target.closest('.curriculum-heading');
+    if (!heading || !nav.contains(heading)) return;
+    toggleNavGroup(heading);
+  });
+}
+
 function setSidebarVisible(visible) {
   appShell.classList.toggle('sidebar-collapsed', !visible);
   sidebarToggle.setAttribute('aria-expanded', String(visible));
@@ -13347,10 +13358,7 @@ solutionBtn.addEventListener('click', showSolution);
 sidebarToggle.addEventListener('click', () => setSidebarVisible(true));
 sidebarHideBtn.addEventListener('click', () => setSidebarVisible(false));
 document.querySelector('.nav-item[data-page="dashboard"]').addEventListener('click', showDashboardPage);
-
-document.querySelectorAll('.curriculum-heading').forEach(button => {
-  button.addEventListener('click', () => toggleNavGroup(button));
-});
+bindCurriculumGroupToggles();
 
 document.querySelectorAll('.nav-item[data-demo]').forEach(item => {
   item.addEventListener('click', () => loadDemo(item.dataset.demo));
