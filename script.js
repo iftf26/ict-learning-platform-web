@@ -9024,7 +9024,7 @@ function renderB2ComputerHardwareDetails(topicConfig) {
       ${renderB2SystemUnit()}
       ${renderB2CpuAndBus()}
       ${renderB2MisconceptionPanel()}
-      ${renderB2DsePanel()}
+      ${renderB1DsePanel()}
     </div>
   `;
   bindB2ComputerHardwareDetails();
@@ -9203,6 +9203,10 @@ function renderB2MemoryStorage() {
         <span>Device</span><span>Media</span><span>Size</span><span>Price</span><span>Access</span><span>Speed</span><span>Durability</span>
         ${b2StorageRows.map(row => row.map(cell => `<b>${escapeHtml(cell)}</b>`).join('')).join('')}
       </div>
+      <div class="b2-dse-warning">
+        <strong>DSE wording</strong>
+        <span>Direct-access devices can still read records in sequence. Direct access means they can jump to a location without starting from the beginning. Tape is typically sequential and used for backup/archive.</span>
+      </div>
     </section>
   `;
 }
@@ -9220,20 +9224,20 @@ function renderB2MisconceptionPanel() {
           <p>A 64-bit processor can address more memory and handle more complex functions, but performance is not linearly proportional to word length.</p>
         </article>
         <article>
-          <strong><span>Wrong</span>Direct access cannot be sequential</strong>
-          <p>Devices that support direct access can also read records in sequence. Direct access means they can jump to a location without starting from the beginning.</p>
+          <strong><span>Wrong</span>FETCH copies a file from disk</strong>
+          <p>FETCH copies the next instruction from main memory. Persistent files and storage devices belong to B2.</p>
         </article>
       </div>
     </section>
   `;
 }
 
-function renderB2DsePanel() {
+function renderB1DsePanel() {
   const prompts = [
     ['Bus role', 'Address bus transfers memory addresses; data bus transfers data or instructions; control bus transfers control signals.'],
-    ['Storage choice', 'Magnetic tape is suitable for very large backup with sequential access. SSD is faster and durable but has higher unit price.'],
     ['Upgrade scenario', 'Use the actual task: video editing/gaming may need a graphics card; general office work can use an iGPU.'],
-    ['Word length', 'Explain memory addressing and complexity, not simply "twice as fast".']
+    ['Word length', 'Explain memory addressing and complexity, not simply "twice as fast".'],
+    ['Then B2', 'RAM versus secondary storage, volatility and HDD/SSD trade-offs continue in B2.']
   ];
   return `
     <section class="b2-detail-section b2-dse-panel">
