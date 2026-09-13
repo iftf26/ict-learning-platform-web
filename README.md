@@ -14,6 +14,17 @@ Chapter names, grouping and teaching sequence now follow the school S4–S6 SOW 
 
 Activity *mode names* such as `b2Fde`, `c3Stream` and `a5Database` are unchanged so deep links keep working. Chapter *codes* in the DSE checkpoint bank follow the new SOW (`B1`, `C4`, `C5`, `A5`, `A6`, `C8`).
 
+
+## Phase 3 study tools (activity design brief)
+
+The Phase 1–2 labs stay. This pass adds the brief’s remaining site-wide learning tools:
+
+- **Global concept search** in the sidebar (English + Chinese keywords, Ctrl/Cmd+K)
+- **Learning path strip** on every chapter: Learn → See → Try → Explain → Transfer → Checkpoint
+- **Related topics** links between syllabus-connected chapters
+- **Revision view** and **Print notes** for cleaner revision / paper notes
+- **Session review** (browser-tab only, no accounts): recent chapters, hesitation signals, suggested retry
+
 ## What changed in this version
 
 - Restored the **Programming Visual Lab** as a first-class area: sidebar groups (Core D and Elective C demos), homepage tile, visible demo picker, and shareable `#demo=sequence` links. The lab was always in the page; chapter navigation had hidden every way to open it.
