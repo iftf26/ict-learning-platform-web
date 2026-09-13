@@ -7972,6 +7972,8 @@ body:has(.study-studio) {
 .study-search-empty { margin: 0; color: #9db0c8; padding: 8px; }
 
 .study-tools-bar {
+  position: relative;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -8064,6 +8066,8 @@ body:has(.study-studio) {
 .related-topic-card small { color: var(--muted); }
 
 .session-review-panel {
+  position: relative;
+  z-index: 6;
   margin: 0 0 16px;
 }
 .session-review-panel.hidden { display: none; }

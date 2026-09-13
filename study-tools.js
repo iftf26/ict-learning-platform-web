@@ -418,6 +418,7 @@
       '  </div>',
       '</div>'
     ].join('');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function enhanceTopic(topicId) {
@@ -471,30 +472,28 @@
       }
     });
 
-    const revisionBtn = document.getElementById('revisionModeBtn');
-    if (revisionBtn) {
-      revisionBtn.addEventListener('click', function () {
+    document.addEventListener('click', function (event) {
+      const revisionBtn = event.target.closest('#revisionModeBtn');
+      if (revisionBtn) {
         setRevisionMode(!document.body.classList.contains('revision-mode'));
-      });
-    }
-
-    const printBtn = document.getElementById('printRevisionBtn');
-    if (printBtn) {
-      printBtn.addEventListener('click', function () {
+        return;
+      }
+      const printBtn = event.target.closest('#printRevisionBtn');
+      if (printBtn) {
         setRevisionMode(true);
         window.print();
-      });
-    }
-
-    const sessionBtn = document.getElementById('sessionReviewBtn');
-    if (sessionBtn) sessionBtn.addEventListener('click', renderSessionReview);
-
-    const sessionPanel = document.getElementById('sessionReviewPanel');
-    if (sessionPanel) {
-      sessionPanel.addEventListener('click', function (event) {
-        if (event.target.id === 'closeSessionReviewBtn') sessionPanel.classList.add('hidden');
-      });
-    }
+        return;
+      }
+      const sessionBtn = event.target.closest('#sessionReviewBtn');
+      if (sessionBtn) {
+        renderSessionReview();
+        return;
+      }
+      if (event.target.id === 'closeSessionReviewBtn' || event.target.closest('#closeSessionReviewBtn')) {
+        const panel = document.getElementById('sessionReviewPanel');
+        if (panel) panel.classList.add('hidden');
+      }
+    });
 
     document.addEventListener('click', function (event) {
       const wrong = event.target.closest('.lab-feedback.bad, .checkpoint-feedback.is-wrong, .feedback-text.bad');
