@@ -4681,7 +4681,7 @@ const chapterBlueprints = [
     ],
     activities: [
       {
-        title: 'SQL Sandbox',
+        title: 'SQL Sandbox (SELECT / WHERE)',
         mode: 'a64SqlSandbox',
         status: 'Available now',
         goal: 'Read SELECT / WHERE, preview live filters, and spot a valid but wrong WHERE disaster.',
@@ -5410,8 +5410,15 @@ function renderChapterSidebar() {
 
 function chapterHasRegisteredLab(topicId) {
   const chapter = topicContent?.[topicId];
-  const modes = window.ActivityLabs?.modes || [];
-  return (chapter?.activities || []).some(activity => activity.mode && modes.includes(activity.mode));
+  if (!chapter) return false;
+  const labModes = window.ActivityLabs?.modes || [];
+  return (chapter.activities || []).some(activity => {
+    if (activity.demoKey) return true;
+    if (!activity.mode) return false;
+    // ActivityLabs modes plus built-in script.js interactive modes
+    if (labModes.includes(activity.mode)) return true;
+    return !['comingLater', 'placeholder'].includes(activity.mode);
+  });
 }
 
 function updateTopicLabBadges() {

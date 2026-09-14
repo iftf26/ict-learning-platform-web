@@ -58,13 +58,20 @@
     const resolved = (typeof resolveChapterId === 'function' ? resolveChapterId(topic) : topic) || topic;
     const items = [...document.querySelectorAll('.nav-item[data-topic]')];
     const codeOf = value => global.CheckpointEngine?.chapterCode(value) || '';
-    return items.find(item => item.dataset.topic === resolved)
-      || items.find(item => item.dataset.topic === topic)
-      || items.find(item => item.dataset.topic.startsWith(`${resolved} `) || item.dataset.topic.startsWith(`${topic} `))
-      || items.find(item => {
-        const code = codeOf(item.dataset.topic);
-        return code && (code === resolved || code === topic || code === codeOf(resolved));
-      });
+    const resolvedCode = codeOf(resolved) || codeOf(topic) || resolved;
+    const exact = items.find(item => item.dataset.topic === resolved)
+      || items.find(item => item.dataset.topic === topic);
+    if (exact) return exact;
+    // Prefer the longest topic id that matches the chapter code (A6.4 before A6).
+    const codeMatches = items
+      .map(item => ({ item, code: codeOf(item.dataset.topic) }))
+      .filter(({ code }) => code && (code === resolvedCode || code === resolved || code === topic));
+    if (codeMatches.length) {
+      codeMatches.sort((a, b) => b.code.length - a.code.length || b.item.dataset.topic.length - a.item.dataset.topic.length);
+      return codeMatches[0].item;
+    }
+    return items.find(item => item.dataset.topic.startsWith(`${resolved} `) || item.dataset.topic.startsWith(`${topic} `))
+      || items.find(item => item.dataset.topic.startsWith(`${resolvedCode} `));
   }
 
   function showPracticeHub(filter = {}) {
