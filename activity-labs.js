@@ -278,16 +278,21 @@
 
     lab.querySelector('[data-c1-check]').addEventListener('click', () => {
       const missing = C1_SLOTS.filter(slot => placed[slot.id] !== slot.accept);
+      lab.querySelectorAll('[data-c1-slot]').forEach(slot => {
+        const need = missing.some(item => item.id === slot.dataset.c1Slot);
+        slot.classList.toggle('needs-device', need);
+      });
       if (missing.length) {
         setFeedback(feedbackBox(
           'bad',
           'The LAN is not complete yet.',
-          `Still needed: ${missing.map(item => item.label).join(', ')}.`,
+          `Still needed: ${missing.map(item => item.label).join(', ')}. Empty or wrong slots are highlighted on the map.`,
           'Complete the path from hosts → LAN devices → boundary → ISP.',
           'Place the remaining roles. The NIC stays in the computer; it is not a slot on this map.'
         ));
         return;
       }
+      lab.querySelectorAll('[data-c1-slot]').forEach(slot => slot.classList.remove('needs-device'));
       setFeedback(feedbackBox(
         'good',
         'The school network now has clear boundaries.',

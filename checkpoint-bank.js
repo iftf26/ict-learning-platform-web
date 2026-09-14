@@ -513,5 +513,1410 @@ window.CHECKPOINT_BANK = {
       explanation: '3NF removes non-key attributes that depend on another non-key attribute. Store Office once with TeacherID.',
       nextAction: 'State what 2NF removes (partial dependence on part of a composite key).'
     }
-  ]
+  ],
+  D1: [
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "IPO process",
+    "stem": "A program reads three marks and shows the average. What is the processing?",
+    "options": [
+      {
+        "text": "Calculate the average of the three marks.",
+        "correct": true,
+        "why": "Processing transforms inputs into outputs."
+      },
+      {
+        "text": "The three marks",
+        "correct": false,
+        "why": "Those are inputs."
+      },
+      {
+        "text": "The displayed average",
+        "correct": false,
+        "why": "That is output."
+      },
+      {
+        "text": "The unused student nickname",
+        "correct": false,
+        "why": "Irrelevant details are not IPO elements."
+      }
+    ],
+    "hint": "Processing is the verb.",
+    "explanation": "Processing transforms inputs into outputs.",
+    "nextAction": "Name input and output for the same task."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Ignore noise",
+    "stem": "Why should unused story details be omitted from IPO analysis?",
+    "options": [
+      {
+        "text": "Abstraction keeps only the data and rules needed for the solution.",
+        "correct": true,
+        "why": "Abstraction removes irrelevant story details without losing solution rules."
+      },
+      {
+        "text": "Every noun must be listed as input",
+        "correct": false,
+        "why": "Not every noun is used by the algorithm."
+      },
+      {
+        "text": "Output includes the school logo by default",
+        "correct": false,
+        "why": "Logo design is usually irrelevant."
+      },
+      {
+        "text": "Processing means saving a file only",
+        "correct": false,
+        "why": "Saving is storage/output depending on context, not the only process."
+      }
+    ],
+    "hint": "Keep needed details only.",
+    "explanation": "Abstraction removes irrelevant story details without losing solution rules.",
+    "nextAction": "Try a late-return fine IPO table."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Decomposition",
+    "stem": "Why decompose a programming problem before coding?",
+    "options": [
+      {
+        "text": "Smaller parts are easier to design, test and explain.",
+        "correct": true,
+        "why": "Decomposition breaks a complex problem into manageable parts."
+      },
+      {
+        "text": "It removes all inputs",
+        "correct": false,
+        "why": "Inputs remain if the algorithm needs them."
+      },
+      {
+        "text": "It guarantees zero errors",
+        "correct": false,
+        "why": "Testing is still required."
+      },
+      {
+        "text": "It forces advanced modular libraries immediately",
+        "correct": false,
+        "why": "Conceptual decomposition can stay at analysis level."
+      }
+    ],
+    "hint": "Think smaller tasks.",
+    "explanation": "Decomposition breaks a complex problem into manageable parts.",
+    "nextAction": "List input, validate, calculate, output for a mark average."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Output vs process",
+    "stem": "Which statement is output rather than processing?",
+    "options": [
+      {
+        "text": "Display the calculated fine on screen.",
+        "correct": true,
+        "why": "Output is the result shown; processing is the transformation."
+      },
+      {
+        "text": "Multiply days overdue by $2",
+        "correct": false,
+        "why": "That is processing."
+      },
+      {
+        "text": "Read days overdue",
+        "correct": false,
+        "why": "That is input."
+      },
+      {
+        "text": "Ignore the book colour",
+        "correct": false,
+        "why": "That is abstraction of noise."
+      }
+    ],
+    "hint": "Output is presented information.",
+    "explanation": "Output is the result shown; processing is the transformation.",
+    "nextAction": "Write one IPO table for a library fine."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Input choice",
+    "stem": "A program needs three valid marks. Which is the best input description?",
+    "options": [
+      {
+        "text": "Three marks from 0 to 100",
+        "correct": true,
+        "why": "Input is data supplied to the process."
+      },
+      {
+        "text": "The classroom wall colour",
+        "correct": false,
+        "why": "Irrelevant."
+      },
+      {
+        "text": "The programmer favourite drink",
+        "correct": false,
+        "why": "Irrelevant."
+      },
+      {
+        "text": "Every word in the story",
+        "correct": false,
+        "why": "Too many unused details."
+      }
+    ],
+    "hint": "Choose data the algorithm uses.",
+    "explanation": "Input is data supplied to the process.",
+    "nextAction": "Add a validation task in decomposition."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "UI for marks",
+    "stem": "Which UI best supports marks 0–100?",
+    "options": [
+      {
+        "text": "Number fields with a range check",
+        "correct": true,
+        "why": "Constrained controls reduce invalid input before calculation."
+      },
+      {
+        "text": "One free essay box for everything",
+        "correct": false,
+        "why": "Too unconstrained."
+      },
+      {
+        "text": "Colour picker",
+        "correct": false,
+        "why": "Wrong data type."
+      },
+      {
+        "text": "Wallpaper selector",
+        "correct": false,
+        "why": "Irrelevant."
+      }
+    ],
+    "hint": "Reduce typing errors.",
+    "explanation": "Constrained controls reduce invalid input before calculation.",
+    "nextAction": "Explain one remaining limitation of range checks."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Transfer IPO",
+    "stem": "A canteen system reads an Octopus tap, subtracts $12 and shows the balance. Which is processing?",
+    "options": [
+      {
+        "text": "Subtract $12 from the previous balance",
+        "correct": true,
+        "why": "Processing changes input data into output information."
+      },
+      {
+        "text": "The Octopus tap alone",
+        "correct": false,
+        "why": "That is input."
+      },
+      {
+        "text": "The balance message alone",
+        "correct": false,
+        "why": "That is output."
+      },
+      {
+        "text": "The plastic card colour",
+        "correct": false,
+        "why": "Irrelevant."
+      }
+    ],
+    "hint": "Name the transformation.",
+    "explanation": "Processing changes input data into output information.",
+    "nextAction": "Add where the transaction log is stored."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Abstraction limit",
+    "stem": "What must abstraction still keep?",
+    "options": [
+      {
+        "text": "The rules and constraints needed for a correct solution",
+        "correct": true,
+        "why": "Abstraction removes irrelevant details without losing required rules."
+      },
+      {
+        "text": "Only the school motto",
+        "correct": false,
+        "why": "Motto is usually noise."
+      },
+      {
+        "text": "Every decorative noun",
+        "correct": false,
+        "why": "That fights abstraction."
+      },
+      {
+        "text": "Nothing about validation",
+        "correct": false,
+        "why": "Validation rules may be essential."
+      }
+    ],
+    "hint": "Do not delete important conditions.",
+    "explanation": "Abstraction removes irrelevant details without losing required rules.",
+    "nextAction": "Give one constraint you must keep for mark entry."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Full decompose",
+    "stem": "Which task list best fits “average of three marks”?",
+    "options": [
+      {
+        "text": "Read marks → validate 0–100 → calculate average → display result",
+        "correct": true,
+        "why": "Decomposition should cover input, validation, calculation and output."
+      },
+      {
+        "text": "Design the school crest first",
+        "correct": false,
+        "why": "Irrelevant."
+      },
+      {
+        "text": "Only display a random number",
+        "correct": false,
+        "why": "Skips real processing."
+      },
+      {
+        "text": "Delete the marks table",
+        "correct": false,
+        "why": "Not the task."
+      }
+    ],
+    "hint": "Keep essential stages.",
+    "explanation": "Decomposition should cover input, validation, calculation and output.",
+    "nextAction": "Say which stage catches mark=150."
+  }
+],
+  D2: [
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Sequence idea",
+    "stem": "What does sequence mean in an algorithm?",
+    "options": [
+      {
+        "text": "Steps run in a fixed order from top to bottom",
+        "correct": true,
+        "why": "Sequence executes statements in order."
+      },
+      {
+        "text": "Steps run in random order",
+        "correct": false,
+        "why": "Sequence is ordered."
+      },
+      {
+        "text": "Only selection is allowed",
+        "correct": false,
+        "why": "Sequence is a basic construct."
+      },
+      {
+        "text": "No variables may change",
+        "correct": false,
+        "why": "Assignments can update variables."
+      }
+    ],
+    "hint": "Top to bottom.",
+    "explanation": "Sequence executes statements in order.",
+    "nextAction": "Trace one assignment chain."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Selection",
+    "stem": "When is selection needed?",
+    "options": [
+      {
+        "text": "When different actions depend on a condition",
+        "correct": true,
+        "why": "Selection chooses which path to follow."
+      },
+      {
+        "text": "When every step must always run once in order only",
+        "correct": false,
+        "why": "That can be pure sequence."
+      },
+      {
+        "text": "When a loop repeats forever with no condition",
+        "correct": false,
+        "why": "That is uncontrolled iteration."
+      },
+      {
+        "text": "When storing a file name only",
+        "correct": false,
+        "why": "Storage is not selection."
+      }
+    ],
+    "hint": "IF/ELSE chooses a branch.",
+    "explanation": "Selection chooses which path to follow.",
+    "nextAction": "Write an IF for pass/fail."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Trace assignment",
+    "stem": "x ← 3, y ← 4, x ← x + y. What is x?",
+    "options": [
+      {
+        "text": "7",
+        "correct": true,
+        "why": "Assignment updates the variable with the new expression value."
+      },
+      {
+        "text": "3",
+        "correct": false,
+        "why": "x was updated."
+      },
+      {
+        "text": "4",
+        "correct": false,
+        "why": "y was added to x."
+      },
+      {
+        "text": "12",
+        "correct": false,
+        "why": "Do not multiply here."
+      }
+    ],
+    "hint": "Replace the old value.",
+    "explanation": "Assignment updates the variable with the new expression value.",
+    "nextAction": "Trace one more update."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Boolean condition",
+    "stem": "mark >= 50 is used to decide Pass. What type of construct is this?",
+    "options": [
+      {
+        "text": "Selection",
+        "correct": true,
+        "why": "A condition controlling actions is selection."
+      },
+      {
+        "text": "Sequence only with no condition",
+        "correct": false,
+        "why": "A condition is present."
+      },
+      {
+        "text": "A nested loop required by default",
+        "correct": false,
+        "why": "Not required."
+      },
+      {
+        "text": "A DROP TABLE command",
+        "correct": false,
+        "why": "SQL is unrelated."
+      }
+    ],
+    "hint": "Condition → branch.",
+    "explanation": "A condition controlling actions is selection.",
+    "nextAction": "Add an ELSE fail branch."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Algorithm before code",
+    "stem": "Why plan with pseudocode before Python?",
+    "options": [
+      {
+        "text": "To clarify logic before syntax details get in the way",
+        "correct": true,
+        "why": "Pseudocode focuses on the algorithm structure."
+      },
+      {
+        "text": "To avoid all testing forever",
+        "correct": false,
+        "why": "Testing is still needed."
+      },
+      {
+        "text": "To replace IPO analysis completely",
+        "correct": false,
+        "why": "IPO still helps."
+      },
+      {
+        "text": "To make invalid SQL become valid",
+        "correct": false,
+        "why": "Different strand."
+      }
+    ],
+    "hint": "Logic first.",
+    "explanation": "Pseudocode focuses on the algorithm structure.",
+    "nextAction": "Write three pseudocode lines for average."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Variable meaning",
+    "stem": "In total ← total + mark, what is total acting as?",
+    "options": [
+      {
+        "text": "An accumulator",
+        "correct": true,
+        "why": "An accumulator stores a running result."
+      },
+      {
+        "text": "A forever constant that cannot change",
+        "correct": false,
+        "why": "It changes."
+      },
+      {
+        "text": "A printer driver",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "A primary key",
+        "correct": false,
+        "why": "Database idea."
+      }
+    ],
+    "hint": "Running total.",
+    "explanation": "An accumulator stores a running result.",
+    "nextAction": "Initialise total to 0 and explain why."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Nested selection",
+    "stem": "Grade A if mark>=80 else if mark>=60 grade B else C. mark=75. Result?",
+    "options": [
+      {
+        "text": "B",
+        "correct": true,
+        "why": "Later branches are skipped once an earlier condition is true."
+      },
+      {
+        "text": "A",
+        "correct": false,
+        "why": "75 < 80."
+      },
+      {
+        "text": "C",
+        "correct": false,
+        "why": "75 >= 60 so B branch."
+      },
+      {
+        "text": "Error because ELSE IF is illegal",
+        "correct": false,
+        "why": "ELSE IF is valid logic."
+      }
+    ],
+    "hint": "Top condition first.",
+    "explanation": "Later branches are skipped once an earlier condition is true.",
+    "nextAction": "Change mark to 80 and re-trace."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Off-by-logic",
+    "stem": "A pass rule should accept mark>=50 but the code uses mark>50. What is wrong for mark=50?",
+    "options": [
+      {
+        "text": "Boundary mark 50 is wrongly treated as fail",
+        "correct": true,
+        "why": "Logic errors can run but give wrong results at boundaries."
+      },
+      {
+        "text": "Syntax will always crash",
+        "correct": false,
+        "why": "It can run with wrong logic."
+      },
+      {
+        "text": "50 becomes 500 automatically",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Selection becomes sequence",
+        "correct": false,
+        "why": "Still selection, but wrong threshold."
+      }
+    ],
+    "hint": "Check the boundary.",
+    "explanation": "Logic errors can run but give wrong results at boundaries.",
+    "nextAction": "Suggest a test case set: 49,50,51."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Explain sequence+selection",
+    "stem": "A ticket machine reads age, then shows child or adult price. Which pair is correct?",
+    "options": [
+      {
+        "text": "Input age; selection chooses the price message",
+        "correct": true,
+        "why": "Input feeds a condition that selects output."
+      },
+      {
+        "text": "No input is needed",
+        "correct": false,
+        "why": "Age is required."
+      },
+      {
+        "text": "DROP TABLE chooses the price",
+        "correct": false,
+        "why": "SQL unrelated."
+      },
+      {
+        "text": "A worm virus calculates price",
+        "correct": false,
+        "why": "Security unrelated."
+      }
+    ],
+    "hint": "IPO + selection.",
+    "explanation": "Input feeds a condition that selects output.",
+    "nextAction": "Add one validation for negative age."
+  }
+],
+  D3: [
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Loop purpose",
+    "stem": "Why use iteration?",
+    "options": [
+      {
+        "text": "To repeat steps while a condition holds or across items",
+        "correct": true,
+        "why": "Iteration repeats actions under control of a condition or count."
+      },
+      {
+        "text": "To run each step once only forever without repetition",
+        "correct": false,
+        "why": "That is sequence."
+      },
+      {
+        "text": "To delete SQL tables",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "To avoid all variables",
+        "correct": false,
+        "why": "Loops often use variables."
+      }
+    ],
+    "hint": "Repetition.",
+    "explanation": "Iteration repeats actions under control of a condition or count.",
+    "nextAction": "Give one school example needing a loop."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "While validation",
+    "stem": "A loop repeats INPUT mark until mark is 0–100. What is this?",
+    "options": [
+      {
+        "text": "Validation using iteration",
+        "correct": true,
+        "why": "Loops can reject invalid input and ask again."
+      },
+      {
+        "text": "A compile-only syntax banner",
+        "correct": false,
+        "why": "It is runtime logic."
+      },
+      {
+        "text": "A DROP statement",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "A primary key",
+        "correct": false,
+        "why": "Database."
+      }
+    ],
+    "hint": "Repeat until valid.",
+    "explanation": "Loops can reject invalid input and ask again.",
+    "nextAction": "Write the UNTIL condition for 0–100."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Array index",
+    "stem": "In a 1-based array of 5 marks, the last index is?",
+    "options": [
+      {
+        "text": "5",
+        "correct": true,
+        "why": "Know whether the syllabus example is 1-based or 0-based before tracing."
+      },
+      {
+        "text": "0 always",
+        "correct": false,
+        "why": "Depends on indexing convention used in the paper."
+      },
+      {
+        "text": "6",
+        "correct": false,
+        "why": "Too far."
+      },
+      {
+        "text": "50",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Count carefully.",
+    "explanation": "Know whether the syllabus example is 1-based or 0-based before tracing.",
+    "nextAction": "Trace sum of A[1]..A[5]."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Accumulator loop",
+    "stem": "sum ← 0; for each mark add to sum. What is sum after processing?",
+    "options": [
+      {
+        "text": "The total of all marks processed",
+        "correct": true,
+        "why": "An accumulator gathers a total across iterations."
+      },
+      {
+        "text": "Always 0",
+        "correct": false,
+        "why": "It accumulates."
+      },
+      {
+        "text": "Only the last mark",
+        "correct": false,
+        "why": "Unless only one was added wrongly."
+      },
+      {
+        "text": "The average automatically",
+        "correct": false,
+        "why": "Average needs division."
+      }
+    ],
+    "hint": "Running total.",
+    "explanation": "An accumulator gathers a total across iterations.",
+    "nextAction": "Show how average uses sum and count."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Loop condition",
+    "stem": "Which condition continues reading while input is invalid?",
+    "options": [
+      {
+        "text": "WHILE mark < 0 OR mark > 100",
+        "correct": true,
+        "why": "Use OR to catch values that are too small or too large."
+      },
+      {
+        "text": "WHILE mark < 0 AND mark > 100",
+        "correct": false,
+        "why": "Impossible combination for a normal mark."
+      },
+      {
+        "text": "WHILE false only on day one",
+        "correct": false,
+        "why": "Not useful."
+      },
+      {
+        "text": "WHILE DROP TABLE",
+        "correct": false,
+        "why": "Invalid."
+      }
+    ],
+    "hint": "Invalid means outside range.",
+    "explanation": "Use OR to catch values that are too small or too large.",
+    "nextAction": "Rewrite with UNTIL mark is valid."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Trace count",
+    "stem": "count ← 0; loop 3 times count ← count + 1. Final count?",
+    "options": [
+      {
+        "text": "3",
+        "correct": true,
+        "why": "A counter increases once per processed item."
+      },
+      {
+        "text": "0",
+        "correct": false,
+        "why": "It increments."
+      },
+      {
+        "text": "1",
+        "correct": false,
+        "why": "More than once."
+      },
+      {
+        "text": "2",
+        "correct": false,
+        "why": "One short."
+      }
+    ],
+    "hint": "Count the iterations.",
+    "explanation": "A counter increases once per processed item.",
+    "nextAction": "Change to count fails under 50."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Off-by-one",
+    "stem": "A loop should process indexes 1..n but uses 1..n-1. What is the risk?",
+    "options": [
+      {
+        "text": "The last item is skipped",
+        "correct": true,
+        "why": "Off-by-one errors miss or reprocess boundary items."
+      },
+      {
+        "text": "SQL injection",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "The first item is duplicated always",
+        "correct": false,
+        "why": "Different bug."
+      },
+      {
+        "text": "The program cannot start",
+        "correct": false,
+        "why": "It can run with incomplete processing."
+      }
+    ],
+    "hint": "Check start and end.",
+    "explanation": "Off-by-one errors miss or reprocess boundary items.",
+    "nextAction": "Design test data where the last item is distinctive."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Nested loop count",
+    "stem": "Outer i=1..2, inner j=1..3. How many pair visits?",
+    "options": [
+      {
+        "text": "6",
+        "correct": true,
+        "why": "Nested loops multiply the number of inner executions."
+      },
+      {
+        "text": "2",
+        "correct": false,
+        "why": "Inner runs fully each outer."
+      },
+      {
+        "text": "3",
+        "correct": false,
+        "why": "Outer runs twice."
+      },
+      {
+        "text": "5",
+        "correct": false,
+        "why": "Count all pairs."
+      }
+    ],
+    "hint": "Multiply iterations.",
+    "explanation": "Nested loops multiply the number of inner executions.",
+    "nextAction": "List the (i,j) pairs."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Average algorithm",
+    "stem": "Which algorithm correctly averages n marks in an array?",
+    "options": [
+      {
+        "text": "Initialise sum=0; add each mark; average = sum / n",
+        "correct": true,
+        "why": "Use an accumulator then divide by count."
+      },
+      {
+        "text": "Average = first mark only",
+        "correct": false,
+        "why": "Ignores the rest."
+      },
+      {
+        "text": "Average = n / sum always",
+        "correct": false,
+        "why": "Inverted."
+      },
+      {
+        "text": "Delete the array then guess",
+        "correct": false,
+        "why": "Not an algorithm."
+      }
+    ],
+    "hint": "Sum then divide.",
+    "explanation": "Use an accumulator then divide by count.",
+    "nextAction": "Explain why n=0 is a runtime risk."
+  }
+],
+  'A6.4': [
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "SELECT meaning",
+    "stem": "SELECT Name FROM Student WHERE Class=\"5A\" does what?",
+    "options": [
+      {
+        "text": "Shows names of students in class 5A",
+        "correct": true,
+        "why": "SELECT chooses fields; WHERE filters rows."
+      },
+      {
+        "text": "Deletes non-5A students",
+        "correct": false,
+        "why": "SELECT does not delete."
+      },
+      {
+        "text": "Changes all classes to 5A",
+        "correct": false,
+        "why": "No UPDATE here."
+      },
+      {
+        "text": "Shows every field of every student",
+        "correct": false,
+        "why": "Only Name, filtered rows."
+      }
+    ],
+    "hint": "Read SELECT then WHERE.",
+    "explanation": "SELECT chooses fields; WHERE filters rows.",
+    "nextAction": "Identify the FROM table next."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "FROM clause",
+    "stem": "Which clause names the table?",
+    "options": [
+      {
+        "text": "FROM",
+        "correct": true,
+        "why": "FROM names the source table."
+      },
+      {
+        "text": "WHERE",
+        "correct": false,
+        "why": "Filters rows."
+      },
+      {
+        "text": "ORDER BY",
+        "correct": false,
+        "why": "Sorts the result."
+      },
+      {
+        "text": "PRIMARY KEY",
+        "correct": false,
+        "why": "Identifies records."
+      }
+    ],
+    "hint": "The table comes FROM somewhere.",
+    "explanation": "FROM names the source table.",
+    "nextAction": "Write a full SELECT with FROM and WHERE."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Valid but wrong",
+    "stem": "Clerk wants fails (mark<50) but writes mark>=50. Why wrong?",
+    "options": [
+      {
+        "text": "The WHERE asks the opposite question",
+        "correct": true,
+        "why": "Valid SQL can return the wrong set of students."
+      },
+      {
+        "text": "SQL cannot select names",
+        "correct": false,
+        "why": "It can."
+      },
+      {
+        "text": "FROM is missing",
+        "correct": false,
+        "why": "Assume it is present."
+      },
+      {
+        "text": "It must crash",
+        "correct": false,
+        "why": "It can run and still be wrong."
+      }
+    ],
+    "hint": "Syntax ≠ intended question.",
+    "explanation": "Valid SQL can return the wrong set of students.",
+    "nextAction": "Rewrite the WHERE for fails."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "ORDER BY",
+    "stem": "ORDER BY Mark DESC mainly does what?",
+    "options": [
+      {
+        "text": "Sorts the result rows by Mark from high to low",
+        "correct": true,
+        "why": "ORDER BY sorts the result after filtering."
+      },
+      {
+        "text": "Deletes low marks",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Changes how the base table is physically stored forever",
+        "correct": false,
+        "why": "Result ordering ≠ storage redesign."
+      },
+      {
+        "text": "Creates a primary key",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Sort the result.",
+    "explanation": "ORDER BY sorts the result after filtering.",
+    "nextAction": "Explain ASC vs DESC with one example."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "WHERE role",
+    "stem": "WHERE Mark < 50 chooses what?",
+    "options": [
+      {
+        "text": "Which rows are included",
+        "correct": true,
+        "why": "WHERE filters rows that match a condition."
+      },
+      {
+        "text": "Which columns are created in a new DBMS product",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "The Python loop variable only",
+        "correct": false,
+        "why": "SQL filtering."
+      },
+      {
+        "text": "The school Wi-Fi password",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Filter rows.",
+    "explanation": "WHERE filters rows that match a condition.",
+    "nextAction": "Predict the result set size on sample data."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Result set",
+    "stem": "A query result is best described as?",
+    "options": [
+      {
+        "text": "A table of matching rows and chosen columns",
+        "correct": true,
+        "why": "The result set is the matching table produced by the query."
+      },
+      {
+        "text": "Always an error message",
+        "correct": false,
+        "why": "Only when invalid."
+      },
+      {
+        "text": "A deleted backup",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "A firewall rule",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Rows+columns returned.",
+    "explanation": "The result set is the matching table produced by the query.",
+    "nextAction": "Explain why empty result can still be valid."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch read",
+    "stem": "SELECT Class, COUNT(*) FROM Student GROUP BY Class is mainly about?",
+    "options": [
+      {
+        "text": "Counting students in each class group",
+        "correct": true,
+        "why": "GROUP BY groups records before aggregates are shown."
+      },
+      {
+        "text": "Deleting classes",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Encrypting marks",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Opening a public Wi-Fi portal",
+        "correct": false,
+        "why": "No."
+      }
+    ],
+    "hint": "GROUP BY groups then aggregate.",
+    "explanation": "GROUP BY groups records before aggregates are shown.",
+    "nextAction": "Say what changes if WHERE Class=\"5A\" is added."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch repair",
+    "stem": "Query must list failing names. Which WHERE is correct?",
+    "options": [
+      {
+        "text": "WHERE Mark < 50",
+        "correct": true,
+        "why": "Align the condition with the data question."
+      },
+      {
+        "text": "WHERE Mark >= 50",
+        "correct": false,
+        "why": "Opposite."
+      },
+      {
+        "text": "WHERE Name = Mark",
+        "correct": false,
+        "why": "Nonsense compare."
+      },
+      {
+        "text": "WHERE DROP TABLE Student",
+        "correct": false,
+        "why": "Destructive/wrong."
+      }
+    ],
+    "hint": "Fails are below 50.",
+    "explanation": "Align the condition with the data question.",
+    "nextAction": "Add ORDER BY Mark ASC."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch concept",
+    "stem": "Why can a query be dangerous for decision-making even when it runs?",
+    "options": [
+      {
+        "text": "It may answer a different question than intended",
+        "correct": true,
+        "why": "Business meaning depends on the condition, not only on parser acceptance."
+      },
+      {
+        "text": "Running SQL always crashes the OS",
+        "correct": false,
+        "why": "Not true."
+      },
+      {
+        "text": "SELECT always deletes backups",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "FROM cannot name a table",
+        "correct": false,
+        "why": "It can."
+      }
+    ],
+    "hint": "Wrong filter, wrong story.",
+    "explanation": "Business meaning depends on the condition, not only on parser acceptance.",
+    "nextAction": "Give one classroom example of valid-but-wrong WHERE."
+  }
+],
+  EA1: [
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Dangerous DELETE",
+    "stem": "Risk of DELETE FROM Student with no WHERE?",
+    "options": [
+      {
+        "text": "All records in Student may be deleted",
+        "correct": true,
+        "why": "Without WHERE, DELETE applies to every record."
+      },
+      {
+        "text": "Only one random safe row is deleted",
+        "correct": false,
+        "why": "SQL will not choose one safe row."
+      },
+      {
+        "text": "The table structure is always removed",
+        "correct": false,
+        "why": "That is DROP TABLE."
+      },
+      {
+        "text": "It becomes a Python for-loop",
+        "correct": false,
+        "why": "Different language."
+      }
+    ],
+    "hint": "WHERE limits rows.",
+    "explanation": "Without WHERE, DELETE applies to every record.",
+    "nextAction": "Rewrite a guarded DELETE for one StudentID."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "DROP vs DELETE",
+    "stem": "DROP TABLE Student mainly removes?",
+    "options": [
+      {
+        "text": "The table structure (and its data)",
+        "correct": true,
+        "why": "DROP removes the table; DELETE removes records."
+      },
+      {
+        "text": "Only one field name in a report title",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "A single row always",
+        "correct": false,
+        "why": "That is DELETE with WHERE."
+      },
+      {
+        "text": "The school firewall",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Structure vs rows.",
+    "explanation": "DROP removes the table; DELETE removes records.",
+    "nextAction": "Give one sentence contrasting them."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "UPDATE safety",
+    "stem": "UPDATE Student SET Class=\"5A\" without WHERE may?",
+    "options": [
+      {
+        "text": "Change every student's class to 5A",
+        "correct": true,
+        "why": "UPDATE without WHERE can affect all rows."
+      },
+      {
+        "text": "Change exactly one random student",
+        "correct": false,
+        "why": "Not guaranteed."
+      },
+      {
+        "text": "Drop the database users",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Create a new primary key automatically",
+        "correct": false,
+        "why": "No."
+      }
+    ],
+    "hint": "Check WHERE.",
+    "explanation": "UPDATE without WHERE can affect all rows.",
+    "nextAction": "Add a WHERE on StudentID."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "CREATE role",
+    "stem": "CREATE TABLE mainly belongs to which group?",
+    "options": [
+      {
+        "text": "DDL defining structure",
+        "correct": true,
+        "why": "CREATE TABLE defines fields, types and constraints."
+      },
+      {
+        "text": "DML only for deleting rows",
+        "correct": false,
+        "why": "CREATE is structural."
+      },
+      {
+        "text": "A selection algorithm in Python",
+        "correct": false,
+        "why": "Different strand."
+      },
+      {
+        "text": "A Wi-Fi encryption protocol",
+        "correct": false,
+        "why": "Unrelated."
+      }
+    ],
+    "hint": "Define structure first.",
+    "explanation": "CREATE TABLE defines fields, types and constraints.",
+    "nextAction": "Write a simple CREATE with a TEXT primary key."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "Phone type",
+    "stem": "Best type for a HK phone number with no arithmetic?",
+    "options": [
+      {
+        "text": "Text",
+        "correct": true,
+        "why": "Identifiers that are not for arithmetic are often stored as text."
+      },
+      {
+        "text": "Real",
+        "correct": false,
+        "why": "Not for identifiers."
+      },
+      {
+        "text": "Currency",
+        "correct": false,
+        "why": "Money only."
+      },
+      {
+        "text": "Boolean",
+        "correct": false,
+        "why": "True/false only."
+      }
+    ],
+    "hint": "Will you calculate with it?",
+    "explanation": "Identifiers that are not for arithmetic are often stored as text.",
+    "nextAction": "Give one risk of storing phone as number."
+  },
+  {
+    "type": "mc",
+    "difficulty": "standard",
+    "title": "PRIMARY KEY",
+    "stem": "A primary key should be?",
+    "options": [
+      {
+        "text": "Unique and not null for each record",
+        "correct": true,
+        "why": "PRIMARY KEY uniquely identifies each record."
+      },
+      {
+        "text": "The student favourite colour always",
+        "correct": false,
+        "why": "Not unique/stable."
+      },
+      {
+        "text": "Duplicated on purpose for speed",
+        "correct": false,
+        "why": "Breaks identity."
+      },
+      {
+        "text": "Null for new rows forever",
+        "correct": false,
+        "why": "Primary key should not be null."
+      }
+    ],
+    "hint": "Identity field.",
+    "explanation": "PRIMARY KEY uniquely identifies each record.",
+    "nextAction": "Explain why Name is a weak key."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch INSERT",
+    "stem": "INSERT INTO Student (StudentID, Name) VALUES (\"S009\",\"Ada\") requires what first?",
+    "options": [
+      {
+        "text": "A Student table structure that accepts those fields",
+        "correct": true,
+        "why": "INSERT adds records into an existing table structure."
+      },
+      {
+        "text": "That SELECT has already deleted the table",
+        "correct": false,
+        "why": "Opposite."
+      },
+      {
+        "text": "A public Wi-Fi password",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "A binary search on arrays",
+        "correct": false,
+        "why": "Different topic."
+      }
+    ],
+    "hint": "Structure before rows.",
+    "explanation": "INSERT adds records into an existing table structure.",
+    "nextAction": "What happens if StudentID duplicates a primary key?"
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch constraint",
+    "stem": "NOT NULL on Name means?",
+    "options": [
+      {
+        "text": "Every row must store a name value",
+        "correct": true,
+        "why": "NOT NULL rejects missing values for that field."
+      },
+      {
+        "text": "Name must be the primary key",
+        "correct": false,
+        "why": "Not necessarily."
+      },
+      {
+        "text": "Name is deleted nightly",
+        "correct": false,
+        "why": "No."
+      },
+      {
+        "text": "Name must be numeric",
+        "correct": false,
+        "why": "No."
+      }
+    ],
+    "hint": "Required value.",
+    "explanation": "NOT NULL rejects missing values for that field.",
+    "nextAction": "Contrast NOT NULL with PRIMARY KEY."
+  },
+  {
+    "type": "mc",
+    "difficulty": "stretch",
+    "title": "Stretch incident",
+    "stem": "A clerk runs UPDATE without WHERE then DROP TABLE. What is the worst structural outcome?",
+    "options": [
+      {
+        "text": "The table structure itself can be removed by DROP after mass updating rows",
+        "correct": true,
+        "why": "UPDATE changes rows; DROP removes the table object."
+      },
+      {
+        "text": "Only one printer job is cancelled",
+        "correct": false,
+        "why": "Unrelated."
+      },
+      {
+        "text": "Python syntax becomes invalid",
+        "correct": false,
+        "why": "Different language."
+      },
+      {
+        "text": "SELECT starts deleting rows by itself",
+        "correct": false,
+        "why": "SELECT does not delete."
+      }
+    ],
+    "hint": "Separate DML vs DDL damage.",
+    "explanation": "UPDATE changes rows; DROP removes the table object.",
+    "nextAction": "State the recovery need: backups/transactions."
+  }
+],
 };
