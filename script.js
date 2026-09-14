@@ -1541,7 +1541,17 @@ const chapterBlueprints = [
       'Text, images, audio and video are common multimedia data types.',
       'Information literacy includes respecting intellectual property, protecting data privacy, judging credibility, and extracting and organising information.'
     ],
-    activities: []
+    activities: [
+      {
+        title: 'IPO Sorter',
+        mode: 'a1IpoSorter',
+        status: 'Available now',
+        goal: 'Sort school-system facts into Input, Process, Output and Storage, then name the processing verb.',
+        misconception: '“The computer processes the data” is too vague. Name the capture, transform, present or keep action.',
+        challenge: 'Complete the Low sort in under five minutes, then transfer the IPO language to a new scenario.',
+        transfer: 'DSE transfer: classify IPO and storage in an unfamiliar information system.'
+      }
+    ]
   },
   {
     id: 'A2 Data Organisation and Data Control',
@@ -2876,7 +2886,17 @@ const chapterBlueprints = [
       'Public Wi-Fi is not automatically safe just because it has a familiar name.',
       'Ransomware is not just annoying advertising; it can block access to data.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Threat Sort',
+        mode: 'c6ThreatSort',
+        status: 'Available now',
+        goal: 'Match malware and control behaviours, then choose a response and safer public Wi-Fi habits.',
+        misconception: 'Antivirus alone does not stop every threat. Start from the attack mechanism, then name the control.',
+        challenge: 'Sort Low behaviours, match Mid ransomware controls, then judge High public Wi-Fi actions.',
+        transfer: 'DSE transfer: match malware/network threats to suitable controls.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -2997,7 +3017,17 @@ const chapterBlueprints = [
       'Abstraction does not mean deleting important conditions or constraints.',
       'Keep this chapter at problem analysis level; do not jump into advanced modular implementation.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'IPO Workshop',
+        mode: 'd1IpoWorkshop',
+        status: 'Available now',
+        goal: 'Highlight IPO elements, complete an IPO table, then decompose tasks and choose a sensible input UI.',
+        misconception: 'Do not list every noun as input. Output is not the same as processing.',
+        challenge: 'Move from Low highlights to Mid table to High decompose+UI with concept feedback.',
+        transfer: 'DSE transfer: analyse IPO and decompose an unfamiliar short problem.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -3631,7 +3661,17 @@ const chapterBlueprints = [
       'PRIMARY KEY and UNIQUE are related but not identical; a primary key identifies records and cannot be null.',
       'DROP TABLE removes a table structure, not just selected records.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'SQL Drill',
+        mode: 'ea1SqlDrill',
+        status: 'Available now',
+        goal: 'Choose safer CREATE/INSERT, preview dangerous UPDATE without WHERE, and contrast DELETE with DROP.',
+        misconception: 'UPDATE/DELETE without WHERE can affect every row. DROP removes structure, not just one record.',
+        challenge: 'Complete Low CREATE/INSERT, Mid UPDATE preview, then High DROP vs DELETE with concept feedback.',
+        transfer: 'DSE transfer: judge CREATE/INSERT and dangerous UPDATE/DELETE/DROP statements.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -4641,12 +4681,12 @@ const chapterBlueprints = [
     ],
     activities: [
       {
-        title: 'Simple Database Builder',
-        mode: 'a5Database',
+        title: 'SQL Sandbox',
+        mode: 'a64SqlSandbox',
         status: 'Available now',
-        goal: 'Watch a SELECT / WHERE / ORDER BY query change the result table on a structure you already designed.',
-        misconception: 'A query retrieves matching records. Wrong criteria give a wrong result set, not a crash.',
-        challenge: 'Filter the live result table, then explain which clause chose the fields and which clause chose the rows.',
+        goal: 'Read SELECT / WHERE, preview live filters, and spot a valid but wrong WHERE disaster.',
+        misconception: 'A syntactically valid query can still ask the opposite question and return the wrong students.',
+        challenge: 'Explain which clause chooses fields and which clause chooses rows, then repair the disaster WHERE.',
         transfer: 'DSE transfer: read SELECT, FROM and WHERE before writing more SQL in Elective A.'
       }
     ],
@@ -4724,7 +4764,17 @@ const chapterBlueprints = [
       'SSD is not always the only acceptable answer; cost, capacity and the job still matter.',
       'Volatile is a purpose difference, not an insult to the technology.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Trade-off Picker',
+        mode: 'b2TradeoffPicker',
+        status: 'Available now',
+        goal: 'Choose storage by purpose and trade-off, then identify a RAM bottleneck case.',
+        misconception: 'Do not rank devices on one universal fastest list. RAM and secondary storage solve different jobs.',
+        challenge: 'Pick the Low fit, state the Mid trade-off, then name the High bottleneck.',
+        transfer: 'DSE transfer: justify memory/storage choices using purpose and trade-off.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -5345,6 +5395,7 @@ function renderChapterSidebar() {
                 <span class="nav-item-en">${escapeHtml(titleEn)}</span>
                 ${titleZh ? `<span class="nav-item-zh" lang="zh-Hant">${escapeHtml(titleZh)}</span>` : ''}
               </span>
+              <span class="nav-topic-badge is-guide">Guide only</span>
             </button>`;
           }).join('')}
         </div>
@@ -5352,6 +5403,30 @@ function renderChapterSidebar() {
     `;
     }).join('')}
   `;
+  updateTopicLabBadges();
+
+}
+
+
+function chapterHasRegisteredLab(topicId) {
+  const chapter = topicContent?.[topicId];
+  const modes = window.ActivityLabs?.modes || [];
+  return (chapter?.activities || []).some(activity => activity.mode && modes.includes(activity.mode));
+}
+
+function updateTopicLabBadges() {
+  document.querySelectorAll('.nav-chapter[data-topic]').forEach(button => {
+    const hasLab = chapterHasRegisteredLab(button.dataset.topic);
+    let badge = button.querySelector('.nav-topic-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'nav-topic-badge';
+      button.appendChild(badge);
+    }
+    badge.textContent = hasLab ? 'Lab' : 'Guide only';
+    badge.classList.toggle('is-lab', hasLab);
+    badge.classList.toggle('is-guide', !hasLab);
+  });
 }
 
 function stripChapterCodeSafe(text) {
@@ -6009,8 +6084,8 @@ function renderStep() {
   noticeBox.innerHTML = `<strong>Current step:</strong> ${escapeHtml(current.note)}<br><br><strong>Key idea:</strong> ${escapeHtml(currentCase.notice)}<br><br><strong>Exam Trap:</strong> ${escapeHtml(currentCase.examTrap || 'Trace the current line before jumping to the output.')}`;
   followUpBox.textContent = currentCase.dseTransfer || currentCase.followUp || 'DSE transfer: identify one input that would change the final output and explain why.';
   renderStory(current);
-  if (current.checkpoint) renderPrediction(currentCase.prediction);
-  else if (!predictionOptions.children.length) renderPrediction(null);
+  if (current.checkpoint) renderPrediction(currentCase.prediction, { live: true });
+  else renderPrediction(null);
 }
 
 function renderStory(current) {
@@ -6052,7 +6127,7 @@ function getFlowSteps(code) {
   });
 }
 
-function renderPrediction(prediction) {
+function renderPrediction(prediction, meta = {}) {
   predictionOptions.innerHTML = '';
   predictionFeedback.textContent = '';
   predictionFeedback.className = 'feedback-text';
@@ -6060,7 +6135,9 @@ function renderPrediction(prediction) {
     predictionQuestion.textContent = 'Run the program until a checkpoint appears.';
     return;
   }
-  predictionQuestion.textContent = prediction.question;
+  const live = meta.live !== false;
+  const badge = live ? 'Live case' : 'Hypothetical';
+  predictionQuestion.innerHTML = `<span class="prediction-binding ${live ? 'is-live' : 'is-hypothetical'}">${badge}</span> ${escapeHtml(prediction.question)}`;
   prediction.options.forEach(option => {
     const btn = document.createElement('button');
     btn.textContent = option.text;
@@ -8129,7 +8206,7 @@ function renderUniversalDseTransfer(topicConfig, meta) {
         </article>
         <article>
           <strong>Practice path</strong>
-          <p>${practiceCount ? `${practiceCount} checkpoint question${practiceCount > 1 ? 's' : ''} ready` : 'Checkpoint practice can be added later'}; ${activityCount ? `${activityCount} activity ${activityCount > 1 ? 'cards' : 'card'} ready` : 'Activities: To be added'}.</p>
+          <p>${practiceCount ? `${practiceCount} checkpoint question${practiceCount > 1 ? 's' : ''} ready` : 'Checkpoint practice can be added later'}; ${activityCount ? `${activityCount} activity ${activityCount > 1 ? 'cards' : 'card'} ready` : 'Activity coming later — use Keywords + Mistakes + Practice'}.</p>
         </article>
       </div>
     </section>
@@ -10672,7 +10749,7 @@ function renderTopicSimulationPrediction(prediction) {
   }
   predictionNode.innerHTML = `
     <div class="prediction-panel inline-prediction">
-      <p class="eyebrow">Prediction checkpoint</p>
+      <p class="eyebrow">Prediction checkpoint · <span class="prediction-binding is-live">Live case</span></p>
       <h3>Pause and think</h3>
       <p class="question-text">${escapeHtml(prediction.question)}</p>
       <div class="option-grid">
@@ -10744,14 +10821,14 @@ function renderTopicActivities(items) {
       <div class="activity-header">
         <div>
           <p class="eyebrow">Activities</p>
-          <h3>To be added</h3>
-          <p>Activity design is intentionally left blank here. New tasks should be added only when they genuinely help students see a concept, practise a DSE-style skill, or fix a common mistake.</p>
+          <h3>Activity coming later</h3>
+          <p>Use Keywords + Mistakes + Practice for now. A hands-on lab will appear here when it is ready.</p>
         </div>
-        <span class="activity-count">To be added</span>
+        <span class="activity-count">Coming later</span>
       </div>
-      <article class="activity-placeholder" aria-live="polite">
-        <strong>To be added</strong>
-        <p>No click-only or shallow activity is shown for this chapter. A meaningful activity can be designed later with a clear learning purpose, feedback and checkpoint transfer.</p>
+      <article class="activity-coming-later" aria-live="polite">
+        <strong>Activity coming later</strong>
+        <p>No shallow click-only task is shown for this chapter. Keep learning with Keywords, Mistakes and Checkpoint practice until a meaningful lab is added.</p>
       </article>
     `;
     return;
@@ -10842,6 +10919,13 @@ function activityModeLabel(mode) {
     c4Html: 'HTML lab',
     c4Path: 'path explorer',
     a5Database: 'database builder',
+
+    a1IpoSorter: 'IPO sorter',
+    d1IpoWorkshop: 'IPO workshop',
+    a64SqlSandbox: 'SQL sandbox',
+    ea1SqlDrill: 'SQL drill',
+    c6ThreatSort: 'threat sort',
+    b2TradeoffPicker: 'trade-off picker',
     d6BugHunt: 'bug hunt',
     e3Licence: 'licence lab',
     ea5Erd: 'ERD studio'
@@ -12994,7 +13078,7 @@ function bindActivityStage(activity) {
       const bar = stage.querySelector('#activityMeterBar');
       if (bar) {
         bar.style.width = `${percent}%`;
-        bar.textContent = `To be added`;
+        bar.textContent = `${percent}%`;
       }
       setActivityFeedback(stage, `${onCount} decision(s) switched on. Explain the effect, not only the final state.`);
     });

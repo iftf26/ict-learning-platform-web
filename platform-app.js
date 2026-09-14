@@ -27,7 +27,7 @@
     return Boolean(global.__platformWritingHash);
   }
 
-  function setHash(params) {
+  function setHash(params, options = {}) {
     const search = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
       if (value) search.set(key, value);
@@ -35,7 +35,8 @@
     const next = `#${search.toString()}`;
     if (location.hash === next) return;
     global.__platformWritingHash = true;
-    history.replaceState(null, '', next || '#');
+    if (options.replace) history.replaceState(null, '', next || '#');
+    else history.pushState(null, '', next || '#');
     global.__platformWritingHash = false;
   }
 
@@ -386,7 +387,9 @@
       if (!writingHash()) setHash({ demo: demoSelect.value });
     });
     window.addEventListener('hashchange', applyHash);
+    window.addEventListener('popstate', applyHash);
     if (location.hash) applyHash();
+    else setHash({ view: 'home' }, { replace: true });
   }
 
   global.PlatformApp = { showPracticeHub, applyHash, setHash, DEMO_GROUPS };

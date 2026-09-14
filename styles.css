@@ -8179,3 +8179,153 @@ body.revision-mode #chapter-intro::after {
     transition: none !important;
   }
 }
+
+
+/* Pass 2 labs + empty-state UX */
+.activity-coming-later {
+  border: 1px dashed #9db0c8;
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, #f8fbff, #eef4fb);
+}
+.activity-coming-later strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.05rem;
+}
+.nav-topic-badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1px solid #d5e0ef;
+  background: #f4f7fb;
+  color: #5b6b7c;
+}
+.nav-topic-badge.is-guide {
+  background: #f4f7fb;
+  border-color: #d5e0ef;
+  color: #5b6b7c;
+}
+.nav-topic-badge.is-lab {
+  background: #e8f7ef;
+  border-color: #b7e0c7;
+  color: #0f7a45;
+}
+.nav-item.nav-chapter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prediction-binding,
+.prediction-binding.is-live,
+.prediction-binding.is-hypothetical {
+  display: inline-block;
+  margin-right: 8px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.prediction-binding.is-live {
+  background: #e8f7ef;
+  color: #0f7a45;
+}
+.prediction-binding.is-hypothetical {
+  background: #fff4e5;
+  color: #9a5b00;
+}
+.pass2-lab .lab-stage-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pass2-lab .lab-stage-tabs button {
+  border: 1px solid #d5e0ef;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pass2-lab .lab-stage-tabs button.is-active {
+  background: #e8eefc;
+  border-color: #b8c9f5;
+  color: #2447a8;
+}
+.pass2-lab .lab-help { color: #5b6b7c; margin: 0 0 10px; }
+.pass2-lab .lab-scene {
+  border: 1px solid #d5e0ef;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #f8fbff;
+  margin-bottom: 12px;
+}
+.pass2-lab .lab-option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.pass2-lab .lab-option-row button,
+.pass2-lab .a1-chip {
+  border: 1px solid #d5e0ef;
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.pass2-lab .lab-option-row button.is-selected,
+.pass2-lab .a1-chip.is-selected {
+  border-color: #2447a8;
+  background: #eef3ff;
+}
+.pass2-lab .lab-code {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: auto;
+}
+.pass2-lab .lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+.pass2-lab .lab-table th,
+.pass2-lab .lab-table td {
+  border: 1px solid #d5e0ef;
+  padding: 6px 8px;
+  text-align: left;
+}
+.a1-zones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.a1-zone {
+  border: 1px dashed #9db0c8;
+  border-radius: 14px;
+  padding: 10px;
+  min-height: 110px;
+  background: #fff;
+}
+.a1-zone-drop { min-height: 70px; display: grid; gap: 6px; }
+.a1-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.c6-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.c6-grid article {
+  border: 1px solid #d5e0ef;
+  border-radius: 14px;
+  padding: 10px;
+  background: #fff;
+}

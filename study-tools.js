@@ -7,12 +7,10 @@
   const SESSION_KEY = 'hkdse-ict-session-v1';
 
   const FLOW_STEPS = [
-    { id: 'chapter-intro', label: 'Learn', labelZh: '學' },
-    { id: 'chapter-keywords', label: 'See', labelZh: '見' },
-    { id: 'chapter-details', label: 'Try', labelZh: '練' },
-    { id: 'chapter-mistakes', label: 'Explain', labelZh: '釋' },
-    { id: 'chapter-practice', label: 'Transfer', labelZh: '轉' },
-    { id: 'chapter-checkpoint', label: 'Checkpoint', labelZh: '測' }
+    { id: 'chapter-keywords', label: '① Keywords', labelZh: '關鍵詞' },
+    { id: 'chapter-mistakes', label: '② Mistakes', labelZh: '錯誤' },
+    { id: 'chapter-practice', label: '③ Activity', labelZh: '活動' },
+    { id: 'chapter-checkpoint', label: '④ Checkpoint', labelZh: '檢查點' }
   ];
 
   const RELATED = {
@@ -301,18 +299,21 @@
     if (old) old.remove();
     const hasActivity = Boolean(document.querySelector('#chapter-practice .lab-shell, #topicActivityPanel .lab-shell, #topicActivityPanel .activity-card'));
     const steps = FLOW_STEPS.map(function (step) {
-      const disabled = step.id === 'chapter-practice' && !hasActivity;
+      const isActivity = step.id === 'chapter-practice';
+      const muted = isActivity && !hasActivity;
+      const label = muted ? '③ Coming later' : step.label;
+      const labelZh = muted ? '稍後' : step.labelZh;
       return [
-        '<button type="button" class="learning-flow-step' + (disabled ? ' is-muted' : '') + '" data-flow-target="' + step.id + '"' + (disabled ? ' disabled' : '') + '>',
-        '  <span>' + esc(step.label) + '</span>',
-        '  <small lang="zh-Hant">' + esc(step.labelZh) + '</small>',
+        '<button type="button" class="learning-flow-step' + (muted ? ' is-muted' : '') + '" data-flow-target="' + step.id + '">',
+        '  <span>' + esc(label) + '</span>',
+        '  <small lang="zh-Hant">' + esc(labelZh) + '</small>',
         '</button>'
       ].join('');
     }).join('<span class="learning-flow-arrow" aria-hidden="true">→</span>');
 
     intro.insertAdjacentHTML('beforeend', [
       '<div class="learning-flow-strip" id="learningFlowStrip" aria-label="Learning path">',
-      '  <p class="learning-flow-lead">Learning path · 學習路徑</p>',
+      '  <p class="learning-flow-lead">Do now · 先做這四步' + (hasActivity ? '' : ' · activity coming later') + '</p>',
       '  <div class="learning-flow-track">' + steps + '</div>',
       '</div>'
     ].join(''));
