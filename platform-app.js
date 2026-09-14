@@ -90,7 +90,8 @@
     const chapter = document.getElementById('practiceChapter');
     if (filter.strand && strand) strand.value = filter.strand;
     if (filter.chapter && chapter) chapter.value = filter.chapter;
-    runPracticeHub();
+    runPracticeHub({ count: 8 });
+    updatePracticePoolMeta();
     setHash({
       practice: filter.chapter || 'all',
       strand: filter.strand || ''
@@ -110,24 +111,59 @@
     strand.dataset.ready = 'true';
   }
 
-  function runPracticeHub() {
-    fillPracticeFilters();
-    const panel = document.getElementById('dsePracticePanel');
-    if (!panel || !global.CheckpointEngine) return;
+  function practiceFilter() {
     const strand = document.getElementById('practiceStrand')?.value || '';
     const chapter = document.getElementById('practiceChapter')?.value || '';
     const type = document.getElementById('practiceType')?.value || '';
     const difficulty = document.getElementById('practiceDifficulty')?.value || '';
-    global.CheckpointEngine.mount(panel, {
-      title: 'DSE Practice Hub',
-      lead: 'Questions come from the same chapter pools as the topic checkpoints. Filters change the mix; they do not invent a second bank.',
-      count: 8,
-      filter: {
-        strand: strand || undefined,
-        chapter: chapter || undefined,
-        type: type || undefined,
-        difficulty: difficulty || undefined
+    return {
+      strand: strand || undefined,
+      chapter: chapter || undefined,
+      type: type || undefined,
+      difficulty: difficulty || undefined
+    };
+  }
+
+  function updatePracticePoolMeta(filter = practiceFilter(), count = 8) {
+    const meta = document.getElementById('practicePoolMeta');
+    if (!meta || !global.CheckpointEngine?.collectPool) return 0;
+    const pool = global.CheckpointEngine.collectPool(filter);
+    const size = pool.length;
+    meta.textContent = size
+      ? `${size} question${size === 1 ? '' : 's'} in this filter · next set uses up to ${Math.min(count, size)}`
+      : 'No questions for this filter yet — open Keywords on a chapter or widen the filter.';
+    return size;
+  }
+
+  function runPracticeHub(options = {}) {
+    fillPracticeFilters();
+    const panel = document.getElementById('dsePracticePanel');
+    if (!panel || !global.CheckpointEngine) return;
+    const filter = options.filter || practiceFilter();
+    let pool = global.CheckpointEngine.collectPool(filter);
+    if (options.wrongsOnly) {
+      const misses = (global.CheckpointEngine.sessionMisses || []).map(item => item.stem).filter(Boolean);
+      const missSet = new Set(misses);
+      pool = pool.filter(item => missSet.has(item.stem));
+      if (!pool.length) {
+        panel.innerHTML = `
+          <div class="checkpoint-empty">
+            <h3>No wrongs stored yet</h3>
+            <p>Answer a few Practice Hub or chapter checkpoint items first. Missed stems from this browser session will appear here.</p>
+          </div>
+        `;
+        updatePracticePoolMeta(filter, options.count || 8);
+        return;
       }
+    }
+    const count = options.count || 8;
+    updatePracticePoolMeta(filter, count);
+    global.CheckpointEngine.mount(panel, {
+      title: options.title || 'DSE Practice Hub',
+      lead: options.lead || 'Questions come from the same chapter pools as the topic checkpoints. Filters change the mix; they do not invent a second bank.',
+      count,
+      pool,
+      filter
     });
   }
 
@@ -383,10 +419,24 @@
     revealDemoSelect();
     enhanceDashboard();
     document.getElementById('practiceRun')?.addEventListener('click', () => {
-      runPracticeHub();
+      runPracticeHub({ count: 8 });
       const strand = document.getElementById('practiceStrand')?.value || '';
       const chapter = document.getElementById('practiceChapter')?.value || '';
       setHash({ practice: chapter || 'all', strand });
+    });
+    document.getElementById('practiceMore3')?.addEventListener('click', () => {
+      runPracticeHub({ count: 3, title: 'Three more', lead: 'A short top-up set from the current filter.' });
+    });
+    document.getElementById('practiceWrongsOnly')?.addEventListener('click', () => {
+      runPracticeHub({
+        count: 6,
+        wrongsOnly: true,
+        title: 'Wrongs only',
+        lead: 'Retry stems you missed earlier in this browser session.'
+      });
+    });
+    ['practiceStrand', 'practiceChapter', 'practiceType', 'practiceDifficulty'].forEach(id => {
+      document.getElementById(id)?.addEventListener('change', () => updatePracticePoolMeta());
     });
     demoSelect?.addEventListener('change', () => {
       revealDemoSelect();

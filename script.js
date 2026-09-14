@@ -10835,7 +10835,7 @@ function renderTopicActivities(items) {
       </div>
       <article class="activity-coming-later" aria-live="polite">
         <strong>Activity coming later</strong>
-        <p>No shallow click-only task is shown for this chapter. Keep learning with Keywords, Mistakes and Checkpoint practice until a meaningful lab is added.</p>
+        <p>Do now: Keywords → Mistakes → Checkpoint. No shallow click-only task is shown for this chapter until a meaningful lab is ready.</p>
       </article>
     `;
     return;

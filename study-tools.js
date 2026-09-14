@@ -292,6 +292,30 @@
     }).join('');
   }
 
+  function sectionIsUsable(id) {
+    const target = document.getElementById(id);
+    if (!target) return false;
+    if (id === 'chapter-practice') {
+      return Boolean(target.querySelector('.lab-shell, .activity-card, .activity-coming-later'));
+    }
+    if (target.classList.contains('hidden')) return false;
+    const closest = target.closest('.chapter-section');
+    if (closest && closest.classList.contains('hidden')) return false;
+    return true;
+  }
+
+  function jumpToFlowTarget(id) {
+    const target = document.getElementById(id);
+    if (!target) return false;
+    const section = target.classList.contains('chapter-section') ? target : target.closest('.chapter-section');
+    if (section) section.classList.remove('hidden');
+    target.classList.remove('hidden');
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.classList.add('flow-target-flash');
+    window.setTimeout(function () { target.classList.remove('flow-target-flash'); }, 1200);
+    return true;
+  }
+
   function injectLearningFlow() {
     const intro = document.getElementById('chapter-intro');
     if (!intro) return;
@@ -301,10 +325,12 @@
     const steps = FLOW_STEPS.map(function (step) {
       const isActivity = step.id === 'chapter-practice';
       const muted = isActivity && !hasActivity;
+      const usable = muted ? sectionIsUsable(step.id) : sectionIsUsable(step.id);
+      const disabled = !usable && !muted;
       const label = muted ? '③ Coming later' : step.label;
       const labelZh = muted ? '稍後' : step.labelZh;
       return [
-        '<button type="button" class="learning-flow-step' + (muted ? ' is-muted' : '') + '" data-flow-target="' + step.id + '">',
+        '<button type="button" class="learning-flow-step' + (muted || disabled ? ' is-muted' : '') + '" data-flow-target="' + step.id + '"' + (disabled ? ' disabled aria-disabled="true"' : '') + '>',
         '  <span>' + esc(label) + '</span>',
         '  <small lang="zh-Hant">' + esc(labelZh) + '</small>',
         '</button>'
@@ -313,7 +339,7 @@
 
     intro.insertAdjacentHTML('beforeend', [
       '<div class="learning-flow-strip" id="learningFlowStrip" aria-label="Learning path">',
-      '  <p class="learning-flow-lead">Do now · 先做這四步' + (hasActivity ? '' : ' · activity coming later') + '</p>',
+      '  <p class="learning-flow-lead">Do now · 先做這四步' + (hasActivity ? '' : ' · use Keywords → Mistakes → Checkpoint') + '</p>',
       '  <div class="learning-flow-track">' + steps + '</div>',
       '</div>'
     ].join(''));
@@ -394,8 +420,18 @@
       '    </div>',
       '    <button type="button" class="ghost-btn" id="closeSessionReviewBtn">Close</button>',
       '  </div>',
-      '  <p>No accounts and no permanent tracking. This summary stays in the current browser tab session.</p>',
+      '  <p>' + (struggles.length
+        ? 'Today’s traps are listed first. Fix those ideas before opening a new chapter.'
+        : 'No accounts and no permanent tracking. Wrong checkpoint answers from this tab will appear here as traps.') + '</p>',
       '  <div class="session-review-grid">',
+      '    <article' + (struggles.length ? ' class="session-traps-focus"' : '') + '>',
+      '      <h4>' + (struggles.length ? 'Today’s traps' : 'Where you hesitated') + '</h4>',
+      '      <ul>' + (struggles.length
+        ? struggles.map(function (pair) {
+            return '<li>' + esc(pair[0]) + ' <em>×' + pair[1] + '</em></li>';
+          }).join('')
+        : '<li>No struggle signals yet. Wrong checkpoint answers will appear here.</li>') + '</ul>',
+      '    </article>',
       '    <article>',
       '      <h4>Recently opened</h4>',
       '      <ul>' + (opened.length
@@ -403,14 +439,6 @@
             return '<li><button type="button" class="text-link" data-topic-id="' + esc(code) + '">' + esc(code) + '</button></li>';
           }).join('')
         : '<li>No chapters opened yet.</li>') + '</ul>',
-      '    </article>',
-      '    <article>',
-      '      <h4>Where you hesitated</h4>',
-      '      <ul>' + (struggles.length
-        ? struggles.map(function (pair) {
-            return '<li>' + esc(pair[0]) + ' <em>×' + pair[1] + '</em></li>';
-          }).join('')
-        : '<li>No struggle signals yet. Wrong checkpoint answers will appear here.</li>') + '</ul>',
       '    </article>',
       '    <article>',
       '      <h4>Suggested retry</h4>',
@@ -467,9 +495,14 @@
       if (jump) openTopic(jump.dataset.topicId);
 
       const flow = event.target.closest('[data-flow-target]');
-      if (flow) {
-        const target = document.getElementById(flow.dataset.flowTarget);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (flow && !flow.disabled) {
+        event.preventDefault();
+        jumpToFlowTarget(flow.dataset.flowTarget);
+      }
+
+      // Search must not block sidebar navigation.
+      if (event.target.closest('.module-nav .nav-item, .module-nav .curriculum-heading') && results) {
+        results.hidden = true;
       }
     });
 

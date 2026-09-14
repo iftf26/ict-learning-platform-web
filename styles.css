@@ -8153,7 +8153,15 @@ body.revision-mode #chapter-intro::after {
   .lab-shell,
   .activity-card,
   .arcade-scoreboard,
-  button.related-topic-card {
+  button.related-topic-card,
+  .related-topics-panel,
+  #chapter-details,
+  #chapter-practice,
+  .topic-simulation-panel,
+  .topic-stat-grid,
+  .topic-exam-grid,
+  .topic-formula-panel,
+  .topic-keypoint-grid {
     display: none !important;
   }
   .app-shell,
@@ -8162,14 +8170,53 @@ body.revision-mode #chapter-intro::after {
   }
   .content {
     padding: 0 !important;
+    max-width: 100% !important;
   }
   body {
     background: #fff !important;
   }
+  body.revision-mode #chapter-intro,
+  body.revision-mode #chapter-outcomes,
+  body.revision-mode #chapter-keywords,
+  body.revision-mode #chapter-mistakes,
+  #chapter-intro,
+  #chapter-outcomes,
+  #chapter-keywords,
+  #chapter-mistakes {
+    display: block !important;
+  }
   .chapter-section {
     break-inside: avoid;
     box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 12px !important;
+    padding: 8px 0 !important;
   }
+  .topic-keyword-grid,
+  .topic-misconception-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+.practice-pool-meta {
+  margin: 8px 0 14px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.flow-target-flash {
+  outline: 3px solid #8fb0ff;
+  outline-offset: 4px;
+  transition: outline-color 0.8s ease;
+}
+.c1-slot.needs-device {
+  border-color: #d14343 !important;
+  background: #fff1f1 !important;
+  box-shadow: inset 0 0 0 1px #f0b4b4;
+}
+.study-search-results {
+  max-height: 220px;
+  z-index: 40;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8328,4 +8375,11 @@ body.revision-mode #chapter-intro::after {
   border-radius: 14px;
   padding: 10px;
   background: #fff;
+}
+
+.session-traps-focus {
+  border: 1px solid #f0b4b4;
+  background: #fff7f7;
+  border-radius: 14px;
+  padding: 10px 12px;
 }
