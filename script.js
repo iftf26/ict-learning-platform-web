@@ -1904,6 +1904,15 @@ const chapterBlueprints = [
         misconception: 'A formula that works in the first row may become wrong after copying if a fixed reference is not locked.',
         challenge: 'Repair spreadsheet formulas, copy them across or down, and observe which references move.',
         transfer: 'DSE transfer: write the copied formula and explain why each dollar sign is required.'
+      },
+      {
+        title: 'Formula Doctor',
+        mode: 'a5FormulaDoctor',
+        status: 'Available now',
+        goal: 'Diagnose a formula that is almost right, repair it, and see what changes when it is copied.',
+        misconception: 'A formula can look plausible but use the wrong function, criterion, or reference after copying.',
+        challenge: 'Work through fresh formula cases. When you have a reason, say it to your teacher or partner instead of typing it into the site.',
+        transfer: 'DSE transfer: distinguish function purpose, criterion syntax and reference behaviour.'
       }
     ],
     practice: [
@@ -2648,6 +2657,15 @@ const chapterBlueprints = [
         transfer: 'DSE transfer: HTTPS uses SSL/TLS to encrypt web communication so intercepted data is not easily readable.',
         status: 'Ready',
         mode: 'c2Cipher'
+      },
+      {
+        title: 'Protocol Repair Station',
+        goal: 'Match protocol roles, repair a broken online journey, and distinguish a correct protocol from a suitable protocol.',
+        misconception: 'DNS, HTTPS, SMTP and TCP/IP are not interchangeable labels; each solves a different part of communication.',
+        challenge: 'After each case, pause and explain the journey aloud to your teacher or partner. The site checks only objective choices.',
+        transfer: 'DSE transfer: read the user action first, then identify the protocol role and the failed stage.',
+        status: 'Available now',
+        mode: 'c3ProtocolRepair'
       }
     ],
     practice: [
@@ -3239,7 +3257,17 @@ const chapterBlueprints = [
       'input() does not automatically convert text to an integer.',
       'A syntax error is different from a wrong result caused by faulty logic.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Python Trace & Repair',
+        mode: 'd4ProgramRepair',
+        status: 'Available now',
+        goal: 'Choose revealing test data, find the first faulty line, apply one repair and inspect the changed result.',
+        misconception: 'A program that appears to work on one ordinary input may still fail at a boundary or because input is text.',
+        challenge: 'Use the final pause prompt to explain what evidence made you choose the repair; no written reason is auto-marked.',
+        transfer: 'DSE transfer: use test evidence to distinguish a syntax, runtime or logic issue.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -3306,7 +3334,17 @@ const chapterBlueprints = [
       'String positions are easy to shift by one; trace a small example.',
       'Test data should include boundary cases, not only typical valid data.'
     ],
-    activities: [],
+    activities: [
+      {
+        title: 'Trace, Test & Debug Deck',
+        mode: 'd5ProgramRepair',
+        status: 'Available now',
+        goal: 'Trace a small integrated program, choose the test that exposes its fault, then repair one line only.',
+        misconception: 'Do not change several lines at once. The first unexpected value in a trace is evidence.',
+        challenge: 'Change to another case for quantity practice, then tell your teacher why your test data is revealing.',
+        transfer: 'DSE transfer: combine list processing, boundary tests and a precise one-line correction.'
+      }
+    ],
     practice: [
       {
         level: 'Checkpoint',
@@ -4688,6 +4726,15 @@ const chapterBlueprints = [
         misconception: 'A syntactically valid query can still ask the opposite question and return the wrong students.',
         challenge: 'Explain which clause chooses fields and which clause chooses rows, then repair the disaster WHERE.',
         transfer: 'DSE transfer: read SELECT, FROM and WHERE before writing more SQL in Elective A.'
+      },
+      {
+        title: 'SQL Query Builder',
+        mode: 'a64QueryBuilder',
+        status: 'Available now',
+        goal: 'Build a query from a data question, see the live result set, and repair a query that is valid but asks the wrong thing.',
+        misconception: 'SQL can be syntactically valid and still return the wrong rows or wrong columns.',
+        challenge: 'Complete several deterministic query cases. Explain your choice of clauses aloud; the site does not mark free-text reasons.',
+        transfer: 'DSE transfer: map the question to SELECT, WHERE and ORDER BY before writing a query.'
       }
     ],
     practice: [
@@ -10918,7 +10965,11 @@ function activityModeLabel(mode) {
     a3Utf8Encoder: 'encoding lab',
     d3ListOps: 'list trainer',
     a4FormulaCopyRescue: 'formula rescue',
+    a5FormulaDoctor: 'formula doctor',
     c2Cipher: 'cipher lab',
+    c3ProtocolRepair: 'protocol repair',
+    d4ProgramRepair: 'trace and repair',
+    d5ProgramRepair: 'trace and debug',
     demo: 'visual lab',
     c1Network: 'network builder',
     b2Fde: 'CPU cycle',
@@ -10930,6 +10981,7 @@ function activityModeLabel(mode) {
     a1IpoSorter: 'IPO sorter',
     d1IpoWorkshop: 'IPO workshop',
     a64SqlSandbox: 'SQL sandbox',
+    a64QueryBuilder: 'SQL query builder',
     ea1SqlDrill: 'SQL drill',
     c6ThreatSort: 'threat sort',
     b2TradeoffPicker: 'trade-off picker',
