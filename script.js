@@ -5435,7 +5435,7 @@ function renderChapterSidebar() {
     <div class="nav-title">HKDSE ICT</div>
     <button class="nav-item nav-root active" data-page="dashboard">
       <span class="nav-emoji">⌂</span>
-      ICT revision hub
+      Start here
     </button>
     ${chapterStructure.map((group, groupIndex) => {
       const strand = typeof getStrandStudyMeta === 'function'

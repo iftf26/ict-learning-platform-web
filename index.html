@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=20260916-1" />
 </head>
 <body>
   <div class="app-shell study-studio" id="appShell">
@@ -140,51 +140,79 @@
     </aside>
 
     <main class="content">
-      <section id="dashboardPage" class="dashboard-page" aria-live="polite">
-        <section class="hub-hero">
-          <div>
+      <section id="dashboardPage" class="dashboard-page" data-home-mode="gateway" aria-live="polite">
+        <section class="mode-gateway" aria-labelledby="modeGatewayTitle">
+          <div class="mode-gateway-intro">
             <p class="eyebrow">HKDSE ICT · 資訊及通訊科技</p>
-            <h2>Study Hub</h2>
+            <h2 id="modeGatewayTitle">今日想點樣學？</h2>
+            <p>先選擇你的學習模式：用 <strong>Notes</strong> 建立概念，再用 <strong>Studio</strong> 把概念變成可驗證的練習。</p>
+          </div>
+          <div class="mode-choice-grid">
+            <button class="mode-choice-card mode-choice-notes" type="button" data-home-action="notes">
+              <span class="mode-choice-icon" aria-hidden="true">▤</span>
+              <span class="mode-choice-kicker">READ · CONNECT · REVISE</span>
+              <strong>Notes</strong>
+              <span lang="zh-Hant">按課題閱讀筆記</span>
+              <small>學習成果、關鍵詞、常見錯誤、詳細解釋和 chapter checkpoint。</small>
+              <em>Open Notes <span aria-hidden="true">→</span></em>
+            </button>
+            <button class="mode-choice-card mode-choice-studio" type="button" data-home-action="studio">
+              <span class="mode-choice-icon" aria-hidden="true">⌘</span>
+              <span class="mode-choice-kicker">WRITE · RUN · CHECK</span>
+              <strong>Studio</strong>
+              <span lang="zh-Hant">直接做題與執行</span>
+              <small>Python、SQL、視覺程式追蹤和 DSE-style 練習都集中在同一個入口。</small>
+              <em>Open Studio <span aria-hidden="true">→</span></em>
+            </button>
+          </div>
+          <p class="mode-gateway-footnote">建議路線：先在 Notes 看懂一個概念，再到 Studio 用題目和輸出驗證。</p>
+        </section>
+
+        <div class="notes-dashboard-content">
+        <section class="hub-hero notes-hero">
+          <div>
+            <p class="eyebrow">NOTES · 按課題建立概念</p>
+            <h2>Notes</h2>
             <p class="hero-copy">
-              Pick a C&amp;A topic, check the keywords, then beat the common traps. Activities are added only when they actually help students learn.
+              按課題讀清 C&amp;A 學習成果、關鍵詞和常見錯誤，再用解釋與 checkpoint 把概念連起來。
             </p>
             <p class="creator-line">Created by Mr Ivan Fung</p>
           </div>
           <div class="hub-metrics" aria-label="Learning coverage">
-            <div><strong>36</strong><span>topic pages</span></div>
+            <div><strong>36</strong><span>topic notes</span></div>
             <div><strong>C&amp;A</strong><span>outcomes + keywords</span></div>
-            <div><strong>DSE</strong><span>traps to avoid</span></div>
+            <div><strong>DSE</strong><span>traps + checkpoints</span></div>
           </div>
         </section>
 
-        <section class="learning-path-grid" aria-label="Start learning paths">
-          <button class="path-card path-lab" type="button" data-dashboard-action="lab">
-            <p>Start here</p>
+        <section class="learning-path-grid" aria-label="Open notes by topic">
+          <button class="path-card path-lab" type="button" data-open-topic="A3 Data Representation" data-open-group="Core A Information Processing">
+            <p>Core A</p>
             <h3>Data Representation</h3>
             <span class="path-card-zh" lang="zh-Hant">數據表示</span>
             <span class="path-card-copy">Binary, hex, two’s complement and character codes. Multimedia digitisation is A4.</span>
-            <em>Open chapter</em>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-topic" type="button" data-dashboard-action="topic">
-            <p>Networking</p>
+          <button class="path-card path-topic" type="button" data-open-topic="C1 Networking and Internet Basics I" data-open-group="Core C Internet and its Applications">
+            <p>Core C</p>
             <h3>Networking Basics</h3>
             <span class="path-card-zh" lang="zh-Hant">建網及互聯網基本知識</span>
             <span class="path-card-copy">Local and wide area networks, devices and how data travels.</span>
-            <em>Open chapter</em>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-practice" type="button" data-dashboard-action="programming">
-            <p>Programming Visual Lab</p>
-            <h3>Trace, predict, practise</h3>
-            <span class="path-card-zh" lang="zh-Hant">程式視覺實驗室</span>
-            <span class="path-card-copy">Step through sequence, selection, loops, arrays, search, sort and data structures.</span>
-            <em>Open lab</em>
+          <button class="path-card path-practice" type="button" data-open-topic="D4 Introduction to Python Programming" data-open-group="Core D Computational Thinking and Programming">
+            <p>Core D</p>
+            <h3>Python Foundations</h3>
+            <span class="path-card-zh" lang="zh-Hant">Python 程式編寫入門</span>
+            <span class="path-card-copy">Variables, input/output, syntax and tracing before you open Code Studio.</span>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-practice" type="button" data-dashboard-action="practice">
-            <p>Exam drill</p>
-            <h3>DSE Practice Hub</h3>
-            <span class="path-card-zh" lang="zh-Hant">文憑試練習</span>
-            <span class="path-card-copy">Filter by strand or chapter and generate a mixed randomised set.</span>
-            <em>Open practice</em>
+          <button class="path-card path-practice" type="button" data-open-topic="EA1 Managing Data Using SQL" data-open-group="Elective A Databases">
+            <p>Elective A</p>
+            <h3>SQL Foundations</h3>
+            <span class="path-card-zh" lang="zh-Hant">以 SQL 管理數據</span>
+            <span class="path-card-copy">Table structure, safe updates and query reasoning before you open SQL Studio.</span>
+            <em>Read notes</em>
           </button>
         </section>
 
@@ -235,6 +263,56 @@
             <span>Advanced control, sub-programs, data structures, searching/sorting, text files and real-life programming applications.</span>
           </button>
         </section>
+        </div>
+      </section>
+
+      <section id="studioHomePage" class="studio-home-page hidden" aria-live="polite">
+        <section class="studio-home-hero">
+          <div>
+            <p class="eyebrow">STUDIO · WRITE · RUN · CHECK</p>
+            <h2>Studio</h2>
+            <p>用完整題目、實際輸出和可重做的練習，驗證你是否真的識。新的練習題庫會集中加入這裡。</p>
+          </div>
+          <div class="studio-home-route" aria-label="Recommended Studio route">
+            <span>1. 選工具</span><span>2. 完成題目</span><span>3. 看輸出</span><span>4. 交證據卡</span>
+          </div>
+        </section>
+
+        <section class="studio-tool-grid" aria-label="Study studios">
+          <button class="studio-tool-card studio-tool-code" type="button" data-studio-action="code">
+            <span class="studio-tool-icon" aria-hidden="true">&lt;/&gt;</span>
+            <span>PYTHON · CORE D</span>
+            <h3>Code Studio</h3>
+            <p>寫完整 Python、執行、閱讀錯誤，並用固定測試資料驗證輸出。</p>
+            <em>Start Python <span aria-hidden="true">→</span></em>
+          </button>
+          <button class="studio-tool-card studio-tool-sql" type="button" data-studio-action="sql">
+            <span class="studio-tool-icon" aria-hidden="true">SQL</span>
+            <span>DATABASE · ELECTIVE A</span>
+            <h3>SQL Studio</h3>
+            <p>在臨時資料庫執行 SQL，查看 result set，練習安全的 UPDATE、INSERT 和 SELECT。</p>
+            <em>Start SQL <span aria-hidden="true">→</span></em>
+          </button>
+        </section>
+
+        <section class="studio-support-grid" aria-label="More Studio practice">
+          <button class="studio-support-card" type="button" data-studio-action="visual">
+            <span aria-hidden="true">◫</span>
+            <div><p>VISUAL PROGRAMMING</p><h3>Trace &amp; predict</h3><small>逐行看變數、選擇和迴圈如何改變，然後用隨機 DSE-style case 練習。</small></div>
+            <b>Open <span aria-hidden="true">→</span></b>
+          </button>
+          <button class="studio-support-card" type="button" data-studio-action="practice">
+            <span aria-hidden="true">✓</span>
+            <div><p>DSE PRACTICE</p><h3>Mixed question drill</h3><small>按 strand、chapter、題型和難度抽題；之後的 topic 題庫亦會在這裡擴充。</small></div>
+            <b>Open <span aria-hidden="true">→</span></b>
+          </button>
+        </section>
+
+        <aside class="studio-bridge">
+          <span aria-hidden="true">↗</span>
+          <div><strong>未肯定一個概念？</strong><p>先到 Notes 看「Keywords」和「Common mistakes」，再回來 Studio 做題。兩個模式是互相支援，不是兩份分開的內容。</p></div>
+          <button type="button" class="text-btn" data-home-action="notes">Open Notes</button>
+        </aside>
       </section>
 
       <section id="topicPage" class="topic-page hidden" aria-live="polite">
@@ -553,7 +631,7 @@
   <script src="chapter-guides.js"></script>
   <script src="chapter-study-ui.js"></script>
   <script src="chapter-backbones.js"></script>
-  <script src="script.js?v=20260915-3"></script>
+  <script src="script.js?v=20260916-1"></script>
   <script src="checkpoint-bank.js"></script>
   <script src="checkpoint-engine.js"></script>
   <script src="activity-labs.js"></script>
@@ -561,7 +639,7 @@
   <script src="activity-labs-pass2.js"></script>
   <script src="activity-labs-core-studios.js"></script>
   <script src="activity-labs-code-studios.js"></script>
-  <script src="platform-app.js"></script>
+  <script src="platform-app.js?v=20260916-1"></script>
   <script src="study-tools.js"></script>
 </body>
 </html>

@@ -78,6 +78,7 @@
     stopAuto?.();
     stopTopicSimulation?.();
     dashboardPage.classList.add('hidden');
+    document.getElementById('studioHomePage')?.classList.add('hidden');
     topicPage.classList.add('hidden');
     arcadePage.classList.add('hidden');
     programmingSections.forEach(section => section.classList.add('hidden'));
@@ -214,6 +215,64 @@
     document.getElementById('chapter-practice')?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
   }
 
+  function setModeNav(page) {
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+  }
+
+  function hideStudioHome() {
+    document.getElementById('studioHomePage')?.classList.add('hidden');
+  }
+
+  function showNotesHome() {
+    stopAuto?.();
+    stopTopicSimulation?.();
+    arcadePage.classList.add('hidden');
+    topicPage.classList.add('hidden');
+    document.getElementById('dsePracticePage')?.classList.add('hidden');
+    programmingSections.forEach(section => section.classList.add('hidden'));
+    hideStudioHome();
+    dashboardPage.dataset.homeMode = 'notes';
+    dashboardPage.classList.remove('hidden');
+    setModeNav('notes');
+    if (!writingHash()) setHash({ view: 'notes' });
+  }
+
+  function showStudioHome() {
+    stopAuto?.();
+    stopTopicSimulation?.();
+    arcadePage.classList.add('hidden');
+    topicPage.classList.add('hidden');
+    document.getElementById('dsePracticePage')?.classList.add('hidden');
+    programmingSections.forEach(section => section.classList.add('hidden'));
+    dashboardPage.classList.add('hidden');
+    document.getElementById('studioHomePage')?.classList.remove('hidden');
+    setModeNav('studio');
+    if (!writingHash()) setHash({ view: 'studio' });
+  }
+
+  function openStudioAction(action) {
+    if (action === 'code') {
+      const button = findTopicButton('D4 Introduction to Python Programming');
+      if (!button) return;
+      global.showTopicPage(button);
+      setTimeout(() => openActivity('pythonCodeStudio'), 0);
+      return;
+    }
+    if (action === 'sql') {
+      const button = findTopicButton('EA1 Managing Data Using SQL');
+      if (!button) return;
+      global.showTopicPage(button);
+      setTimeout(() => openActivity('sqlCodeStudio'), 0);
+      return;
+    }
+    if (action === 'visual') {
+      loadDemo('sequence');
+      return;
+    }
+    if (action === 'practice') showPracticeHub({});
+  }
+
   function reduceMotion() {
     return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
@@ -254,6 +313,14 @@
       }
       return;
     }
+    if (hash.view === 'studio') {
+      showStudioHome();
+      return;
+    }
+    if (hash.view === 'notes') {
+      showNotesHome();
+      return;
+    }
     if (hash.view === 'home' || hash.page === 'dashboard') showDashboardPage();
     } finally {
       global.__platformWritingHash = false;
@@ -262,17 +329,17 @@
 
   function appendLabNav() {
     const nav = document.querySelector('.module-nav');
-    if (!nav || nav.querySelector('[data-page="programming"]')) return;
+    if (!nav || nav.querySelector('[data-page="studio"]')) return;
     const hub = document.querySelector('.nav-item[data-page="dashboard"]');
     if (hub) {
       hub.insertAdjacentHTML('afterend', `
-        <button class="nav-item" data-page="programming" type="button">
-          <span class="nav-emoji">{ }</span>
-          Programming Visual Lab
+        <button class="nav-item" data-page="notes" type="button">
+          <span class="nav-emoji">▤</span>
+          Notes
         </button>
-        <button class="nav-item" data-page="practice" type="button">
-          <span class="nav-emoji">✓</span>
-          DSE Practice Hub
+        <button class="nav-item" data-page="studio" type="button">
+          <span class="nav-emoji">⌘</span>
+          Studio
         </button>
       `);
     }
@@ -308,14 +375,12 @@
         setHash({ view: 'home' });
         return;
       }
-      if (item.dataset.page === 'programming') {
-        event.preventDefault();
-        const key = (typeof currentDemoKey === 'string' && demos[currentDemoKey]) ? currentDemoKey : 'sequence';
-        loadDemo(key);
+      if (item.dataset.page === 'notes') {
+        showNotesHome();
         return;
       }
-      if (item.dataset.page === 'practice') {
-        showPracticeHub({});
+      if (item.dataset.page === 'studio') {
+        showStudioHome();
         return;
       }
       if (item.dataset.demo) {
@@ -329,6 +394,7 @@
     const origProg = global.showProgrammingView;
     global.showProgrammingView = function () {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
+      hideStudioHome();
       origProg();
       revealDemoSelect();
     };
@@ -336,6 +402,7 @@
     const origLoad = global.loadDemo;
     global.loadDemo = function (key, keepExercise) {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
+      hideStudioHome();
       origLoad(key, keepExercise);
       revealDemoSelect();
       markDemoChips(key);
@@ -349,6 +416,7 @@
     const origTopic = global.showTopicPage;
     global.showTopicPage = function (button) {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
+      hideStudioHome();
       origTopic(button);
       const topic = button.dataset.topic;
       setHash({ chapter: global.CheckpointEngine?.chapterCode(topic) || topic, topic });
@@ -357,13 +425,16 @@
     const origDash = global.showDashboardPage;
     global.showDashboardPage = function () {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
+      hideStudioHome();
       origDash();
+      dashboardPage.dataset.homeMode = 'gateway';
       setHash({ view: 'home' });
     };
 
     const origArcade = global.showArcadePage;
     global.showArcadePage = function (key) {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
+      hideStudioHome();
       origArcade(key);
     };
 
@@ -395,6 +466,19 @@
   }
 
   function enhanceDashboard() {
+    document.querySelectorAll('[data-home-action]').forEach(button => {
+      if (button.dataset.platformBound) return;
+      button.dataset.platformBound = 'true';
+      button.addEventListener('click', () => {
+        if (button.dataset.homeAction === 'notes') showNotesHome();
+        if (button.dataset.homeAction === 'studio') showStudioHome();
+      });
+    });
+    document.querySelectorAll('[data-studio-action]').forEach(button => {
+      if (button.dataset.platformBound) return;
+      button.dataset.platformBound = 'true';
+      button.addEventListener('click', () => openStudioAction(button.dataset.studioAction));
+    });
     document.querySelectorAll('[data-dashboard-action]').forEach(button => {
       if (button.dataset.platformBound) return;
       button.dataset.platformBound = 'true';
@@ -449,7 +533,7 @@
     else setHash({ view: 'home' }, { replace: true });
   }
 
-  global.PlatformApp = { showPracticeHub, applyHash, setHash, DEMO_GROUPS };
+  global.PlatformApp = { showPracticeHub, showNotesHome, showStudioHome, openStudioAction, applyHash, setHash, DEMO_GROUPS };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })(window);
