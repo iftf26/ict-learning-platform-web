@@ -166,7 +166,7 @@
 
     const boot = () => {
       worker?.terminate();
-      worker = new Worker('python-runner-worker.mjs', { type: 'module' });
+      worker = new Worker('python-runner-worker.mjs?v=20260916-2', { type: 'module' });
       worker.addEventListener('message', (event) => {
         const data = event.data || {};
         if (data.type === 'status') {
@@ -191,7 +191,7 @@
     boot();
 
     return {
-      run(code) {
+      run(code, inputs = []) {
         const id = nextId++;
         return new Promise((resolve) => {
           const timeout = setTimeout(() => {
@@ -201,7 +201,7 @@
             resolve({ ok: false, error: 'Execution stopped after 12 seconds. Check for an endless loop, then run again.' });
           }, 12000);
           waiting.set(id, { resolve, timeout });
-          worker.postMessage({ type: 'run', id, code });
+          worker.postMessage({ type: 'run', id, code, inputs });
         });
       },
       dispose() {
@@ -218,35 +218,45 @@
       title: 'Pass counter',
       brief: 'The list below stores five test marks. Write a loop to count how many marks are at least 50, then print the final count.',
       starter: `marks = [42, 50, 68, 39, 91]\ncount = 0\n\n# Write your loop here.\n\nprint(count)`,
-      expected: '3'
+      tests: [{ label: 'Public test', input: [], output: '3' }]
     },
     {
       id: 'D4-PY-02',
       title: 'Text-to-number total',
       brief: 'priceText and quantityText are strings. Convert both values so that the program prints the numerical total.',
       starter: `priceText = "12"\nquantityText = "3"\n\n# Convert the values and calculate total.\n\nprint(total)`,
-      expected: '36'
+      tests: [{ label: 'Public test', input: [], output: '36' }]
     },
     {
       id: 'D4-PY-03',
       title: 'Boundary result',
       brief: 'Set result to "Pass" when mark is 50 or above; otherwise set it to "Retry". Print result for the boundary value supplied.',
       starter: `mark = 50\n\n# Use IF ... ELSE here.\n\nprint(result)`,
-      expected: 'Pass'
+      tests: [{ label: 'Boundary public test', input: [], output: 'Pass' }]
     },
     {
       id: 'D4-PY-04',
       title: 'Highest mark',
       brief: 'Traverse the supplied list and print its highest mark. Do not change the values in the list.',
       starter: `marks = [46, 88, 67, 91, 52]\n\n# Start with a sensible highest value, then update it in a loop.\n\nprint(highest)`,
-      expected: '91'
+      tests: [{ label: 'Public test', input: [], output: '91' }]
+    },
+    {
+      id: 'D4-PY-05',
+      title: 'Two-mark total',
+      brief: 'Read two whole-number marks, one line at a time. Convert them to integers and print their total. Use input() exactly as a DSE-style input/output task would require.',
+      starter: `firstMark = int(input())\nsecondMark = int(input())\n\n# Calculate and print the total.\n\nprint(total)`,
+      tests: [
+        { label: 'Public test 1', input: ['12', '30'], output: '42' },
+        { label: 'Public test 2', input: ['0', '7'], output: '7' }
+      ]
     }
   ];
 
-  function renderPythonStudio(activity) {
+  function renderPythonStudio(activity, options = {}) {
     const task = randomItem(PYTHON_TASKS);
     const profile = safeProfile();
-    return shell(activity, `
+    const content = `
       <div class="lab-shell execution-studio python-studio" data-python-studio data-task-id="${task.id}">
         <div class="studio-banner">
           <div><p class="eyebrow">真正執行 · browser Python</p><h4>Code Studio</h4><p>寫完整 Python，執行、看錯誤、修正，然後把有效結果交成證據卡。</p></div>
@@ -254,20 +264,22 @@
         </div>
         <div class="task-toolbar">
           <label>練習題<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label>
+          <label>公開測試<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
         </div>
-        <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>先用題目給定資料測試。這個版本刻意不提供 input() 對話框，以免瀏覽器程式停在等待輸入。</small></article>
+        <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview>公開測試資料載入中…</small></article>
         <div class="execution-grid">
           <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor">${escapeHtml(task.starter)}</textarea></section>
           <section class="console-panel"><div class="editor-heading"><span>Output</span><span>local run</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
         </div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run Python</button><button type="button" class="secondary-btn" data-python-check disabled>Check sample result</button></div>
+        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run Python</button><button type="button" class="secondary-btn" data-python-check disabled>Check public test</button></div>
         <div data-python-feedback></div>
         ${evidencePanel(profile, 'Code Studio')}
         <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>指出哪一個測試值揭示了你的程式正確或錯誤，然後說明你改了哪一行。</p><small>網站只檢查可重現的輸出；解釋請用剛才的執行證據說出來。</small></div></aside>
       </div>
-    `);
+    `;
+    return options.standalone ? content : shell(activity, content);
   }
 
   function bindPythonStudio(stage) {
@@ -279,22 +291,35 @@
     const output = lab.querySelector('[data-python-output]');
     const code = lab.querySelector('[data-python-code]');
     const taskSelector = lab.querySelector('[data-python-task]');
+    const testSelector = lab.querySelector('[data-python-test]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
     let runtimeReady = false;
     let runCount = 0;
     let lastResult = null;
 
     const selectedTask = () => PYTHON_TASKS.find((item) => item.id === taskSelector.value) || PYTHON_TASKS[0];
+    const testsFor = (task) => task.tests?.length ? task.tests : [{ label: 'Public test', input: [], output: task.expected || '' }];
+    const selectedTest = () => testsFor(selectedTask())[Number(testSelector.value) || 0] || testsFor(selectedTask())[0];
+    const updateTestPreview = () => {
+      const test = selectedTest();
+      const inputText = test.input?.length ? `input (.in): ${test.input.join(' | ')}` : 'input (.in): no input lines';
+      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Public test'} · ${inputText} · expected (.out): ${test.output}`;
+      lastResult = null;
+      checkButton.disabled = true;
+      evidenceButton.disabled = true;
+    };
     const showTask = (task) => {
       lab.dataset.taskId = task.id;
       taskSelector.value = task.id;
-      lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>先用題目給定資料測試。這個版本刻意不提供 input() 對話框，以免瀏覽器程式停在等待輸入。</small>`;
+      testSelector.innerHTML = testsFor(task).map((test, index) => `<option value="${index}">${escapeHtml(test.label || `Public test ${index + 1}`)}</option>`).join('');
+      lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview></small>`;
       lab.querySelector('[data-python-task-label]').textContent = task.id;
       code.value = task.starter;
       output.textContent = 'Starter code loaded. Trace it before running.';
       checkButton.disabled = true;
       evidenceButton.disabled = true;
       lastResult = null;
+      updateTestPreview();
     };
 
     const runner = createPythonRunner((state) => {
@@ -313,8 +338,10 @@
       }
     });
 
+    showTask(selectedTask());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
+    testSelector.addEventListener('change', updateTestPreview);
     lab.querySelector('[data-python-random]').addEventListener('click', () => {
       const options = PYTHON_TASKS.filter((item) => item.id !== selectedTask().id);
       showTask(randomItem(options));
@@ -326,24 +353,26 @@
       checkButton.disabled = true;
       evidenceButton.disabled = true;
       output.textContent = 'Running Python…';
-      const result = await runner.run(code.value);
+      const test = selectedTest();
+      const result = await runner.run(code.value, test.input || []);
       runCount += 1;
-      lastResult = { ...result, code: code.value, task: selectedTask(), runCount };
+      lastResult = { ...result, code: code.value, task: selectedTask(), test, runCount };
       output.textContent = result.ok ? (result.stdout || '(Program completed with no printed output.)') : `Error:\n${result.error}`;
       runButton.disabled = false;
       checkButton.disabled = false;
       evidenceButton.disabled = false;
       lab.querySelector('[data-python-feedback]').innerHTML = result.ok
-        ? feedback('info', 'Run recorded.', 'Now compare the output with the brief. A clean run is not yet proof that the output is correct.', 'Use “Check sample result”, then export the evidence card when ready.')
+        ? feedback('info', 'Run recorded.', 'Now compare this public test output with the brief. A clean run is not yet proof that the output is correct.', 'Use “Check public test”, then export the evidence card when ready.')
         : feedback('bad', 'Python stopped with an error.', result.error || 'Read the line named in the message, then repair one thing at a time.', 'Run again after the smallest sensible repair.');
     });
     checkButton.addEventListener('click', () => {
       if (!lastResult) return;
       const task = selectedTask();
-      const correct = lastResult.ok && normaliseOutput(lastResult.stdout) === task.expected;
+      const test = selectedTest();
+      const correct = lastResult.ok && lastResult.test === test && normaliseOutput(lastResult.stdout) === test.output;
       lab.querySelector('[data-python-feedback]').innerHTML = correct
-        ? feedback('good', 'Sample output matches.', `The expected output is ${task.expected}. Keep the code and the output visible in your evidence card.`, 'Say which test value you would change to test a boundary or an error case.')
-        : feedback('bad', 'The sample result does not yet match.', `Expected: ${task.expected}  |  Your output: ${normaliseOutput(lastResult.stdout) || 'no output'}`, 'Trace one variable or condition at a time, then run again.');
+        ? feedback('good', 'Public test matches.', `The expected output is ${test.output}. Keep the code and the output visible in your evidence card.`, 'Say which test value you would change to test a boundary or an error case.')
+        : feedback('bad', 'The public test does not yet match.', `Expected: ${test.output}  |  Your output: ${normaliseOutput(lastResult.stdout) || 'no output'}`, 'Trace one variable or condition at a time, then run again.');
       lastResult.checked = correct;
     });
     evidenceButton.addEventListener('click', () => {
@@ -357,7 +386,9 @@
         runCount
       });
     });
-    global.addEventListener('pagehide', () => runner.dispose(), { once: true });
+    const dispose = () => runner.dispose();
+    global.addEventListener('pagehide', dispose, { once: true });
+    return dispose;
   }
 
   function loadSqlLibrary() {
@@ -435,10 +466,10 @@ INSERT INTO Student VALUES
     `).join('');
   }
 
-  function renderSqlStudio(activity) {
+  function renderSqlStudio(activity, options = {}) {
     const task = randomItem(SQL_TASKS);
     const profile = safeProfile();
-    return shell(activity, `
+    const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
         <div class="studio-banner"><div><p class="eyebrow">真正執行 · in-memory SQLite</p><h4>SQL Studio</h4><p>直接寫 SQL，看看查詢結果或資料變更；每次重設都回到同一份練習資料。</p></div><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQLite…</span></div>
         <div class="task-toolbar"><label>練習題<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>重設資料庫</button></div>
@@ -450,7 +481,8 @@ INSERT INTO Student VALUES
         ${evidencePanel(profile, 'SQL Studio')}
         <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>講出 WHERE 如何限制了記錄，或說明你為何先 SELECT 再相信 UPDATE／INSERT 已經正確。</p><small>系統可檢查資料狀態，但不會代替你判斷題目的語意和風險。</small></div></aside>
       </div>
-    `);
+    `;
+    return options.standalone ? content : shell(activity, content);
   }
 
   function bindSqlStudio(stage) {
@@ -557,13 +589,30 @@ INSERT INTO Student VALUES
         runCount
       });
     });
-    global.addEventListener('pagehide', () => db?.close(), { once: true });
+    const dispose = () => db?.close();
+    global.addEventListener('pagehide', dispose, { once: true });
+    return dispose;
+  }
+
+  function mountStandaloneStudio(stage, studio) {
+    if (!stage) return;
+    stage._studioCleanup?.();
+    if (studio === 'code') {
+      stage.innerHTML = renderPythonStudio(null, { standalone: true });
+      stage._studioCleanup = bindPythonStudio(stage);
+      return;
+    }
+    if (studio === 'sql') {
+      stage.innerHTML = renderSqlStudio(null, { standalone: true });
+      stage._studioCleanup = bindSqlStudio(stage);
+    }
   }
 
   function register() {
     if (!global.ActivityLabs?.register) return;
     global.ActivityLabs.register('pythonCodeStudio', renderPythonStudio, bindPythonStudio);
     global.ActivityLabs.register('sqlCodeStudio', renderSqlStudio, bindSqlStudio);
+    global.ActivityLabs.mountStandaloneStudio = mountStandaloneStudio;
     if (typeof global.updateTopicLabBadges === 'function') global.updateTopicLabBadges();
   }
 

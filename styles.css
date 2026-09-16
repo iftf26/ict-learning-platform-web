@@ -9027,3 +9027,79 @@ body.revision-mode #chapter-intro::after {
   .studio-support-card b,
   .studio-bridge .text-btn { grid-column: 2; justify-self: start; }
 }
+
+/* Studio is a separate work surface: the runner stays visible while a task is solved. */
+.studio-workspace-switcher {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.studio-workspace-tab {
+  display: flex;
+  min-width: 0;
+  gap: 11px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid #c4d4e5;
+  border-radius: 16px;
+  background: #fff;
+  color: #263d54;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.studio-workspace-tab:hover,
+.studio-workspace-tab:focus-visible { border-color: #5f95c8; box-shadow: 0 9px 20px rgba(26, 74, 116, 0.12); outline: none; transform: translateY(-1px); }
+.studio-workspace-tab.is-active { border-color: #174f84; background: linear-gradient(135deg, #173653, #1e6090); color: #f7fbff; box-shadow: 0 10px 23px rgba(23, 64, 101, 0.22); }
+.studio-workspace-tab .studio-tool-icon { flex: 0 0 auto; width: 38px; min-width: 38px; min-height: 38px; padding: 0; color: #386c9d; border-color: #a9c5df; background: #edf6ff; }
+.studio-workspace-tab.is-active .studio-tool-icon { color: #ffdeb8; border-color: rgba(255,255,255,0.28); background: rgba(3, 18, 34, 0.3); }
+.studio-workspace-tab strong,
+.studio-workspace-tab small { display: block; }
+.studio-workspace-tab strong { font-size: 0.94rem; }
+.studio-workspace-tab small { margin-top: 3px; color: #62788d; font-size: 0.71rem; font-weight: 700; line-height: 1.3; }
+.studio-workspace-tab.is-active small { color: #c9e3f7; }
+.studio-workspace-layout {
+  display: grid;
+  grid-template-columns: minmax(215px, 0.28fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.studio-task-pack {
+  position: sticky;
+  top: 18px;
+  padding: 20px;
+  border: 1px solid #bdd5e8;
+  border-radius: 19px;
+  background: linear-gradient(155deg, #eff8ff, #fbfdff 60%, #f8f1e7);
+  color: #284159;
+}
+.studio-task-pack .eyebrow { margin-bottom: 8px; color: #4276a2; }
+.studio-task-pack h3 { margin: 0 0 9px; font-size: 1.14rem; line-height: 1.24; }
+.studio-task-pack > p:not(.eyebrow) { margin: 0; color: #5a7188; font-size: 0.87rem; line-height: 1.55; }
+.studio-task-pack dl { display: grid; gap: 10px; margin: 18px 0; }
+.studio-task-pack dl div { padding-top: 10px; border-top: 1px solid rgba(75, 121, 161, 0.2); }
+.studio-task-pack dt { margin-bottom: 3px; color: #264e73; font-size: 0.76rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; }
+.studio-task-pack dd { margin: 0; color: #526e87; font-size: 0.81rem; line-height: 1.45; }
+.studio-task-pack code { padding: 1px 4px; border-radius: 4px; background: #dfeefa; color: #154b7e; font-weight: 850; }
+.studio-task-pack-note { padding: 11px; border-radius: 11px; background: rgba(255, 255, 255, 0.68); font-size: 0.78rem !important; }
+.studio-task-pack .text-btn { margin-top: 14px; font-size: 0.82rem; }
+.studio-workspace-stage { min-width: 0; }
+.studio-workspace-stage .lab-shell { margin: 0; }
+.studio-workspace-empty { padding: clamp(28px, 5vw, 58px); border: 1px solid #bdd5e8; border-radius: 22px; background: linear-gradient(135deg, #fff, #f2f8ff); color: #264057; }
+.studio-workspace-empty .eyebrow { color: #477eae; }
+.studio-workspace-empty h3 { margin: 4px 0 10px; font-size: clamp(1.7rem, 4vw, 2.45rem); letter-spacing: -0.045em; }
+.studio-workspace-empty p:not(.eyebrow) { max-width: 42rem; margin: 0 0 22px; color: #5a7087; line-height: 1.6; }
+.python-studio .task-toolbar label { min-width: 155px; }
+.python-studio [data-python-test-preview] { display: block; margin-top: 10px; color: #436784; font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.76rem; line-height: 1.5; }
+@media (max-width: 1080px) {
+  .studio-workspace-switcher { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .studio-workspace-layout { grid-template-columns: 1fr; }
+  .studio-task-pack { position: static; }
+}
+@media (max-width: 560px) {
+  .studio-workspace-switcher { grid-template-columns: 1fr; }
+  .studio-workspace-tab { padding: 12px; }
+  .studio-workspace-layout { gap: 12px; }
+  .studio-task-pack { padding: 16px; }
+}

@@ -13,7 +13,7 @@ pyodideReady
   .catch((error) => self.postMessage({ type: 'status', status: 'error', error: error.message }));
 
 self.onmessage = async (event) => {
-  const { id, type, code } = event.data || {};
+  const { id, type, code, inputs = [] } = event.data || {};
   if (type !== 'run') return;
 
   try {
@@ -23,14 +23,17 @@ self.onmessage = async (event) => {
     pyodide.setStdout({ batched: (text) => stdout.push(text) });
     pyodide.setStderr({ batched: (text) => stderr.push(text) });
 
-    // Input is intentionally withheld in this first browser-only studio.
-    // Tasks use fixed test data, so a mistaken input() call produces a useful
-    // runtime message instead of waiting forever for a terminal prompt.
+    // A task may provide public .in-style lines. Missing lines still fail
+    // clearly rather than leaving the browser waiting for a terminal prompt.
+    const inputLines = JSON.stringify(Array.isArray(inputs) ? inputs : []);
     await pyodide.runPythonAsync(`
 import builtins
-def __studio_input_disabled(prompt=''):
-    raise RuntimeError('This task uses fixed test data. Replace input() with the values supplied in the brief.')
-builtins.input = __studio_input_disabled
+__studio_inputs = ${inputLines}
+def __studio_input(prompt=''):
+    if __studio_inputs:
+        return str(__studio_inputs.pop(0))
+    raise RuntimeError('This test has no more input lines. Check the task data or your input() calls.')
+builtins.input = __studio_input
 `);
     await pyodide.runPythonAsync(code || '');
     self.postMessage({ id, ok: true, stdout: stdout.join('\n'), stderr: stderr.join('\n') });

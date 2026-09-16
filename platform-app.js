@@ -13,6 +13,8 @@
       keys: ['subprogram', 'nestedLoop', 'twoDArray', 'twoDCount', 'binarySearch', 'bubblePass', 'mergeLists', 'stackOps', 'queueOps', 'linkedList', 'textFile']
     }
   ];
+  const STUDIO_MODES = new Set(['pythonCodeStudio', 'sqlCodeStudio']);
+  const STUDIO_WORKSPACES = new Set(['code', 'sql', 'visual', 'practice']);
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -238,7 +240,51 @@
     if (!writingHash()) setHash({ view: 'notes' });
   }
 
-  function showStudioHome() {
+  function showStudioWorkspace(requestedWorkspace = 'code') {
+    const workspace = STUDIO_WORKSPACES.has(requestedWorkspace) ? requestedWorkspace : 'code';
+    const stage = document.getElementById('studioWorkspaceStage');
+    if (!stage) return;
+    document.querySelectorAll('[data-studio-workspace]').forEach(button => {
+      const active = button.dataset.studioWorkspace === workspace;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    if (!writingHash() && !document.getElementById('studioHomePage')?.classList.contains('hidden')) {
+      setHash({ view: 'studio', workspace });
+    }
+    if (stage.dataset.workspace === workspace && stage.childElementCount) return;
+    stage.dataset.workspace = workspace;
+    if (workspace === 'code' || workspace === 'sql') {
+      if (global.ActivityLabs?.mountStandaloneStudio) {
+        global.ActivityLabs.mountStandaloneStudio(stage, workspace);
+      } else {
+        stage.innerHTML = '<div class="studio-workspace-empty"><h3>Studio is loading…</h3><p>Please wait a moment, then choose Code Studio or SQL Studio again.</p></div>';
+      }
+      return;
+    }
+    stage._studioCleanup?.();
+    stage._studioCleanup = null;
+    if (workspace === 'visual') {
+      stage.innerHTML = `
+        <section class="studio-workspace-empty">
+          <p class="eyebrow">TRACE · PREDICT · DEBUG</p>
+          <h3>Trace Lab</h3>
+          <p>用逐行執行和變數表，先預測再驗證 sequence、selection 和 iteration 的結果。這仍屬於 Studio 練習，不會轉回 Notes。</p>
+          <button class="primary-btn" type="button" data-studio-launch="visual">Open Trace Lab</button>
+        </section>`;
+    } else {
+      stage.innerHTML = `
+        <section class="studio-workspace-empty">
+          <p class="eyebrow">DSE · RETRIEVE · APPLY</p>
+          <h3>DSE Drill</h3>
+          <p>按 chapter、題型和難度抽題。之後新增的 past-paper-style 題目會由這個 Studio 工作區整理，不會塞進 Notes。</p>
+          <button class="primary-btn" type="button" data-studio-launch="practice">Open DSE Drill</button>
+        </section>`;
+    }
+    stage.querySelector('[data-studio-launch]')?.addEventListener('click', event => openStudioAction(event.currentTarget.dataset.studioLaunch));
+  }
+
+  function showStudioHome(workspace = 'code') {
     stopAuto?.();
     stopTopicSimulation?.();
     arcadePage.classList.add('hidden');
@@ -248,24 +294,12 @@
     dashboardPage.classList.add('hidden');
     document.getElementById('studioHomePage')?.classList.remove('hidden');
     setModeNav('studio');
-    if (!writingHash()) setHash({ view: 'studio' });
+    showStudioWorkspace(workspace);
+    if (!writingHash()) setHash({ view: 'studio', workspace });
   }
 
   function openStudioAction(action) {
-    if (action === 'code') {
-      const button = findTopicButton('D4 Introduction to Python Programming');
-      if (!button) return;
-      global.showTopicPage(button);
-      setTimeout(() => openActivity('pythonCodeStudio'), 0);
-      return;
-    }
-    if (action === 'sql') {
-      const button = findTopicButton('EA1 Managing Data Using SQL');
-      if (!button) return;
-      global.showTopicPage(button);
-      setTimeout(() => openActivity('sqlCodeStudio'), 0);
-      return;
-    }
+    if (action === 'code' || action === 'sql') return showStudioHome(action);
     if (action === 'visual') {
       loadDemo('sequence');
       return;
@@ -282,6 +316,14 @@
     global.__platformWritingHash = true;
     const hash = parseHash();
     try {
+    if (hash.activity === 'pythonCodeStudio') {
+      showStudioHome('code');
+      return;
+    }
+    if (hash.activity === 'sqlCodeStudio') {
+      showStudioHome('sql');
+      return;
+    }
     if (hash.demo || hash.lab) {
       const key = hash.demo || hash.lab;
       if (demos[key]) loadDemo(key);
@@ -314,7 +356,7 @@
       return;
     }
     if (hash.view === 'studio') {
-      showStudioHome();
+      showStudioHome(hash.workspace || 'code');
       return;
     }
     if (hash.view === 'notes') {
@@ -451,8 +493,18 @@
       });
     };
 
+    const origActivities = global.renderActivitiesSection;
+    global.renderActivitiesSection = function (topicConfig) {
+      const activities = (topicConfig.activities || []).filter(activity => !STUDIO_MODES.has(activity.mode));
+      origActivities({ ...topicConfig, activities });
+    };
+
     const origRenderActivity = global.renderInteractiveActivity;
     global.renderInteractiveActivity = function (activity) {
+      if (activity && STUDIO_MODES.has(activity.mode)) {
+        showStudioHome(activity.mode === 'pythonCodeStudio' ? 'code' : 'sql');
+        return;
+      }
       if (activity && global.ActivityLabs?.modes.includes(activity.mode)) {
         const stage = document.getElementById('activityStage');
         if (stage) {
@@ -478,6 +530,11 @@
       if (button.dataset.platformBound) return;
       button.dataset.platformBound = 'true';
       button.addEventListener('click', () => openStudioAction(button.dataset.studioAction));
+    });
+    document.querySelectorAll('[data-studio-workspace]').forEach(button => {
+      if (button.dataset.platformBound) return;
+      button.dataset.platformBound = 'true';
+      button.addEventListener('click', () => showStudioWorkspace(button.dataset.studioWorkspace));
     });
     document.querySelectorAll('[data-dashboard-action]').forEach(button => {
       if (button.dataset.platformBound) return;
@@ -533,7 +590,7 @@
     else setHash({ view: 'home' }, { replace: true });
   }
 
-  global.PlatformApp = { showPracticeHub, showNotesHome, showStudioHome, openStudioAction, applyHash, setHash, DEMO_GROUPS };
+  global.PlatformApp = { showPracticeHub, showNotesHome, showStudioHome, showStudioWorkspace, openStudioAction, applyHash, setHash, DEMO_GROUPS };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })(window);

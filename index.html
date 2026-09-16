@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260916-1" />
+  <link rel="stylesheet" href="styles.css?v=20260916-2" />
 </head>
 <body>
   <div class="app-shell study-studio" id="appShell">
@@ -271,48 +271,43 @@
           <div>
             <p class="eyebrow">STUDIO · WRITE · RUN · CHECK</p>
             <h2>Studio</h2>
-            <p>用完整題目、實際輸出和可重做的練習，驗證你是否真的識。新的練習題庫會集中加入這裡。</p>
+            <p>這裡不是 Notes 裡的一個活動，而是一個獨立的練習工作區：選題、寫答案、實際執行、核對結果，再交出證據。</p>
           </div>
           <div class="studio-home-route" aria-label="Recommended Studio route">
-            <span>1. 選工具</span><span>2. 完成題目</span><span>3. 看輸出</span><span>4. 交證據卡</span>
+            <span>1. 選工作區</span><span>2. 完成題目</span><span>3. 執行及檢查</span><span>4. 下載證據卡</span>
           </div>
         </section>
 
-        <section class="studio-tool-grid" aria-label="Study studios">
-          <button class="studio-tool-card studio-tool-code" type="button" data-studio-action="code">
-            <span class="studio-tool-icon" aria-hidden="true">&lt;/&gt;</span>
-            <span>PYTHON · CORE D</span>
-            <h3>Code Studio</h3>
-            <p>寫完整 Python、執行、閱讀錯誤，並用固定測試資料驗證輸出。</p>
-            <em>Start Python <span aria-hidden="true">→</span></em>
+        <section class="studio-workspace-switcher" aria-label="Studio workspaces">
+          <button class="studio-workspace-tab is-active" type="button" data-studio-workspace="code" aria-pressed="true">
+            <span class="studio-tool-icon" aria-hidden="true">&lt;/&gt;</span><span><strong>Code Studio</strong><small>Python 題目 · 執行 · 公開測試</small></span>
           </button>
-          <button class="studio-tool-card studio-tool-sql" type="button" data-studio-action="sql">
-            <span class="studio-tool-icon" aria-hidden="true">SQL</span>
-            <span>DATABASE · ELECTIVE A</span>
-            <h3>SQL Studio</h3>
-            <p>在臨時資料庫執行 SQL，查看 result set，練習安全的 UPDATE、INSERT 和 SELECT。</p>
-            <em>Start SQL <span aria-hidden="true">→</span></em>
+          <button class="studio-workspace-tab" type="button" data-studio-workspace="sql" aria-pressed="false">
+            <span class="studio-tool-icon" aria-hidden="true">SQL</span><span><strong>SQL Studio</strong><small>資料庫題目 · result set · state check</small></span>
+          </button>
+          <button class="studio-workspace-tab" type="button" data-studio-workspace="visual" aria-pressed="false">
+            <span class="studio-tool-icon" aria-hidden="true">◫</span><span><strong>Trace Lab</strong><small>逐行追蹤 · 預測 · 除錯</small></span>
+          </button>
+          <button class="studio-workspace-tab" type="button" data-studio-workspace="practice" aria-pressed="false">
+            <span class="studio-tool-icon" aria-hidden="true">✓</span><span><strong>DSE Drill</strong><small>按題型抽題 · 溫習訓練</small></span>
           </button>
         </section>
 
-        <section class="studio-support-grid" aria-label="More Studio practice">
-          <button class="studio-support-card" type="button" data-studio-action="visual">
-            <span aria-hidden="true">◫</span>
-            <div><p>VISUAL PROGRAMMING</p><h3>Trace &amp; predict</h3><small>逐行看變數、選擇和迴圈如何改變，然後用隨機 DSE-style case 練習。</small></div>
-            <b>Open <span aria-hidden="true">→</span></b>
-          </button>
-          <button class="studio-support-card" type="button" data-studio-action="practice">
-            <span aria-hidden="true">✓</span>
-            <div><p>DSE PRACTICE</p><h3>Mixed question drill</h3><small>按 strand、chapter、題型和難度抽題；之後的 topic 題庫亦會在這裡擴充。</small></div>
-            <b>Open <span aria-hidden="true">→</span></b>
-          </button>
+        <section class="studio-workspace-layout">
+          <aside class="studio-task-pack">
+            <p class="eyebrow">TASK BANK · V1</p>
+            <h3>每一題都是可執行的練習</h3>
+            <p>題庫會儲存題目、starter code、公開測試和預期結果；學生不只猜選項，而是提交完整程式或 SQL。</p>
+            <dl>
+              <div><dt>Python</dt><dd><code>.in</code> 輸入行 + <code>.out</code> 預期輸出</dd></div>
+              <div><dt>SQL</dt><dd>初始資料 + 查詢結果／最終資料狀態</dd></div>
+              <div><dt>提交</dt><dd>下載 PNG 證據卡，再附到 Google Classroom</dd></div>
+            </dl>
+            <p class="studio-task-pack-note">公開測試用來學習與自查；日後如需正式私密評測，會要有登入的伺服器端 checker。</p>
+            <button type="button" class="text-btn" data-home-action="notes">概念未穩？先看 Notes</button>
+          </aside>
+          <div id="studioWorkspaceStage" class="studio-workspace-stage" aria-live="polite"></div>
         </section>
-
-        <aside class="studio-bridge">
-          <span aria-hidden="true">↗</span>
-          <div><strong>未肯定一個概念？</strong><p>先到 Notes 看「Keywords」和「Common mistakes」，再回來 Studio 做題。兩個模式是互相支援，不是兩份分開的內容。</p></div>
-          <button type="button" class="text-btn" data-home-action="notes">Open Notes</button>
-        </aside>
       </section>
 
       <section id="topicPage" class="topic-page hidden" aria-live="polite">
@@ -631,15 +626,15 @@
   <script src="chapter-guides.js"></script>
   <script src="chapter-study-ui.js"></script>
   <script src="chapter-backbones.js"></script>
-  <script src="script.js?v=20260916-1"></script>
+  <script src="script.js?v=20260916-2"></script>
   <script src="checkpoint-bank.js"></script>
   <script src="checkpoint-engine.js"></script>
   <script src="activity-labs.js"></script>
   <script src="activity-labs-phase2.js"></script>
   <script src="activity-labs-pass2.js"></script>
   <script src="activity-labs-core-studios.js"></script>
-  <script src="activity-labs-code-studios.js"></script>
-  <script src="platform-app.js?v=20260916-1"></script>
+  <script src="activity-labs-code-studios.js?v=20260916-2"></script>
+  <script src="platform-app.js?v=20260916-3"></script>
   <script src="study-tools.js"></script>
 </body>
 </html>
