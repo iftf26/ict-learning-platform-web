@@ -284,6 +284,69 @@
     stage.querySelector('[data-studio-launch]')?.addEventListener('click', event => openStudioAction(event.currentTarget.dataset.studioLaunch));
   }
 
+  function updateTaskBankCount() {
+    const output = document.querySelector('[data-task-bank-count]');
+    const stats = global.StudioTaskBankAPI?.getStats?.();
+    if (!output || !stats) return;
+    output.textContent = `${stats.python} Python · ${stats.sql} SQL${stats.local ? ` · ${stats.local} local preview` : ''}`;
+  }
+
+  function refreshStudioWorkspace(firstTaskId = '') {
+    const stage = document.getElementById('studioWorkspaceStage');
+    const workspace = stage?.dataset.workspace;
+    if (!stage || !['code', 'sql'].includes(workspace)) return;
+    stage.dataset.workspace = '';
+    showStudioWorkspace(workspace);
+    if (!firstTaskId) return;
+    const picker = stage.querySelector(workspace === 'code' ? '[data-python-task]' : '[data-sql-task]');
+    const options = picker ? [...picker.options] : [];
+    if (!options.some(option => option.value === firstTaskId)) return;
+    picker.value = firstTaskId;
+    picker.dispatchEvent(new Event('change'));
+  }
+
+  function bindTeacherTaskPack() {
+    const input = document.querySelector('[data-task-pack-input]');
+    const feedback = document.querySelector('[data-task-pack-feedback]');
+    const loadButton = document.querySelector('[data-task-pack-load]');
+    if (!input || !feedback || !loadButton || loadButton.dataset.platformBound) return;
+    loadButton.dataset.platformBound = 'true';
+    const showFeedback = (message, state) => {
+      feedback.textContent = message;
+      feedback.dataset.state = state;
+    };
+    document.querySelector('[data-task-pack-template]')?.addEventListener('click', () => {
+      input.value = JSON.stringify({
+        python: [{
+          id: 'D4-PY-CUSTOM-01', topic: 'D4', level: 'Foundation', title: 'Custom two-number total',
+          brief: 'Read two whole numbers and print their total.',
+          starter: 'first = int(input())\\nsecond = int(input())\\n\\n# Calculate the total.\\n\\nprint(total)',
+          tests: [{ label: 'Public test', input: ['8', '9'], output: '17' }]
+        }],
+        sql: []
+      }, null, 2);
+      showFeedback('Example loaded. Change the text, then test it in this browser.', 'info');
+    });
+    loadButton.addEventListener('click', () => {
+      const result = global.StudioTaskBankAPI?.importLocalPack(input.value);
+      if (!result?.ok) {
+        showFeedback(result?.errors?.slice(0, 2).join(' ') || 'Task pack could not be loaded.', 'error');
+        return;
+      }
+      updateTaskBankCount();
+      refreshStudioWorkspace(result.firstTaskId);
+      showFeedback(`Loaded ${result.python} Python and ${result.sql} SQL local task(s). Test them now; publish the task-bank file when ready.`, 'success');
+    });
+    document.querySelector('[data-task-pack-clear]')?.addEventListener('click', () => {
+      const result = global.StudioTaskBankAPI?.clearLocalPack?.();
+      input.value = '';
+      updateTaskBankCount();
+      refreshStudioWorkspace();
+      showFeedback(result?.removed ? `Removed ${result.removed} local preview task(s).` : 'There were no local preview tasks.', 'info');
+    });
+    updateTaskBankCount();
+  }
+
   function showStudioHome(workspace = 'code') {
     stopAuto?.();
     stopTopicSimulation?.();
@@ -536,6 +599,7 @@
       button.dataset.platformBound = 'true';
       button.addEventListener('click', () => showStudioWorkspace(button.dataset.studioWorkspace));
     });
+    bindTeacherTaskPack();
     document.querySelectorAll('[data-dashboard-action]').forEach(button => {
       if (button.dataset.platformBound) return;
       button.dataset.platformBound = 'true';

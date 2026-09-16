@@ -129,4 +129,108 @@ INSERT INTO Student VALUES
       }
     ]
   };
+
+  const localPackKey = 'ict-studio-local-task-pack-v1';
+  const localTaskIds = new Set();
+  const bank = global.StudioTaskBank;
+  const isText = (value) => typeof value === 'string' && value.trim().length > 0;
+
+  function validatePythonTask(task, label) {
+    const errors = [];
+    ['id', 'topic', 'level', 'title', 'brief', 'starter'].forEach((field) => {
+      if (!isText(task?.[field])) errors.push(`${label}: ${field} must be text.`);
+    });
+    if (!Array.isArray(task?.tests) || !task.tests.length) {
+      errors.push(`${label}: add at least one tests entry.`);
+    } else {
+      task.tests.forEach((test, index) => {
+        if (!Array.isArray(test?.input) || !test.input.every(value => typeof value === 'string')) errors.push(`${label}, test ${index + 1}: input must be an array of text lines.`);
+        if (typeof test?.output !== 'string') errors.push(`${label}, test ${index + 1}: output must be text.`);
+      });
+    }
+    return errors;
+  }
+
+  function validateSqlTask(task, label) {
+    const errors = [];
+    ['id', 'topic', 'level', 'title', 'brief', 'starter'].forEach((field) => {
+      if (!isText(task?.[field])) errors.push(`${label}: ${field} must be text.`);
+    });
+    const checker = task?.checker;
+    if (!checker || !['result', 'database'].includes(checker.type)) errors.push(`${label}: checker.type must be result or database.`);
+    if (!Array.isArray(checker?.columns) || !Array.isArray(checker?.rows)) errors.push(`${label}: checker needs columns and rows arrays.`);
+    if (checker?.type === 'database' && !isText(checker.query)) errors.push(`${label}: a database checker needs a query.`);
+    return errors;
+  }
+
+  function validatePack(pack) {
+    const errors = [];
+    if (!pack || typeof pack !== 'object' || Array.isArray(pack)) return { errors: ['Task pack must be a JSON object.'] };
+    const python = pack.python || [];
+    const sql = pack.sql || [];
+    if (!Array.isArray(python) || !Array.isArray(sql)) return { errors: ['python and sql must be arrays.'] };
+    if (!python.length && !sql.length) errors.push('Add at least one Python or SQL task.');
+    const ids = new Set([...bank.python, ...bank.sql].filter(task => !localTaskIds.has(task.id)).map(task => task.id));
+    [...python, ...sql].forEach((task, index) => {
+      const label = `Task ${index + 1}`;
+      if (ids.has(task?.id)) errors.push(`${label}: ${task.id} is already used.`);
+      if (task?.id) ids.add(task.id);
+    });
+    python.forEach((task, index) => errors.push(...validatePythonTask(task, `Python task ${index + 1}`)));
+    sql.forEach((task, index) => errors.push(...validateSqlTask(task, `SQL task ${index + 1}`)));
+    return { errors, python, sql };
+  }
+
+  function removeLocalPack() {
+    ['python', 'sql'].forEach(kind => {
+      for (let index = bank[kind].length - 1; index >= 0; index -= 1) {
+        if (localTaskIds.has(bank[kind][index].id)) bank[kind].splice(index, 1);
+      }
+    });
+    localTaskIds.clear();
+  }
+
+  function addLocalPack(pack, persist = true) {
+    const validation = validatePack(pack);
+    if (validation.errors.length) return { ok: false, errors: validation.errors };
+    removeLocalPack();
+    ['python', 'sql'].forEach(kind => {
+      validation[kind].forEach(task => {
+        bank[kind].push(task);
+        localTaskIds.add(task.id);
+      });
+    });
+    if (persist) localStorage.setItem(localPackKey, JSON.stringify({ python: validation.python, sql: validation.sql }));
+    return { ok: true, python: validation.python.length, sql: validation.sql.length, firstTaskId: validation.python[0]?.id || validation.sql[0]?.id || '' };
+  }
+
+  function restoreLocalPack() {
+    try {
+      const saved = localStorage.getItem(localPackKey);
+      if (saved) addLocalPack(JSON.parse(saved), false);
+    } catch (_error) {
+      localStorage.removeItem(localPackKey);
+    }
+  }
+
+  global.StudioTaskBankAPI = {
+    importLocalPack(source) {
+      try {
+        return addLocalPack(typeof source === 'string' ? JSON.parse(source) : source);
+      } catch (_error) {
+        return { ok: false, errors: ['The task pack is not valid JSON.'] };
+      }
+    },
+    clearLocalPack() {
+      const removed = localTaskIds.size;
+      removeLocalPack();
+      localStorage.removeItem(localPackKey);
+      return { removed };
+    },
+    getStats() {
+      return { python: bank.python.length, sql: bank.sql.length, local: localTaskIds.size };
+    }
+  };
+
+  restoreLocalPack();
 })(window);

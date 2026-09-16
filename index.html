@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260916-2" />
+  <link rel="stylesheet" href="styles.css?v=20260916-4" />
 </head>
 <body>
   <div class="app-shell study-studio" id="appShell">
@@ -303,7 +303,19 @@
               <div><dt>SQL</dt><dd>初始資料 + 查詢結果／最終資料狀態</dd></div>
               <div><dt>提交</dt><dd>下載 PNG 證據卡，再附到 Google Classroom</dd></div>
             </dl>
+            <p class="studio-task-bank-count" data-task-bank-count>Loading task-bank count…</p>
             <p class="studio-task-pack-note">公開測試用來學習與自查；日後如需正式私密評測，會要有登入的伺服器端 checker。</p>
+            <details class="teacher-task-pack">
+              <summary>Teacher tool · test a new task pack locally</summary>
+              <p>貼上 JSON 題目包即可即時加入這個瀏覽器的 Studio 測試；它不會發佈給學生或改動公開題庫。</p>
+              <textarea data-task-pack-input aria-label="Teacher task pack JSON" spellcheck="false" placeholder='{"python":[...],"sql":[]}'></textarea>
+              <div class="teacher-task-pack-actions">
+                <button type="button" class="ghost-btn" data-task-pack-template>載入範例</button>
+                <button type="button" class="secondary-btn" data-task-pack-load>本機試題</button>
+                <button type="button" class="text-btn" data-task-pack-clear>清除本機題目</button>
+              </div>
+              <p class="teacher-task-pack-feedback" data-task-pack-feedback aria-live="polite"></p>
+            </details>
             <button type="button" class="text-btn" data-home-action="notes">概念未穩？先看 Notes</button>
           </aside>
           <div id="studioWorkspaceStage" class="studio-workspace-stage" aria-live="polite"></div>
@@ -633,9 +645,9 @@
   <script src="activity-labs-phase2.js"></script>
   <script src="activity-labs-pass2.js"></script>
   <script src="activity-labs-core-studios.js"></script>
-  <script src="studio-task-bank.js?v=20260916-3"></script>
-  <script src="activity-labs-code-studios.js?v=20260916-3"></script>
-  <script src="platform-app.js?v=20260916-3"></script>
+  <script src="studio-task-bank.js?v=20260916-4"></script>
+  <script src="activity-labs-code-studios.js?v=20260916-4"></script>
+  <script src="platform-app.js?v=20260916-4"></script>
   <script src="study-tools.js"></script>
 </body>
 </html>

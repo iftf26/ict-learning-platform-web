@@ -9083,6 +9083,22 @@ body.revision-mode #chapter-intro::after {
 .studio-task-pack dd { margin: 0; color: #526e87; font-size: 0.81rem; line-height: 1.45; }
 .studio-task-pack code { padding: 1px 4px; border-radius: 4px; background: #dfeefa; color: #154b7e; font-weight: 850; }
 .studio-task-pack-note { padding: 11px; border-radius: 11px; background: rgba(255, 255, 255, 0.68); font-size: 0.78rem !important; }
+.studio-task-bank-count { margin: -7px 0 12px !important; color: #246293 !important; font: 900 0.73rem/1.4 "SFMono-Regular", Consolas, monospace; letter-spacing: 0.025em; }
+.teacher-task-pack { margin-top: 13px; border: 1px solid #b9d2e7; border-radius: 12px; background: rgba(255, 255, 255, 0.72); overflow: hidden; }
+.teacher-task-pack summary { padding: 11px; color: #285b84; font-size: 0.8rem; font-weight: 900; cursor: pointer; }
+.teacher-task-pack[open] summary { border-bottom: 1px solid #d2e2ef; background: #e9f4fc; }
+.teacher-task-pack > p { margin: 11px !important; color: #58728a !important; font-size: 0.77rem !important; line-height: 1.45 !important; }
+.teacher-task-pack textarea { display: block; width: calc(100% - 22px); min-height: 145px; margin: 0 11px; padding: 10px; border: 1px solid #b8d0e3; border-radius: 9px; background: #102235; color: #e4f4ff; font: 0.71rem/1.45 "SFMono-Regular", Consolas, monospace; resize: vertical; }
+.teacher-task-pack textarea:focus { border-color: #397db3; outline: 3px solid rgba(78, 144, 197, 0.18); }
+.teacher-task-pack-actions { display: flex; flex-wrap: wrap; gap: 7px; padding: 11px; }
+.teacher-task-pack-actions .ghost-btn,
+.teacher-task-pack-actions .secondary-btn,
+.teacher-task-pack-actions .text-btn { min-height: 34px; padding: 6px 9px; font-size: 0.75rem; }
+.teacher-task-pack-feedback { min-height: 1.2em; padding-top: 0; font-weight: 800; animation: task-pack-feedback-in 180ms var(--ease-out, ease-out); }
+.teacher-task-pack-feedback[data-state="success"] { color: #20734c !important; }
+.teacher-task-pack-feedback[data-state="error"] { color: #a13939 !important; }
+.teacher-task-pack-feedback[data-state="info"] { color: #356a98 !important; }
+@keyframes task-pack-feedback-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 .studio-task-pack .text-btn { margin-top: 14px; font-size: 0.82rem; }
 .studio-workspace-stage { min-width: 0; }
 .studio-workspace-stage .lab-shell { margin: 0; }
@@ -9102,4 +9118,6 @@ body.revision-mode #chapter-intro::after {
   .studio-workspace-tab { padding: 12px; }
   .studio-workspace-layout { gap: 12px; }
   .studio-task-pack { padding: 16px; }
+  .teacher-task-pack-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .teacher-task-pack-actions .text-btn { grid-column: 1 / -1; justify-self: start; }
 }
