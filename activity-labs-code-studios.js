@@ -212,49 +212,11 @@
     };
   }
 
-  const PYTHON_TASKS = [
-    {
-      id: 'D4-PY-01',
-      title: 'Pass counter',
-      brief: 'The list below stores five test marks. Write a loop to count how many marks are at least 50, then print the final count.',
-      starter: `marks = [42, 50, 68, 39, 91]\ncount = 0\n\n# Write your loop here.\n\nprint(count)`,
-      tests: [{ label: 'Public test', input: [], output: '3' }]
-    },
-    {
-      id: 'D4-PY-02',
-      title: 'Text-to-number total',
-      brief: 'priceText and quantityText are strings. Convert both values so that the program prints the numerical total.',
-      starter: `priceText = "12"\nquantityText = "3"\n\n# Convert the values and calculate total.\n\nprint(total)`,
-      tests: [{ label: 'Public test', input: [], output: '36' }]
-    },
-    {
-      id: 'D4-PY-03',
-      title: 'Boundary result',
-      brief: 'Set result to "Pass" when mark is 50 or above; otherwise set it to "Retry". Print result for the boundary value supplied.',
-      starter: `mark = 50\n\n# Use IF ... ELSE here.\n\nprint(result)`,
-      tests: [{ label: 'Boundary public test', input: [], output: 'Pass' }]
-    },
-    {
-      id: 'D4-PY-04',
-      title: 'Highest mark',
-      brief: 'Traverse the supplied list and print its highest mark. Do not change the values in the list.',
-      starter: `marks = [46, 88, 67, 91, 52]\n\n# Start with a sensible highest value, then update it in a loop.\n\nprint(highest)`,
-      tests: [{ label: 'Public test', input: [], output: '91' }]
-    },
-    {
-      id: 'D4-PY-05',
-      title: 'Two-mark total',
-      brief: 'Read two whole-number marks, one line at a time. Convert them to integers and print their total. Use input() exactly as a DSE-style input/output task would require.',
-      starter: `firstMark = int(input())\nsecondMark = int(input())\n\n# Calculate and print the total.\n\nprint(total)`,
-      tests: [
-        { label: 'Public test 1', input: ['12', '30'], output: '42' },
-        { label: 'Public test 2', input: ['0', '7'], output: '7' }
-      ]
-    }
-  ];
+  const PYTHON_TASKS = global.StudioTaskBank?.python || [];
 
   function renderPythonStudio(activity, options = {}) {
     const task = randomItem(PYTHON_TASKS);
+    if (!task) return '<div class="studio-workspace-empty"><h3>Task bank unavailable</h3><p>Reload the page. The Code Studio task bank did not load.</p></div>';
     const profile = safeProfile();
     const content = `
       <div class="lab-shell execution-studio python-studio" data-python-studio data-task-id="${task.id}">
@@ -408,55 +370,24 @@
     return sqlLibraryPromise;
   }
 
-  const SEED_SQL = `
-CREATE TABLE Student (
-  StudentID TEXT PRIMARY KEY,
-  Name TEXT NOT NULL,
-  Class TEXT NOT NULL,
-  Mark INTEGER CHECK (Mark BETWEEN 0 AND 100)
-);
-INSERT INTO Student VALUES
-  ('S001', 'Chan Tai Man', '5A', 42),
-  ('S002', 'Lee Ka Ming', '5A', 50),
-  ('S003', 'Wong Mei', '5A', 68),
-  ('S004', 'Ho Ying', '5A', 91),
-  ('S005', 'Ng Chi', '5B', 75);
-`;
+  const SEED_SQL = global.StudioTaskBank?.seedSql || '';
+  const SQL_TASKS = global.StudioTaskBank?.sql || [];
 
-  const SQL_TASKS = [
-    {
-      id: 'EA1-SQL-01',
-      title: 'Filter passing students',
-      brief: 'Display StudentID, Name and Mark for 5A students who pass (50 or above), with the highest mark first.',
-      starter: `SELECT StudentID, Name, Mark\nFROM Student\nWHERE Class = '5A'\n-- add the pass condition\n-- add the requested ordering\n;`,
-      verify(_db, lastResult) {
-        const result = lastResult.resultSets?.[0];
-        return result?.columns.join(',') === 'StudentID,Name,Mark'
-          && result.values.map((row) => row.join(',')).join('|') === 'S004,Ho Ying,91|S003,Wong Mei,68|S002,Lee Ka Ming,50';
-      }
-    },
-    {
-      id: 'EA1-SQL-02',
-      title: 'Update one record safely',
-      brief: 'Correct Wong Mei (S003) to 74. Use a WHERE condition so that no other student is changed. Then SELECT S003 to show the changed record.',
-      starter: `UPDATE Student\nSET Mark = 74\n-- identify Wong Mei safely\n;\n\nSELECT StudentID, Name, Mark\nFROM Student\nWHERE StudentID = 'S003';`,
-      verify(db) {
-        const result = db.exec("SELECT StudentID, Mark FROM Student ORDER BY StudentID");
-        return result[0]?.values.map((row) => row.join(',')).join('|') === 'S001,42|S002,50|S003,74|S004,91|S005,75';
-      }
-    },
-    {
-      id: 'EA1-SQL-03',
-      title: 'Insert then check',
-      brief: 'Add S006, Ng Mei, 5B, 82 to Student. Then use SELECT to show the new record.',
-      starter: `INSERT INTO Student (StudentID, Name, Class, Mark)\nVALUES ('S006', 'Ng Mei', '5B', );\n\nSELECT *\nFROM Student\nWHERE StudentID = 'S006';`,
-      verify(db) {
-        const result = db.exec("SELECT Name, Class, Mark FROM Student WHERE StudentID = 'S006'");
-        const row = result[0]?.values[0];
-        return Boolean(row && row[0] === 'Ng Mei' && row[1] === '5B' && row[2] === 82);
-      }
-    }
-  ];
+  function matchesSqlCheck(result, checker) {
+    const set = result?.[0];
+    return Boolean(set
+      && JSON.stringify(set.columns) === JSON.stringify(checker.columns)
+      && JSON.stringify(set.values) === JSON.stringify(checker.rows));
+  }
+
+  function verifySqlTask(task, db, lastResult) {
+    const checker = task.checker;
+    if (!checker) return false;
+    const result = checker.type === 'database'
+      ? db.exec(checker.query)
+      : lastResult.resultSets;
+    return matchesSqlCheck(result, checker);
+  }
 
   function sqlTable(resultSets) {
     if (!resultSets?.length) return '<p class="console-muted">Statement completed. Add a SELECT statement if you need to show the changed data.</p>';
@@ -468,6 +399,7 @@ INSERT INTO Student VALUES
 
   function renderSqlStudio(activity, options = {}) {
     const task = randomItem(SQL_TASKS);
+    if (!task) return '<div class="studio-workspace-empty"><h3>Task bank unavailable</h3><p>Reload the page. The SQL Studio task bank did not load.</p></div>';
     const profile = safeProfile();
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
@@ -572,7 +504,7 @@ INSERT INTO Student VALUES
     });
     checkButton.addEventListener('click', () => {
       if (!lastResult || !db) return;
-      const correct = lastResult.ok && selectedTask().verify(db, lastResult);
+      const correct = lastResult.ok && verifySqlTask(selectedTask(), db, lastResult);
       lastResult.checked = correct;
       lab.querySelector('[data-sql-feedback]').innerHTML = correct
         ? feedback('good', 'Task result confirmed.', 'The temporary database now contains the requested result. Keep the SQL and result set in the evidence card.', 'Explain which clause made the action safe or which fields prove the change.')
