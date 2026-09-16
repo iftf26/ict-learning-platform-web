@@ -153,7 +153,10 @@
           <label>姓名<input type="text" data-evidence-name maxlength="50" value="${escapeHtml(profile.name)}" placeholder="例如 Chan Tai Man"></label>
           <label>班別<input type="text" data-evidence-class maxlength="20" value="${escapeHtml(profile.className)}" placeholder="例如 5A"></label>
         </div>
-        <button type="button" class="secondary-btn" data-evidence-download disabled>下載 ${escapeHtml(studio)} 證據卡 PNG</button>
+        <div class="evidence-submit-route">
+          <button type="button" class="secondary-btn" data-evidence-download disabled>1. 下載證據卡 PNG</button>
+          <a class="text-btn" href="https://classroom.google.com/" target="_blank" rel="noopener">2. 開啟 Google Classroom 上載 ↗</a>
+        </div>
         <small>這是提交輔助紀錄，不是防篡改的身份驗證；老師仍可要求學生說明或交原始碼。</small>
       </aside>
     `;

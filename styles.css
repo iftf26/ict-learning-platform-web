@@ -8728,6 +8728,8 @@ body.revision-mode #chapter-intro::after {
 .evidence-panel > small { grid-column: 1 / -1; color: #5d7086; }
 .evidence-profile { display: grid; gap: 8px; }
 .evidence-profile label { display: grid; gap: 4px; color: #365373; font-size: 0.76rem; font-weight: 900; letter-spacing: 0.04em; }
+.evidence-submit-route { display: grid; gap: 7px; align-content: center; }
+.evidence-submit-route .text-btn { width: fit-content; font-size: 0.78rem; }
 .evidence-panel .secondary-btn[disabled],
 .studio-actions .primary-btn[disabled],
 .studio-actions .secondary-btn[disabled] { cursor: not-allowed; opacity: 0.58; transform: none; }
@@ -8735,6 +8737,7 @@ body.revision-mode #chapter-intro::after {
   .execution-grid { grid-template-columns: 1fr; }
   .evidence-panel { grid-template-columns: 1fr; }
   .evidence-panel > small { grid-column: auto; }
+  .evidence-submit-route { justify-items: start; }
 }
 @media (max-width: 560px) {
   .studio-banner { display: grid; }
