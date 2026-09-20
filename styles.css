@@ -1378,24 +1378,15 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
 .keyword-card {
   width: 100%;
   text-align: left;
-  cursor: pointer;
   font: inherit;
 }
 .keyword-card .keyword-zh {
   display: block;
-  margin-top: 4px;
+  margin: -2px 0 0;
   color: #8a5a00;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 750;
 }
-.keyword-hint {
-  margin: 0;
-  color: #6b7a90 !important;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-.keyword-card.is-open .keyword-hint { display: none; }
-.keyword-card:not(.is-open) .keyword-meaning { display: none; }
 .mistake-card {
   width: 100%;
   cursor: pointer;
@@ -1455,8 +1446,8 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   line-height: 1.4;
 }
 .chapter-ca {
-  border-color: rgba(36, 88, 230, 0.2);
-  background: rgba(246, 250, 255, 0.94);
+  border-color: rgba(36, 88, 230, 0.14);
+  background: rgba(249, 251, 255, 0.92);
 }
 .chapter-keywords {
   border-color: rgba(180, 120, 20, 0.22);
@@ -1475,24 +1466,47 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   display: grid;
   gap: 10px;
 }
+.chapter-ca-reference {
+  margin-top: 14px;
+  border: 1px solid rgba(36, 88, 230, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+}
+.chapter-ca-reference summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 16px;
+  font-weight: 800;
+  color: var(--accent-dark);
+}
+.chapter-ca-reference summary::-webkit-details-marker {
+  display: none;
+}
+.chapter-ca-reference[open] summary {
+  border-bottom: 1px solid rgba(36, 88, 230, 0.1);
+}
+.chapter-ca-reference .topic-ca-panel {
+  padding: 0 14px 14px;
+}
 .topic-ca-panel article {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-columns: 40px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
-  padding: 14px 16px;
-  border: 1px solid rgba(36, 88, 230, 0.16);
+  padding: 12px 14px;
+  border: 1px solid rgba(36, 88, 230, 0.12);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.9);
 }
 .topic-ca-panel strong {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   display: grid;
   place-items: center;
   background: rgba(36, 88, 230, 0.1);
   color: var(--accent-dark);
+  font-size: 0.82rem;
   font-weight: 950;
 }
 .topic-ca-panel p {
@@ -1526,11 +1540,13 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
   color: #3d4b63;
   line-height: 1.55;
 }
-button.keyword-card,
+article.keyword-card,
+button.mistake-card {
+  color: inherit;
+}
 button.mistake-card {
   appearance: none;
   -webkit-appearance: none;
-  color: inherit;
 }
 .mistake-card {
   display: grid;
@@ -6499,35 +6515,12 @@ button.mistake-card {
 }
 .practice-feedback.good { color: var(--success); }
 .practice-feedback.bad { color: var(--danger); }
-.topic-workbench {
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: #17233a;
-  color: white;
-  padding: 24px;
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 20px;
-  position: relative;
-  z-index: 1;
-}
-.topic-workbench .eyebrow { color: #b8c7ff; }
-.topic-workbench h3 { margin-bottom: 0; }
-.topic-workbench ol {
-  margin: 0;
-  padding-left: 22px;
-  display: grid;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.5;
-}
-
 @media (max-width: 1100px) {
   .app-shell { grid-template-columns: 1fr; }
   .app-shell.sidebar-collapsed { grid-template-columns: 1fr; }
   .sidebar { position: static; height: auto; }
   .app-shell.sidebar-collapsed .sidebar { display: none; }
-  .hub-hero, .hero-card, .program-storyboard, .lab-grid, .topic-workbench, .topic-formula-panel, .arcade-hero, .wide-board, .activity-workbench { grid-template-columns: 1fr; }
+  .hub-hero, .hero-card, .program-storyboard, .lab-grid, .topic-formula-panel, .arcade-hero, .wide-board, .activity-workbench { grid-template-columns: 1fr; }
   .learning-path-grid, .area-grid, .topic-card-grid, .topic-stat-grid, .topic-keypoint-grid, .topic-misconception-grid, .topic-exam-grid, .formula-list, .practice-mission-grid, .arcade-visual-grid, .arcade-mission-grid, .activity-grid, .concept-zone-grid, .data-info-card-bank, .data-info-zones, .transform-flow, .universal-route, .universal-zone-grid, .universal-concept-grid, .universal-rule-grid, .universal-transfer-grid, .a2-detective-grid, .a2-form-row, .a2-parity-arena, .a2-dse-panel, .a2-check-group, .a2-compare-grid, .a2-compare-grid.two-col, .a2-method-grid, .a2-input-control-grid, .a3-lab-toolbar, .a3-rgb-controls, .a3-bitmap-board, .a3-signal-readout, .a3-colour-comparison, .a3-channel-levels, .a3-rgb-preview, .a3-pixel-inspector, .a3-twos-layout, .a3-number-grid, .a3-range-grid, .a3-code-grid, .a3-code-grid.two-col, .a3-code-grid.three-col, .a3-formula-grid, .a3-utf-input-row, .d3-operation-grid, .b1-ipo-flow, .b1-device-grid, .b1-connection-table, .b1-output-layout, .b1-application-grid, .b1-dse-grid, .b2-component-grid, .b2-performance-grid, .b2-bus-grid, .b2-cycle-flow, .b2-memory-layout, .b2-pc-explorer, .b2-distance-map, .b2-trap-grid, .b2-dse-grid, .b3-os-grid, .b3-interface-grid, .b3-utility-driver, .b3-mode-grid, .b3-dse-grid, .c-two-col, .c-device-grid, .c-model-grid, .c-trap-grid, .c-dse-grid, .c-packet-flow, .c-cloud-grid, .c-transfer-grid, .c-service-grid, .c-flow-strip, .c-email-flow, .c-url-demo, .c-url-line, .c-search-steps, .c-stream-line, .c-ssl-panel, .c-story-topline, .c-story-player, .c-story-stepper, .c-story-steps, .c2-cipher-controls, .c2-cipher-board, .a5-object-grid, .a5-field-layout, .a5-query-strip, .a5-tool-grid, .a5-trap-grid, .a5-dse-grid, .a4-foundation-grid, .a4-tool-list, .a4-formula-labels, .a4-function-grid, .a4-reference-grid, .a4-copy-animation, .a4-analysis-grid, .a4-chart-row, .a4-rescue-layout { grid-template-columns: 1fr; }
   .b2-cycle-flow article::after { display: none; }
   .b2-distance-map article::after { display: none; }
@@ -7971,29 +7964,6 @@ body:has(.study-studio) {
 .study-search-hit small { color: #8ea0b8; }
 .study-search-empty { margin: 0; color: #9db0c8; padding: 8px; }
 
-.study-tools-bar {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 12px;
-}
-.study-tools-bar .ghost-btn {
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--text);
-  border-radius: 999px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: 700;
-}
-.study-tools-bar .ghost-btn[aria-pressed="true"] {
-  background: var(--accent-soft);
-  border-color: #b8c9f5;
-  color: var(--accent-dark);
-}
-
 .learning-flow-strip {
   margin-top: 16px;
   padding: 14px;
@@ -8065,45 +8035,6 @@ body:has(.study-studio) {
 .related-topic-card strong { font-size: 0.95rem; }
 .related-topic-card small { color: var(--muted); }
 
-.session-review-panel {
-  position: relative;
-  z-index: 6;
-  margin: 0 0 16px;
-}
-.session-review-panel.hidden { display: none; }
-.session-review-card {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: #fff;
-  padding: 16px;
-  box-shadow: var(--shadow-tight);
-}
-.session-review-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: start;
-  margin-bottom: 8px;
-}
-.session-review-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-}
-.session-review-grid article {
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 12px;
-  background: #f8fbff;
-}
-.session-review-grid h4 { margin: 0 0 8px; }
-.session-review-grid ul {
-  margin: 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 6px;
-}
 .text-link {
   border: 0;
   background: none;
@@ -8113,32 +8044,7 @@ body:has(.study-studio) {
   font-weight: 700;
 }
 
-body.revision-mode .content {
-  max-width: 920px;
-  margin: 0 auto;
-}
-body.revision-mode .lab-shell,
-body.revision-mode .activity-card,
-body.revision-mode .arcade-scoreboard,
-body.revision-mode .topic-activity-panel .lab-actions {
-  opacity: 0.55;
-}
-body.revision-mode .chapter-section {
-  break-inside: avoid;
-}
-body.revision-mode #chapter-intro::after {
-  content: "Revision view: read the notes, keywords and common mistakes. Hide interaction noise with Print notes.";
-  display: block;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-left: 4px solid var(--accent);
-  background: #f3f7ff;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
 @media (max-width: 900px) {
-  .session-review-grid { grid-template-columns: 1fr; }
   .learning-flow-track { gap: 6px; }
 }
 
@@ -8146,9 +8052,7 @@ body.revision-mode #chapter-intro::after {
   .sidebar,
   .sidebar-toggle,
   .study-search,
-  .study-tools-bar,
   .learning-flow-strip,
-  .session-review-panel,
   .topic-activity-panel,
   .lab-shell,
   .activity-card,
@@ -8175,10 +8079,6 @@ body.revision-mode #chapter-intro::after {
   body {
     background: #fff !important;
   }
-  body.revision-mode #chapter-intro,
-  body.revision-mode #chapter-outcomes,
-  body.revision-mode #chapter-keywords,
-  body.revision-mode #chapter-mistakes,
   #chapter-intro,
   #chapter-outcomes,
   #chapter-keywords,
