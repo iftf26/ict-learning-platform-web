@@ -376,9 +376,9 @@
     return dispose;
   }
 
-  function loadSqlLibrary() {
-    if (sqlLibraryPromise) return sqlLibraryPromise;
-    sqlLibraryPromise = new Promise((resolve, reject) => {
+  function loadSqlLibrary(forceReload = false) {
+    if (!forceReload && sqlLibraryPromise) return sqlLibraryPromise;
+    const promise = new Promise((resolve, reject) => {
       if (typeof global.initSqlJs === 'function') {
         resolve(global.initSqlJs);
         return;
@@ -390,7 +390,8 @@
       script.onerror = () => reject(new Error('Could not load the SQL runtime. Check your internet connection and reload.'));
       document.head.appendChild(script);
     }).then((initSqlJs) => initSqlJs({ locateFile: (file) => `${SQL_ASSET_ROOT}${file}` }));
-    return sqlLibraryPromise;
+    if (!forceReload) sqlLibraryPromise = promise;
+    return promise;
   }
 
   const SEED_SQL = global.StudioTaskBank?.seedSql || '';
@@ -485,8 +486,7 @@
       status.classList.remove('is-ready', 'is-error');
       status.textContent = 'Preparing SQLite…';
       output.innerHTML = '<p class="console-muted">Preparing the SQL execution engine…</p>';
-      sqlLibraryPromise = null;
-      loadSqlLibrary().then((library) => {
+      loadSqlLibrary(Boolean(retryButton.dataset.retried)).then((library) => {
         SQL = library;
         resetDatabase();
         status.textContent = 'SQLite ready · runs locally';
@@ -504,7 +504,10 @@
     mountSqlRuntime();
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
     lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(SQL_TASKS.filter((task) => task.id !== selectedTask().id))));
-    retryButton.addEventListener('click', mountSqlRuntime);
+    retryButton.addEventListener('click', () => {
+      retryButton.dataset.retried = 'true';
+      mountSqlRuntime();
+    });
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
       if (!SQL) return;
       resetDatabase();

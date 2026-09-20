@@ -91,7 +91,7 @@
     const page = document.getElementById('dsePracticePage');
     if (!page) return;
     page.classList.remove('hidden');
-    setModeNav('studio');
+    setModeNav(document.querySelector('.nav-item[data-page="practice"]') ? 'practice' : 'studio');
     const strand = document.getElementById('practiceStrand');
     const chapter = document.getElementById('practiceChapter');
     if (filter.strand && strand) strand.value = filter.strand;
@@ -618,6 +618,7 @@
           })();
           const match = findTopicButton(lastTopic || 'A1 Introduction to Information Processing');
           if (match) showTopicPage(match);
+          else showNotesHome();
         });
       });
       document.querySelectorAll('[data-home-focus]').forEach(button => {
