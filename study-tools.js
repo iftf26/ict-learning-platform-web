@@ -11,7 +11,6 @@
     { id: 'chapter-practice', label: 'Activity', labelZh: '應用' },
     { id: 'chapter-checkpoint', label: 'Checkpoint', labelZh: '檢查理解' }
   ];
-  const FLOW_NUMBERS = ['①', '②', '③', '④', '⑤', '⑥'];
 
   const RELATED = {
     A1: ['A2', 'A3', 'E1'],
@@ -87,6 +86,10 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function flowNumber(index) {
+    return String.fromCharCode(9312 + index);
   }
 
   function codeOf(topicId) {
@@ -308,7 +311,7 @@
     }).map(function (step, index) {
       return [
         '<button type="button" class="learning-flow-step" data-flow-target="' + step.id + '">',
-        '  <span>' + esc((FLOW_NUMBERS[index] || '') + ' ' + step.label) + '</span>',
+        '  <span>' + esc(flowNumber(index) + ' ' + step.label) + '</span>',
         '  <small lang="zh-Hant">' + esc(step.labelZh) + '</small>',
         '</button>'
       ].join('');
