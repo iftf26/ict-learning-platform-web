@@ -8605,6 +8605,11 @@ body.revision-mode #chapter-intro::after {
   font-weight: 900;
   white-space: nowrap;
 }
+.runtime-status-stack {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
 .runtime-pill.is-ready { background: #e3f8ed; color: #187244; }
 .runtime-pill.is-error { background: #fff0ee; color: #a64338; }
 .task-toolbar,
@@ -9101,6 +9106,7 @@ body.revision-mode #chapter-intro::after {
 .teacher-task-pack-feedback[data-state="success"] { color: #20734c !important; }
 .teacher-task-pack-feedback[data-state="error"] { color: #a13939 !important; }
 .teacher-task-pack-feedback[data-state="info"] { color: #356a98 !important; }
+.route-fallback { margin-bottom: 4px; }
 @keyframes task-pack-feedback-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 .studio-task-pack .text-btn { margin-top: 14px; font-size: 0.82rem; }
 .studio-workspace-stage { min-width: 0; }

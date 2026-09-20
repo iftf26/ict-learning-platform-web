@@ -181,6 +181,7 @@
       at: Date.now()
     });
     if (SESSION_MISSES.length > 40) SESSION_MISSES.shift();
+    global.StudyTools?.recordCheckpointMiss?.(question, question.explanation || '');
   }
 
   function teachFeedback(question, result) {
@@ -354,9 +355,9 @@
       });
     }
 
-    function finishQuestion(question, correct, why) {
+    function finishQuestion(question, correct, why, feedbackOverride) {
       session.answered = true;
-      const feedback = teachFeedback(question, {
+      const feedback = feedbackOverride || teachFeedback(question, {
         correct,
         why,
         nextAction: question.nextAction
@@ -424,16 +425,24 @@
           const value = container.querySelector('[data-check-short]')?.value || '';
           const marks = shortMarks(question, value);
           const hitCount = marks.filter(mark => mark.hit).length;
-          const correct = hitCount >= Math.max(1, Math.ceil(marks.length / 2));
+          const correct = marks.length > 0 && hitCount >= Math.max(1, Math.ceil(marks.length / 2));
           const why = marks.length
             ? `Marking points:\n${marks.map(mark => `${mark.hit ? 'Awarded' : 'Not yet'}: ${mark.point}`).join(' ')}`
             : question.explanation;
           const box = container.querySelector('[data-check-feedback]');
-          finishQuestion(question, correct, why);
+          finishQuestion(question, correct, why, {
+            tone: correct ? 'good' : 'info',
+            title: correct ? 'Possible marking points detected.' : 'Self-check against the marking points.',
+            body: marks.length
+             ? `You mentioned ${hitCount} of ${marks.length} key idea${marks.length === 1 ? '' : 's'}. Use the points below to compare logic and wording; this is not authoritative HKDSE marking.`
+             : 'Compare your answer with the marking points below. This browser check looks for likely ideas, not full exam logic.',
+            concept: question.explanation || '',
+            next: 'Tighten the explanation, then say the full answer in one clear DSE-style sentence.'
+          });
           if (box) {
             box.insertAdjacentHTML('beforeend', `
               <ul class="checkpoint-marks">
-                ${marks.map(mark => `<li class="${mark.hit ? 'hit' : 'miss'}"><span>${mark.hit ? 'Awarded' : 'Look for'}</span>${escapeHtml(mark.point)}</li>`).join('')}
+                ${marks.map(mark => `<li class="${mark.hit ? 'hit' : 'miss'}"><span>${mark.hit ? 'Detected' : 'Look for'}</span>${escapeHtml(mark.point)}</li>`).join('')}
               </ul>
             `);
           }

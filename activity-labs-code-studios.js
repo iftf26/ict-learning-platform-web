@@ -39,6 +39,10 @@
     return String(value || '').trim().replace(/\r\n/g, '\n');
   }
 
+  function normaliseCell(value) {
+    return value == null ? '' : String(value).trim();
+  }
+
   function safeProfile() {
     try {
       return JSON.parse(localStorage.getItem(STUDENT_PROFILE_KEY)) || { name: '', className: '' };
@@ -225,7 +229,7 @@
       <div class="lab-shell execution-studio python-studio" data-python-studio data-task-id="${task.id}">
         <div class="studio-banner">
           <div><p class="eyebrow">真正執行 · browser Python</p><h4>Code Studio</h4><p>寫完整 Python，執行、看錯誤、修正，然後把有效結果交成證據卡。</p></div>
-          <span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span>
+          <div class="runtime-status-stack"><span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span><button type="button" class="text-btn" data-python-retry hidden>Retry runtime</button></div>
         </div>
         <div class="task-toolbar">
           <label>練習題<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label>
@@ -258,17 +262,19 @@
     const taskSelector = lab.querySelector('[data-python-task]');
     const testSelector = lab.querySelector('[data-python-test]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
+    const retryButton = lab.querySelector('[data-python-retry]');
     let runtimeReady = false;
     let runCount = 0;
     let lastResult = null;
+    let runner = null;
 
     const selectedTask = () => PYTHON_TASKS.find((item) => item.id === taskSelector.value) || PYTHON_TASKS[0];
     const testsFor = (task) => task.tests?.length ? task.tests : [{ label: 'Public test', input: [], output: task.expected || '' }];
     const selectedTest = () => testsFor(selectedTask())[Number(testSelector.value) || 0] || testsFor(selectedTask())[0];
     const updateTestPreview = () => {
       const test = selectedTest();
-      const inputText = test.input?.length ? `input (.in): ${test.input.join(' | ')}` : 'input (.in): no input lines';
-      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Public test'} · ${inputText} · expected (.out): ${test.output}`;
+      const inputText = test.input?.length ? `Input: ${test.input.join(' , ')}` : 'Input: no input lines';
+      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Public test'} · ${inputText}`;
       lastResult = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
@@ -287,7 +293,14 @@
       updateTestPreview();
     };
 
-    const runner = createPythonRunner((state) => {
+    const mountRunner = () => {
+      runtimeReady = false;
+      runButton.disabled = true;
+      checkButton.disabled = true;
+      retryButton.hidden = true;
+      status.classList.remove('is-ready', 'is-error');
+      runner?.dispose?.();
+      runner = createPythonRunner((state) => {
       if (state.status === 'loading') {
         status.textContent = 'Preparing Python…';
       } else if (state.status === 'ready') {
@@ -299,10 +312,13 @@
       } else if (state.status === 'error') {
         status.textContent = 'Python unavailable';
         status.classList.add('is-error');
-        output.textContent = `Could not prepare Python: ${state.error || 'Check your internet connection and reload.'}`;
+        output.textContent = `The Python execution engine could not load. ${state.error || 'Check the network connection, then retry the runtime.'}`;
+        retryButton.hidden = false;
       }
-    });
+      });
+    };
 
+    mountRunner();
     showTask(selectedTask());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
@@ -312,6 +328,10 @@
       showTask(randomItem(options));
     });
     lab.querySelector('[data-python-reset]').addEventListener('click', () => showTask(selectedTask()));
+    retryButton.addEventListener('click', () => {
+      output.textContent = 'Retrying Python runtime…';
+      mountRunner();
+    });
     runButton.addEventListener('click', async () => {
       if (!runtimeReady) return;
       runButton.disabled = true;
@@ -334,7 +354,7 @@
       if (!lastResult) return;
       const task = selectedTask();
       const test = selectedTest();
-      const correct = lastResult.ok && lastResult.test === test && normaliseOutput(lastResult.stdout) === test.output;
+      const correct = lastResult.ok && lastResult.test === test && normaliseOutput(lastResult.stdout) === normaliseOutput(test.output);
       lab.querySelector('[data-python-feedback]').innerHTML = correct
         ? feedback('good', 'Public test matches.', `The expected output is ${test.output}. Keep the code and the output visible in your evidence card.`, 'Say which test value you would change to test a boundary or an error case.')
         : feedback('bad', 'The public test does not yet match.', `Expected: ${test.output}  |  Your output: ${normaliseOutput(lastResult.stdout) || 'no output'}`, 'Trace one variable or condition at a time, then run again.');
@@ -379,8 +399,8 @@
   function matchesSqlCheck(result, checker) {
     const set = result?.[0];
     return Boolean(set
-      && JSON.stringify(set.columns) === JSON.stringify(checker.columns)
-      && JSON.stringify(set.values) === JSON.stringify(checker.rows));
+      && JSON.stringify(set.columns.map(normaliseCell)) === JSON.stringify(checker.columns.map(normaliseCell))
+      && JSON.stringify(set.values.map(row => row.map(normaliseCell))) === JSON.stringify(checker.rows.map(row => row.map(normaliseCell))));
   }
 
   function verifySqlTask(task, db, lastResult) {
@@ -406,7 +426,7 @@
     const profile = safeProfile();
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
-        <div class="studio-banner"><div><p class="eyebrow">真正執行 · in-memory SQLite</p><h4>SQL Studio</h4><p>直接寫 SQL，看看查詢結果或資料變更；每次重設都回到同一份練習資料。</p></div><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQLite…</span></div>
+        <div class="studio-banner"><div><p class="eyebrow">真正執行 · in-memory SQLite</p><h4>SQL Studio</h4><p>直接寫 SQL，看看查詢結果或資料變更；每次重設都回到同一份練習資料。</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQLite…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry runtime</button></div></div>
         <div class="task-toolbar"><label>練習題<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>重設資料庫</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>可執行 SELECT、INSERT、UPDATE、DELETE 及 CREATE 等 SQL；全部資料只會留在此瀏覽器記憶體。</small></article>
         <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor">${escapeHtml(task.starter)}</textarea></section><section class="console-panel"><div class="editor-heading"><span>Result set</span><span>temporary database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQLite is loading in the background…</div></section></div>
@@ -430,6 +450,7 @@
     const checkButton = lab.querySelector('[data-sql-check]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
     const taskSelector = lab.querySelector('[data-sql-task]');
+    const retryButton = lab.querySelector('[data-sql-retry]');
     let SQL;
     let db;
     let runCount = 0;
@@ -454,21 +475,36 @@
       if (reset && SQL) resetDatabase();
     };
 
+    const mountSqlRuntime = () => {
+      SQL = null;
+      db?.close();
+      db = null;
+      runButton.disabled = true;
+      checkButton.disabled = true;
+      retryButton.hidden = true;
+      status.classList.remove('is-ready', 'is-error');
+      status.textContent = 'Preparing SQLite…';
+      output.innerHTML = '<p class="console-muted">Preparing the SQL execution engine…</p>';
+      sqlLibraryPromise = null;
+      loadSqlLibrary().then((library) => {
+        SQL = library;
+        resetDatabase();
+        status.textContent = 'SQLite ready · runs locally';
+        status.classList.add('is-ready');
+        runButton.disabled = false;
+        output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
+      }).catch((error) => {
+        status.textContent = 'SQLite unavailable';
+        status.classList.add('is-error');
+        output.innerHTML = `<p class="console-error">The SQL execution engine could not load. ${escapeHtml(error.message)}</p>`;
+        retryButton.hidden = false;
+      });
+    };
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
-    loadSqlLibrary().then((library) => {
-      SQL = library;
-      resetDatabase();
-      status.textContent = 'SQLite ready · runs locally';
-      status.classList.add('is-ready');
-      runButton.disabled = false;
-      output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
-    }).catch((error) => {
-      status.textContent = 'SQLite unavailable';
-      status.classList.add('is-error');
-      output.innerHTML = `<p class="console-error">${escapeHtml(error.message)}</p>`;
-    });
+    mountSqlRuntime();
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
     lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(SQL_TASKS.filter((task) => task.id !== selectedTask().id))));
+    retryButton.addEventListener('click', mountSqlRuntime);
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
       if (!SQL) return;
       resetDatabase();
