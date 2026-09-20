@@ -400,12 +400,15 @@
     ].join(''));
   }
 
-  function setRevisionMode(on) {
+  function setRevisionMode(on, options) {
+    const persist = !options || options.persist !== false;
     document.body.classList.toggle('revision-mode', Boolean(on));
-    try {
-      sessionStorage.setItem(REVISION_KEY, on ? '1' : '0');
-    } catch (_error) {
-      /* ignore */
+    if (persist) {
+      try {
+        sessionStorage.setItem(REVISION_KEY, on ? '1' : '0');
+      } catch (_error) {
+        /* ignore */
+      }
     }
     const button = document.getElementById('revisionModeBtn');
     if (button) {
@@ -416,9 +419,9 @@
 
   function restoreRevisionMode() {
     try {
-      setRevisionMode(sessionStorage.getItem(REVISION_KEY) === '1');
+      setRevisionMode(sessionStorage.getItem(REVISION_KEY) === '1', { persist: false });
     } catch (_error) {
-      setRevisionMode(false);
+      setRevisionMode(false, { persist: false });
     }
   }
 

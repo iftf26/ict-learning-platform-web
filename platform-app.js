@@ -158,18 +158,24 @@
     document.querySelector('[data-route-fallback]')?.remove();
   }
 
-  function showRouteFallback(title, detail) {
-    showNotesHome();
+  function showRouteFallback(title, detail, mode = 'notes') {
+    if (mode === 'studio') showStudioHome('code');
+    else showNotesHome();
     clearRouteFallback();
-    const host = document.querySelector('.notes-dashboard-content');
+    const host = mode === 'studio'
+      ? document.querySelector('.studio-home-page')
+      : document.querySelector('.notes-dashboard-content');
     if (!host) return;
     const searchHint = detail ? `<p>${escapeHtml(detail)}</p>` : '';
+    const primaryAction = mode === 'studio'
+      ? '<button class="primary-btn" type="button" data-home-action="studio">Go to Studio</button>'
+      : '<button class="primary-btn" type="button" data-home-resume>Go to Notes</button>';
     host.insertAdjacentHTML('afterbegin', `
       <section class="checkpoint-empty route-fallback" data-route-fallback>
         <h3>${escapeHtml(title)}</h3>
         ${searchHint}
         <div class="checkpoint-actions">
-          <button class="primary-btn" type="button" data-home-resume>Go to Notes</button>
+          ${primaryAction}
           <button class="secondary-btn" type="button" data-home-focus="search">Search topic</button>
           <button class="ghost-btn" type="button" data-home-action="studio">Open Studio</button>
         </div>
@@ -423,7 +429,7 @@
     if (hash.demo || hash.lab) {
       const key = hash.demo || hash.lab;
       if (demos[key]) loadDemo(key);
-      else showRouteFallback('Trace Lab demo not found', `The demo link “${key}” is no longer available. Open Trace Lab and choose another programming demonstration.`);
+      else showRouteFallback('Trace Lab demo not found', `The demo link “${key}” is no longer available. Open Trace Lab and choose another programming demonstration.`, 'studio');
       return;
     }
     if (hash.practice != null) {
@@ -452,7 +458,7 @@
         showTopicPage(button);
         setTimeout(() => openActivity(hash.activity), 0);
       } else if (hash.activity) {
-        showRouteFallback('Activity not found', `The activity link “${hash.activity}” is not available here. Open the chapter in Notes or move to Studio.`);
+        showRouteFallback('Activity not found', `The activity link “${hash.activity}” is not available here. Open the chapter in Notes or move to Studio.`, 'studio');
       }
       return;
     }

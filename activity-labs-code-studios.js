@@ -477,6 +477,7 @@
     };
 
     const mountSqlRuntime = () => {
+      const forceReload = retryButton.dataset.retried === 'true';
       SQL = null;
       db?.close();
       db = null;
@@ -486,14 +487,16 @@
       status.classList.remove('is-ready', 'is-error');
       status.textContent = 'Preparing SQLite…';
       output.innerHTML = '<p class="console-muted">Preparing the SQL execution engine…</p>';
-      loadSqlLibrary(Boolean(retryButton.dataset.retried)).then((library) => {
+      loadSqlLibrary(forceReload).then((library) => {
         SQL = library;
+        delete retryButton.dataset.retried;
         resetDatabase();
         status.textContent = 'SQLite ready · runs locally';
         status.classList.add('is-ready');
         runButton.disabled = false;
         output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
       }).catch((error) => {
+        delete retryButton.dataset.retried;
         status.textContent = 'SQLite unavailable';
         status.classList.add('is-error');
         output.innerHTML = `<p class="console-error">The SQL execution engine could not load. ${escapeHtml(error.message)}</p>`;
