@@ -5435,7 +5435,7 @@ function renderChapterSidebar() {
     <div class="nav-title">HKDSE ICT</div>
     <button class="nav-item nav-root active" data-page="dashboard">
       <span class="nav-emoji">⌂</span>
-      Start here
+      Home
     </button>
     ${chapterStructure.map((group, groupIndex) => {
       const strand = typeof getStrandStudyMeta === 'function'
@@ -6971,9 +6971,9 @@ function showTopicPage(button) {
   topicPage.classList.remove('theme-a', 'theme-b', 'theme-c', 'theme-d', 'theme-e', 'theme-db', 'theme-ec');
   topicPage.classList.add(topicConfig.theme || groupConfig.theme);
   renderIntroductionSection(topicConfig, groupConfig, { group, topic });
+  renderDetailsSection(topicConfig, groupConfig);
   renderCaOutcomesSection(topicConfig);
   renderKeywordsSection(topicConfig);
-  renderDetailsSection(topicConfig, groupConfig);
   renderCommonMistakesSection(topicConfig);
   renderActivitiesSection(topicConfig);
   renderCheckpointSection(topicConfig);
@@ -10203,7 +10203,7 @@ function renderCommonMistakesSection(topicConfig) {
 function renderActivitiesSection(topicConfig) {
   const items = topicConfig.activities || [];
   renderTopicActivities(items);
-  setChapterSectionVisible(topicActivityPanel, true);
+  setChapterSectionVisible(topicActivityPanel, Boolean(items.length));
 }
 
 function renderCheckpointSection(topicConfig) {
@@ -13443,10 +13443,10 @@ function annotateStudyText(text) {
 
 const CHAPTER_JUMP_ITEMS = [
   { id: 'chapter-intro', label: 'Focus', zh: '重點' },
-  { id: 'chapter-outcomes', label: 'Outcomes', zh: '學習成果' },
+  { id: 'chapter-details', label: 'Concept', zh: '概念' },
+  { id: 'chapter-outcomes', label: 'Learn', zh: '學習成果' },
   { id: 'chapter-keywords', label: 'Keywords', zh: '關鍵詞' },
   { id: 'chapter-mistakes', label: 'Mistakes', zh: '常見錯誤' },
-  { id: 'chapter-details', label: 'Details', zh: '詳情' },
   { id: 'chapter-practice', label: 'Practice', zh: '練習' },
   { id: 'chapter-checkpoint', label: 'Checkpoint', zh: '檢查站' }
 ];

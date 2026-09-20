@@ -5,12 +5,15 @@
  */
 (function (global) {
   const SESSION_KEY = 'hkdse-ict-session-v1';
+  const REVISION_KEY = 'hkdse-ict-revision-mode-v1';
+  let printRestore = null;
 
   const FLOW_STEPS = [
-    { id: 'chapter-keywords', label: '① Keywords', labelZh: '關鍵詞' },
-    { id: 'chapter-mistakes', label: '② Mistakes', labelZh: '錯誤' },
-    { id: 'chapter-practice', label: '③ Activity', labelZh: '活動' },
-    { id: 'chapter-checkpoint', label: '④ Checkpoint', labelZh: '檢查點' }
+    { id: 'chapter-details', label: '① Big idea', labelZh: '先看概念' },
+    { id: 'chapter-keywords', label: '② Keywords', labelZh: '再學詞語' },
+    { id: 'chapter-mistakes', label: '③ Mistakes', labelZh: '辨認陷阱' },
+    { id: 'chapter-practice', label: '④ Activity', labelZh: '應用' },
+    { id: 'chapter-checkpoint', label: '⑤ Checkpoint', labelZh: '轉移' }
   ];
 
   const RELATED = {
@@ -114,7 +117,7 @@
   }
 
   function touchSession(patch) {
-    const next = Object.assign({ opened: [], struggles: {} }, loadSession(), patch, { updatedAt: Date.now() });
+    const next = Object.assign({ opened: [], struggles: {}, misses: [] }, loadSession(), patch, { updatedAt: Date.now() });
     saveSession(next);
     return next;
   }
@@ -131,6 +134,23 @@
     const struggles = Object.assign({}, loadSession().struggles || {});
     struggles[label] = (struggles[label] || 0) + 1;
     touchSession({ struggles: struggles });
+  }
+
+  function recordCheckpointMiss(question, detail) {
+    if (!question) return;
+    const data = loadSession();
+    const misses = (data.misses || []).filter(function (item) {
+      return item.stem !== question.stem;
+    });
+    misses.unshift({
+      chapter: codeOf(question.chapter || question.title || ''),
+      title: question.title || 'Checkpoint',
+      stem: question.stem || '',
+      detail: detail || '',
+      at: Date.now()
+    });
+    touchSession({ misses: misses.slice(0, 20) });
+    recordStruggle(`${codeOf(question.chapter || '')} · ${question.title || question.stem || 'checkpoint miss'}`);
   }
 
   function titleEn(topicId) {
@@ -296,7 +316,7 @@
     const target = document.getElementById(id);
     if (!target) return false;
     if (id === 'chapter-practice') {
-      return Boolean(target.querySelector('.lab-shell, .activity-card, .activity-coming-later'));
+      return Boolean(target.querySelector('.lab-shell, .activity-card'));
     }
     if (target.classList.contains('hidden')) return false;
     const closest = target.closest('.chapter-section');
@@ -325,9 +345,9 @@
     const steps = FLOW_STEPS.map(function (step) {
       const isActivity = step.id === 'chapter-practice';
       const muted = isActivity && !hasActivity;
-      const usable = muted ? sectionIsUsable(step.id) : sectionIsUsable(step.id);
-      const disabled = !usable && !muted;
-      const label = muted ? '③ Coming later' : step.label;
+      const usable = sectionIsUsable(step.id) && !muted;
+      const disabled = !usable;
+      const label = muted ? '④ Coming later' : step.label;
       const labelZh = muted ? '稍後' : step.labelZh;
       return [
         '<button type="button" class="learning-flow-step' + (muted || disabled ? ' is-muted' : '') + '" data-flow-target="' + step.id + '"' + (disabled ? ' disabled aria-disabled="true"' : '') + '>',
@@ -339,7 +359,7 @@
 
     intro.insertAdjacentHTML('beforeend', [
       '<div class="learning-flow-strip" id="learningFlowStrip" aria-label="Learning path">',
-      '  <p class="learning-flow-lead">Do now · 先做這四步' + (hasActivity ? '' : ' · use Keywords → Mistakes → Checkpoint') + '</p>',
+      '  <p class="learning-flow-lead">Follow this order · 先理解，再記詞語，再練習' + (hasActivity ? '' : ' · this chapter has no activity yet') + '</p>',
       '  <div class="learning-flow-track">' + steps + '</div>',
       '</div>'
     ].join(''));
@@ -380,8 +400,16 @@
     ].join(''));
   }
 
-  function setRevisionMode(on) {
+  function setRevisionMode(on, options) {
+    const persist = !options || options.persist !== false;
     document.body.classList.toggle('revision-mode', Boolean(on));
+    if (persist) {
+      try {
+        sessionStorage.setItem(REVISION_KEY, on ? '1' : '0');
+      } catch (_error) {
+        /* ignore */
+      }
+    }
     const button = document.getElementById('revisionModeBtn');
     if (button) {
       button.setAttribute('aria-pressed', String(Boolean(on)));
@@ -389,11 +417,49 @@
     }
   }
 
+  function restoreRevisionMode() {
+    try {
+      setRevisionMode(sessionStorage.getItem(REVISION_KEY) === '1', { persist: false });
+    } catch (_error) {
+      setRevisionMode(false, { persist: false });
+    }
+  }
+
+  function printNotes() {
+    const wasOn = document.body.classList.contains('revision-mode');
+    if (typeof printRestore === 'function') printRestore();
+    setRevisionMode(true);
+    let restored = false;
+    const restore = function () {
+      if (restored) return;
+      restored = true;
+      setRevisionMode(wasOn);
+      window.removeEventListener('afterprint', restore);
+      window.removeEventListener('focus', restore);
+      printRestore = null;
+    };
+    printRestore = restore;
+    window.addEventListener('afterprint', restore, { once: true });
+    window.addEventListener('focus', restore, { once: true });
+    window.print();
+  }
+
+  function updateToolsVisibility() {
+    const bar = document.getElementById('studyToolsBar');
+    const review = document.getElementById('sessionReviewPanel');
+    const notesVisible = !document.getElementById('topicPage')?.classList.contains('hidden')
+      || (!document.getElementById('dashboardPage')?.classList.contains('hidden')
+        && document.getElementById('dashboardPage')?.dataset.homeMode === 'notes');
+    if (bar) bar.hidden = !notesVisible;
+    if (!notesVisible && review) review.classList.add('hidden');
+  }
+
   function renderSessionReview() {
     const panel = document.getElementById('sessionReviewPanel');
     if (!panel) return;
     const data = loadSession();
     const opened = data.opened || [];
+    const misses = (data.misses || []).slice(0, 6);
     const struggles = Object.keys(data.struggles || {}).map(function (label) {
       return [label, data.struggles[label]];
     }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 5);
@@ -420,17 +486,25 @@
       '    </div>',
       '    <button type="button" class="ghost-btn" id="closeSessionReviewBtn">Close</button>',
       '  </div>',
-      '  <p>' + (struggles.length
-        ? 'Today’s traps are listed first. Fix those ideas before opening a new chapter.'
-        : 'No accounts and no permanent tracking. Wrong checkpoint answers from this tab will appear here as traps.') + '</p>',
+      '  <p>' + ((misses.length || struggles.length)
+        ? 'Use this page to revisit wrong checkpoint items first, then look at repeated struggle signals.'
+        : 'No accounts and no permanent tracking. Recently opened chapters and wrong checkpoint answers from this tab will appear here.') + '</p>',
       '  <div class="session-review-grid">',
+      '    <article' + (misses.length ? ' class="session-traps-focus"' : '') + '>',
+      '      <h4>Wrong checkpoint items</h4>',
+      '      <ul>' + (misses.length
+        ? misses.map(function (item) {
+            return '<li><strong>' + esc(item.chapter || 'ICT') + '</strong> — ' + esc(item.stem || item.title) + '</li>';
+          }).join('')
+        : '<li>No wrong checkpoint items recorded yet.</li>') + '</ul>',
+      '    </article>',
       '    <article' + (struggles.length ? ' class="session-traps-focus"' : '') + '>',
-      '      <h4>' + (struggles.length ? 'Today’s traps' : 'Where you hesitated') + '</h4>',
+      '      <h4>' + (struggles.length ? 'Repeated struggle signals' : 'Where you hesitated') + '</h4>',
       '      <ul>' + (struggles.length
         ? struggles.map(function (pair) {
             return '<li>' + esc(pair[0]) + ' <em>×' + pair[1] + '</em></li>';
           }).join('')
-        : '<li>No struggle signals yet. Wrong checkpoint answers will appear here.</li>') + '</ul>',
+        : '<li>No struggle signals yet.</li>') + '</ul>',
       '    </article>',
       '    <article>',
       '      <h4>Recently opened</h4>',
@@ -514,8 +588,7 @@
       }
       const printBtn = event.target.closest('#printRevisionBtn');
       if (printBtn) {
-        setRevisionMode(true);
-        window.print();
+        printNotes();
         return;
       }
       const sessionBtn = event.target.closest('#sessionReviewBtn');
@@ -550,15 +623,28 @@
   function boot() {
     ensureChrome();
     bindEvents();
+    restoreRevisionMode();
+    updateToolsVisibility();
 
     const original = global.showTopicPage;
     if (typeof original === 'function' && !original.__studyToolsWrapped) {
       global.showTopicPage = function wrappedShowTopicPage(button) {
         original(button);
         enhanceTopic(button && button.dataset ? button.dataset.topic : '');
+        updateToolsVisibility();
       };
       global.showTopicPage.__studyToolsWrapped = true;
     }
+    ['showDashboardPage', 'showProgrammingView', 'showArcadePage', 'showPracticeHub', 'showStudioHome'].forEach(function (name) {
+      const originalFn = global[name];
+      if (typeof originalFn !== 'function' || originalFn.__studyToolsWrapped) return;
+      global[name] = function wrappedViewChange() {
+        const value = originalFn.apply(this, arguments);
+        updateToolsVisibility();
+        return value;
+      };
+      global[name].__studyToolsWrapped = true;
+    });
   }
 
   global.StudyTools = {
@@ -566,8 +652,10 @@
     openTopic: openTopic,
     enhanceTopic: enhanceTopic,
     recordStruggle: recordStruggle,
+    recordCheckpointMiss: recordCheckpointMiss,
     renderSessionReview: renderSessionReview,
-    setRevisionMode: setRevisionMode
+    setRevisionMode: setRevisionMode,
+    updateToolsVisibility: updateToolsVisibility
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
