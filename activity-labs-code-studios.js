@@ -40,7 +40,7 @@
   }
 
   function normaliseCell(value) {
-    return value == null ? '' : String(value).trim();
+    return value == null ? '' : String(value);
   }
 
   function safeProfile() {

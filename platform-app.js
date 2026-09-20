@@ -169,15 +169,17 @@
     const searchHint = detail ? `<p>${escapeHtml(detail)}</p>` : '';
     const primaryAction = mode === 'studio'
       ? '<button class="primary-btn" type="button" data-home-action="studio">Go to Studio</button>'
-      : '<button class="primary-btn" type="button" data-home-resume>Go to Notes</button>';
+      : '<button class="primary-btn" type="button" data-home-action="notes">Go to Notes home</button>';
+    const secondaryActions = mode === 'studio'
+      ? '<button class="secondary-btn" type="button" data-home-action="studio">Open Studio</button><button class="ghost-btn" type="button" data-home-focus="search">Search topic</button>'
+      : '<button class="secondary-btn" type="button" data-home-focus="search">Search topic</button><button class="ghost-btn" type="button" data-home-resume>Resume last chapter</button>';
     host.insertAdjacentHTML('afterbegin', `
       <section class="checkpoint-empty route-fallback" data-route-fallback>
         <h3>${escapeHtml(title)}</h3>
         ${searchHint}
         <div class="checkpoint-actions">
           ${primaryAction}
-          <button class="secondary-btn" type="button" data-home-focus="search">Search topic</button>
-          <button class="ghost-btn" type="button" data-home-action="studio">Open Studio</button>
+          ${secondaryActions}
         </div>
       </section>
     `);
