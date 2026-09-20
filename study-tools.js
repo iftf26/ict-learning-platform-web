@@ -89,7 +89,7 @@
   }
 
   function flowNumber(index) {
-    return String.fromCharCode(9312 + index);
+    return index < 20 ? String.fromCharCode(9312 + index) : String(index + 1) + '.';
   }
 
   function codeOf(topicId) {

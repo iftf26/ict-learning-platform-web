@@ -1489,15 +1489,11 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px;
 .chapter-ca-reference[open] summary {
   border-bottom: 1px solid rgba(36, 88, 230, 0.1);
 }
-.chapter-ca-toggle-indicator::before {
-  content: "Open";
+.chapter-ca-toggle-indicator {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
-}
-.chapter-ca-reference[open] .chapter-ca-toggle-indicator::before {
-  content: "Close";
 }
 .chapter-ca-reference .topic-ca-panel {
   padding: 0 14px 14px;
