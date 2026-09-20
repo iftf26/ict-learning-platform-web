@@ -447,7 +447,9 @@
   function updateToolsVisibility() {
     const bar = document.getElementById('studyToolsBar');
     const review = document.getElementById('sessionReviewPanel');
-    const notesVisible = !document.getElementById('topicPage')?.classList.contains('hidden');
+    const notesVisible = !document.getElementById('topicPage')?.classList.contains('hidden')
+      || (!document.getElementById('dashboardPage')?.classList.contains('hidden')
+        && document.getElementById('dashboardPage')?.dataset.homeMode === 'notes');
     if (bar) bar.hidden = !notesVisible;
     if (!notesVisible && review) review.classList.add('hidden');
   }

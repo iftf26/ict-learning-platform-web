@@ -472,8 +472,9 @@
       showNotesHome();
       return;
     }
-    if (hash.view === 'home' || hash.page === 'dashboard') showDashboardPage();
-    else if (location.hash) showRouteFallback('Link not recognised', 'This saved link does not match the current site structure. Open Notes, Search, or Studio from here.');
+    const routeKeys = Object.keys(hash).filter(key => key !== 'teacher');
+    if (hash.view === 'home' || hash.page === 'dashboard' || !routeKeys.length) showDashboardPage();
+    else showRouteFallback('Link not recognised', 'This saved link does not match the current site structure. Open Notes, Search, or Studio from here.');
     } finally {
       global.__platformWritingHash = false;
     }
