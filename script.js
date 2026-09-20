@@ -10164,10 +10164,11 @@ function renderCaOutcomesSection(topicConfig) {
   const items = topicConfig.caOutcomes || [];
   if (!topicCaPanel) return;
   const reference = document.querySelector('#chapter-outcomes .chapter-ca-reference');
-  const syncReference = () => {
-    const indicator = reference?.querySelector('.chapter-ca-toggle-indicator');
-    if (indicator) indicator.textContent = reference?.open ? 'Close' : 'Open';
-  };
+  function syncReference() {
+    if (!reference) return;
+    const indicator = reference.querySelector('.chapter-ca-toggle-indicator');
+    if (indicator) indicator.textContent = reference.open ? 'Close' : 'Open';
+  }
   if (reference) {
     reference.open = false;
     reference.ontoggle = syncReference;
