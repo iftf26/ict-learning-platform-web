@@ -10167,7 +10167,7 @@ function renderCaOutcomesSection(topicConfig) {
   function syncReference() {
     if (!reference) return;
     const indicator = reference.querySelector('.chapter-ca-toggle-indicator');
-    if (indicator) indicator.textContent = reference.open ? 'Close' : 'Open';
+    if (indicator) indicator.textContent = reference.open ? 'Close ▴' : 'Open ▾';
   }
   if (reference) {
     reference.open = false;
@@ -10898,11 +10898,14 @@ function toggleTopicSimulationAuto() {
 }
 
 function renderTopicActivities(items) {
+  const practiceSection = topicActivityPanel ? topicActivityPanel.closest('.chapter-section') : null;
   if (!items.length) {
     topicActivityPanel.innerHTML = '';
     topicActivityPanel.classList.add('hidden');
+    if (practiceSection) practiceSection.classList.add('hidden');
     return;
   }
+  if (practiceSection) practiceSection.classList.remove('hidden');
   topicActivityPanel.classList.remove('hidden');
   topicActivityPanel.innerHTML = `
     <div class="activity-header">
