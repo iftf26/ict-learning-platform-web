@@ -438,6 +438,10 @@
       };
       global.showTopicPage.__studyToolsWrapped = true;
     }
+    const currentTopic = document.querySelector('.nav-item[data-topic].active')?.dataset.topic;
+    if (currentTopic && !document.getElementById('topicPage')?.classList.contains('hidden')) {
+      enhanceTopic(currentTopic);
+    }
   }
 
   global.StudyTools = {
