@@ -14,6 +14,9 @@ Chapter names, grouping and teaching sequence now follow the school S4–S6 SOW 
 
 Activity *mode names* such as `b2Fde`, `c3Stream` and `a5Database` are unchanged so deep links keep working. Chapter *codes* in the DSE checkpoint bank follow the new SOW (`B1`, `C4`, `C5`, `A5`, `A6`, `C8`).
 
+## DSE Practice question bank
+
+The Practice Hub combines each chapter's `practice` entries in `script.js` with extra chapter-coded questions in `checkpoint-bank.js`. Keep new bank questions under the matching SOW chapter code (for example `D4` for Python or `EA1` for database management), with a distinct title and stem, answer feedback, hint, explanation and next action. Short responses are self-reviewed against marking points; they are not counted as objectively correct. Run `node scripts/validate_checkpoint_bank.mjs` after editing; the GitHub Action also validates the bank.
 
 ## Phase 3 study tools (activity design brief)
 

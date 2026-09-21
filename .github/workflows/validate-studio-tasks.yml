@@ -1,15 +1,19 @@
-name: Validate Studio tasks
+name: Validate learning banks
 
 on:
   push:
     paths:
       - 'tasks/**'
       - 'scripts/generate_task_index.py'
+      - 'checkpoint-bank.js'
+      - 'scripts/validate_checkpoint_bank.mjs'
       - '.github/workflows/validate-studio-tasks.yml'
   pull_request:
     paths:
       - 'tasks/**'
       - 'scripts/generate_task_index.py'
+      - 'checkpoint-bank.js'
+      - 'scripts/validate_checkpoint_bank.mjs'
       - '.github/workflows/validate-studio-tasks.yml'
 
 permissions:
@@ -25,3 +29,5 @@ jobs:
       - name: Keep task index current
         run: |
           git diff --exit-code tasks/task-index.json
+      - name: Validate chapter checkpoint questions
+        run: node scripts/validate_checkpoint_bank.mjs

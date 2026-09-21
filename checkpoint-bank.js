@@ -1,3 +1,10 @@
+/* Chapter-keyed additions to the DSE Practice Hub.
+ * Use SOW chapter codes (for example D4 or EA1), not activity-mode names.
+ * Each question needs a unique title and stem within its chapter, feedback,
+ * a hint, an explanation, and a useful next action. Run
+ * `node scripts/validate_checkpoint_bank.mjs` after editing this file.
+ * In-chapter `practice` questions remain in script.js; the engine combines both.
+ */
 window.CHECKPOINT_BANK = {
   C1: [
     {
@@ -514,6 +521,7 @@ window.CHECKPOINT_BANK = {
       nextAction: 'State what 2NF removes (partial dependence on part of a composite key).'
     }
   ],
+  // Core D: programming and algorithmic thinking.
   D1: [
   {
     "type": "mc",
@@ -1357,6 +1365,101 @@ window.CHECKPOINT_BANK = {
     "nextAction": "Explain why n=0 is a runtime risk."
   }
 ],
+  D4: [
+    {
+      type: 'mc', difficulty: 'standard', title: 'Convert before adding',
+      stem: 'A user types 7. Which statement reads that input and prints the number 12?',
+      options: [
+        { text: 'print(int(input()) + 5)', correct: true, why: 'input() returns text; int() converts it before arithmetic.' },
+        { text: 'print(input() + 5)', correct: false, why: 'A string and an integer cannot be added in Python.' },
+        { text: 'print(input() + "5")', correct: false, why: 'This joins two strings and prints 75, not 12.' },
+        { text: 'print(int(input()) + "5")', correct: false, why: 'The converted integer still cannot be added to a string.' }
+      ],
+      hint: 'Check the type returned by input() before using +.',
+      explanation: 'Convert numeric keyboard input with int() before adding it to an integer.',
+      nextAction: 'Try inputs 0 and 12 in Code Studio and predict both outputs first.'
+    },
+    {
+      type: 'mc', difficulty: 'standard', title: 'Trace reassignment',
+      stem: 'After x = 3 followed by x = x + 2, what value does print(x) show?',
+      options: [
+        { text: '5', correct: true, why: 'The second assignment replaces 3 with 3 + 2.' },
+        { text: '3', correct: false, why: 'That was the value before the second assignment.' },
+        { text: '2', correct: false, why: '2 is added to the old value; it does not replace it alone.' },
+        { text: 'A syntax error', correct: false, why: 'Assignment can use the variable’s previous value on the right.' }
+      ],
+      hint: 'Read the right-hand side using the old x, then store the result.',
+      explanation: 'Assignment updates the variable: x becomes 3 + 2 = 5.',
+      nextAction: 'Trace x after one more statement: x = x * 2.'
+    },
+    {
+      type: 'mc', difficulty: 'standard', title: 'Pass boundary in Python',
+      stem: 'For mark = 50, which condition correctly selects the Pass branch when 50 is the minimum passing mark?',
+      options: [
+        { text: 'mark >= 50', correct: true, why: 'The boundary value 50 must be included.' },
+        { text: 'mark > 50', correct: false, why: 'This incorrectly rejects 50.' },
+        { text: 'mark < 50', correct: false, why: 'This selects marks below the pass boundary.' },
+        { text: 'mark = 50', correct: false, why: 'A single = assigns a value; it is not the equality comparison.' }
+      ],
+      hint: 'Test the exact boundary, not only an ordinary passing value.',
+      explanation: 'Use >= so both 50 and higher marks pass; > would miss the boundary.',
+      nextAction: 'Test 49, 50 and 51, then explain why each branch is selected.'
+    },
+    {
+      type: 'mc', difficulty: 'standard', title: 'Range endpoint',
+      stem: 'Which sequence of values does for i in range(3) visit?',
+      options: [
+        { text: '0, 1, 2', correct: true, why: 'range(3) starts at 0 and excludes the endpoint 3.' },
+        { text: '1, 2, 3', correct: false, why: 'The default start is 0, not 1.' },
+        { text: '0, 1, 2, 3', correct: false, why: 'The endpoint is not included.' },
+        { text: '3 only', correct: false, why: '3 sets the stopping point; it is not the only value.' }
+      ],
+      hint: 'The stop value of range() is excluded.',
+      explanation: 'range(3) generates three values: 0, 1 and 2.',
+      nextAction: 'Predict the values in range(1, 4) before running it.'
+    },
+    {
+      type: 'mc', difficulty: 'stretch', title: 'Invalid numeric conversion',
+      stem: 'A program executes mark = int(input()) and the user enters abc. What happens?',
+      options: [
+        { text: 'A ValueError occurs at runtime', correct: true, why: 'abc cannot be parsed as an integer.' },
+        { text: 'mark becomes 0 automatically', correct: false, why: 'int() does not substitute 0 for invalid text.' },
+        { text: 'mark becomes the string abc', correct: false, why: 'Conversion is attempted, so assignment does not complete.' },
+        { text: 'The Python source has a syntax error', correct: false, why: 'The code is syntactically valid; the input value causes the runtime error.' }
+      ],
+      hint: 'Distinguish valid code from invalid data supplied while it runs.',
+      explanation: 'int() raises ValueError when the supplied text is not a valid integer.',
+      nextAction: 'Give one input that succeeds and one that triggers this runtime error.'
+    },
+    {
+      type: 'fill', difficulty: 'standard', title: 'List index output',
+      stem: 'What number is printed by marks = [42, 50, 68] followed by print(marks[1])?',
+      accept: ['50'],
+      hint: 'Python list positions start at index 0.',
+      explanation: 'marks[0] is 42, so marks[1] is 50.',
+      nextAction: 'State the index of 68, then test whether marks[3] exists.'
+    },
+    {
+      type: 'order', difficulty: 'standard', title: 'Input to decision',
+      stem: 'Put the actions of a simple Python pass-check program in execution order.',
+      items: ['Read mark with input()', 'Convert the text with int()', 'Compare the number with 50', 'Print Pass or Retry'],
+      hint: 'A numeric comparison needs a number, not raw keyboard text.',
+      explanation: 'Read text, convert it, compare the numeric value, then display the selected result.',
+      nextAction: 'Write a four-line Python version and test marks 49 and 50.'
+    },
+    {
+      type: 'short', difficulty: 'stretch', title: 'Boundary test evidence',
+      stem: 'A pass-check program seems correct for mark 80. Name two more test values and explain what each checks when the pass mark is 50.',
+      marks: [
+        { point: '49 checks that a value immediately below the boundary is rejected.', keywords: ['49', 'below', 'reject'] },
+        { point: '50 checks that the boundary itself is accepted.', keywords: ['50', 'boundary', 'accept'] }
+      ],
+      hint: 'Choose values on both sides of the pass boundary.',
+      explanation: 'Testing 49 and 50 exposes a mistaken > 50 condition that an ordinary mark of 80 would not reveal.',
+      nextAction: 'Run 49 and 50 in Code Studio, then compare the actual results with your prediction.'
+    }
+  ],
+  // Core A SQL bridge and Elective A SQL practice.
   'A6.4': [
   {
     "type": "mc",
@@ -1917,6 +2020,30 @@ window.CHECKPOINT_BANK = {
     "hint": "Separate DML vs DDL damage.",
     "explanation": "UPDATE changes rows; DROP removes the table object.",
     "nextAction": "State the recovery need: backups/transactions."
+  },
+  {
+    type: 'mc', difficulty: 'standard', title: 'Foreign key integrity',
+    stem: 'Enrolment.StudentID is a foreign key referencing Student.StudentID. What should happen if an enrolment is inserted with a StudentID absent from Student?',
+    options: [
+      { text: 'The database should reject the orphan enrolment', correct: true, why: 'Referential integrity requires the referenced student to exist.' },
+      { text: 'The database should invent a new student automatically', correct: false, why: 'A foreign key does not create a missing parent record.' },
+      { text: 'The foreign key should become the new primary key of Student', correct: false, why: 'The relationship does not change the parent table’s key.' },
+      { text: 'Every existing enrolment should be deleted', correct: false, why: 'A failed insert should not erase unrelated rows.' }
+    ],
+    hint: 'An enrolment must point to an existing student.',
+    explanation: 'A foreign key enforces a valid relationship to a row in the referenced table.',
+    nextAction: 'Explain which table is the parent and which is the child.'
+  },
+  {
+    type: 'short', difficulty: 'stretch', title: 'Safe update by key',
+    stem: 'A clerk must change only student S003’s class to 5B. State two features of a safe UPDATE statement and explain their roles.',
+    marks: [
+      { point: 'SET Class = \'5B\' specifies the field and new value.', keywords: ['set', 'class', '5b'] },
+      { point: 'WHERE StudentID = \'S003\' limits the change to the intended row identified by its key.', keywords: ['where', 'studentid', 's003'] }
+    ],
+    hint: 'One clause changes a value; another limits the affected records.',
+    explanation: 'UPDATE Student SET Class = \'5B\' WHERE StudentID = \'S003\' changes only the intended record when StudentID is unique.',
+    nextAction: 'Predict the effect of omitting WHERE before trying an UPDATE in SQL Studio.'
   }
 ],
 };
