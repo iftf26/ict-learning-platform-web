@@ -1,236 +1,73 @@
-/*
- * Studio task bank v1
- *
- * Add a Python task with: id, topic, level, title, brief, starter and tests.
- * Each tests entry is the browser equivalent of one .in / .out pair.
- * Add a SQL task with a declarative checker. The runner stays in
- * activity-labs-code-studios.js; this file deliberately contains only content.
+/* Temporary teacher previews and the legacy local-pack import API.
+ * Public task content lives only in tasks/; this file is not a fallback bank.
  */
 (function (global) {
-  const seedSql = `
-CREATE TABLE Student (
-  StudentID TEXT PRIMARY KEY,
-  Name TEXT NOT NULL,
-  Class TEXT NOT NULL,
-  Mark INTEGER CHECK (Mark BETWEEN 0 AND 100)
-);
-INSERT INTO Student VALUES
-  ('S001', 'Chan Tai Man', '5A', 42),
-  ('S002', 'Lee Ka Ming', '5A', 50),
-  ('S003', 'Wong Mei', '5A', 68),
-  ('S004', 'Ho Ying', '5A', 91),
-  ('S005', 'Ng Chi', '5B', 75);
-`;
+  const preview = { python: [], sql: [] };
+  let publicIds = new Set();
+  let publicCounts = { python: 0, sql: 0 };
+  const isText = value => typeof value === 'string' && Boolean(value.trim());
 
-  global.StudioTaskBank = {
-    version: 1,
-    seedSql,
-    python: [
-      {
-        id: 'D4-PY-01', topic: 'D4', level: 'Foundation', title: 'Pass counter',
-        brief: 'The list below stores five test marks. Write a loop to count how many marks are at least 50, then print the final count.',
-        starter: `marks = [42, 50, 68, 39, 91]\ncount = 0\n\n# Write your loop here.\n\nprint(count)`,
-        tests: [{ label: 'Public test', input: [], output: '3' }]
-      },
-      {
-        id: 'D4-PY-02', topic: 'D4', level: 'Foundation', title: 'Text-to-number total',
-        brief: 'priceText and quantityText are strings. Convert both values so that the program prints the numerical total.',
-        starter: `priceText = "12"\nquantityText = "3"\n\n# Convert the values and calculate total.\n\nprint(total)`,
-        tests: [{ label: 'Public test', input: [], output: '36' }]
-      },
-      {
-        id: 'D4-PY-03', topic: 'D4', level: 'Foundation', title: 'Boundary result',
-        brief: 'Set result to "Pass" when mark is 50 or above; otherwise set it to "Retry". Print result for the boundary value supplied.',
-        starter: `mark = 50\n\n# Use IF ... ELSE here.\n\nprint(result)`,
-        tests: [{ label: 'Boundary public test', input: [], output: 'Pass' }]
-      },
-      {
-        id: 'D4-PY-04', topic: 'D4', level: 'Developing', title: 'Highest mark',
-        brief: 'Traverse the supplied list and print its highest mark. Do not change the values in the list.',
-        starter: `marks = [46, 88, 67, 91, 52]\n\n# Start with a sensible highest value, then update it in a loop.\n\nprint(highest)`,
-        tests: [{ label: 'Public test', input: [], output: '91' }]
-      },
-      {
-        id: 'D4-PY-05', topic: 'D4', level: 'Developing', title: 'Two-mark total',
-        brief: 'Read two whole-number marks, one line at a time. Convert them to integers and print their total. Use input() exactly as a DSE-style input/output task would require.',
-        starter: `firstMark = int(input())\nsecondMark = int(input())\n\n# Calculate and print the total.\n\nprint(total)`,
-        tests: [
-          { label: 'Public test 1', input: ['12', '30'], output: '42' },
-          { label: 'Public test 2', input: ['0', '7'], output: '7' }
-        ]
-      },
-      {
-        id: 'D4-PY-06', topic: 'D4', level: 'Developing', title: 'Five-mark average',
-        brief: 'Read five whole-number marks, one line at a time. Store them in a list and print their average as a number.',
-        starter: `marks = []\n\n# Read five marks into marks.\n# Then calculate and print the average.\n\nprint(average)`,
-        tests: [
-          { label: 'Public test 1', input: ['42', '50', '68', '39', '91'], output: '58.0' },
-          { label: 'Boundary public test', input: ['0', '0', '0', '0', '0'], output: '0.0' }
-        ]
-      },
-      {
-        id: 'D4-PY-07', topic: 'D4', level: 'Developing', title: 'Valid score gate',
-        brief: 'Read one whole-number score. Print "Accept" only if it is from 0 to 100 inclusive; otherwise print "Retry".',
-        starter: `score = int(input())\n\n# Write one selection statement.\n\nprint(result)`,
-        tests: [
-          { label: 'Lower boundary', input: ['0'], output: 'Accept' },
-          { label: 'Outside range', input: ['101'], output: 'Retry' }
-        ]
-      },
-      {
-        id: 'EC1-PY-01', topic: 'EC1', level: 'Challenge', title: 'Reusable pass counter',
-        brief: 'Complete countPassed so that it returns the number of marks that are at least 50. Do not print inside the function; the final print is provided.',
-        starter: `def countPassed(marks):\n    # Write the function body.\n    pass\n\nprint(countPassed([42, 50, 68, 39, 91]))`,
-        tests: [{ label: 'Public test', input: [], output: '3' }]
-      },
-      {
-        id: 'EC6-PY-01', topic: 'EC6', level: 'Challenge', title: 'First matching index',
-        brief: 'Traverse marks from left to right and print the first index at which target appears. You may assume target appears once.',
-        starter: `marks = [42, 50, 68, 39, 91]\ntarget = 68\n\n# Find and print the first matching index.\n\nprint(index)`,
-        tests: [{ label: 'Public test', input: [], output: '2' }]
-      }
-    ],
-    sql: [
-      {
-        id: 'EA1-SQL-01', topic: 'EA1', level: 'Foundation', title: 'Filter passing students',
-        brief: 'Display StudentID, Name and Mark for 5A students who pass (50 or above), with the highest mark first.',
-        starter: `SELECT StudentID, Name, Mark\nFROM Student\nWHERE Class = '5A'\n-- add the pass condition\n-- add the requested ordering\n;`,
-        checker: { type: 'result', columns: ['StudentID', 'Name', 'Mark'], rows: [['S004', 'Ho Ying', 91], ['S003', 'Wong Mei', 68], ['S002', 'Lee Ka Ming', 50]] }
-      },
-      {
-        id: 'EA1-SQL-02', topic: 'EA1', level: 'Developing', title: 'Update one record safely',
-        brief: 'Correct Wong Mei (S003) to 74. Use a WHERE condition so that no other student is changed. Then SELECT S003 to show the changed record.',
-        starter: `UPDATE Student\nSET Mark = 74\n-- identify Wong Mei safely\n;\n\nSELECT StudentID, Name, Mark\nFROM Student\nWHERE StudentID = 'S003';`,
-        checker: { type: 'database', query: 'SELECT StudentID, Mark FROM Student ORDER BY StudentID', columns: ['StudentID', 'Mark'], rows: [['S001', 42], ['S002', 50], ['S003', 74], ['S004', 91], ['S005', 75]] }
-      },
-      {
-        id: 'EA1-SQL-03', topic: 'EA1', level: 'Developing', title: 'Insert then check',
-        brief: 'Add S006, Ng Mei, 5B, 82 to Student. Then use SELECT to show the new record.',
-        starter: `INSERT INTO Student (StudentID, Name, Class, Mark)\nVALUES ('S006', 'Ng Mei', '5B', );\n\nSELECT *\nFROM Student\nWHERE StudentID = 'S006';`,
-        checker: { type: 'database', query: "SELECT Name, Class, Mark FROM Student WHERE StudentID = 'S006'", columns: ['Name', 'Class', 'Mark'], rows: [['Ng Mei', '5B', 82]] }
-      },
-      {
-        id: 'EA1-SQL-04', topic: 'EA1', level: 'Developing', title: 'Class average',
-        brief: 'Display each Class and its average Mark. Name the calculated field AverageMark and order classes alphabetically.',
-        starter: `SELECT Class, \nFROM Student\n-- group the records by Class\n-- order the classes\n;`,
-        checker: { type: 'result', columns: ['Class', 'AverageMark'], rows: [['5A', 62.75], ['5B', 75]] }
-      },
-      {
-        id: 'EA1-SQL-05', topic: 'EA1', level: 'Foundation', title: 'Count a condition',
-        brief: 'Display one field named PassCount that counts students whose Mark is at least 50.',
-        starter: `SELECT \nFROM Student\nWHERE Mark >= 50;`,
-        checker: { type: 'result', columns: ['PassCount'], rows: [[4]] }
-      },
-      {
-        id: 'EA1-SQL-06', topic: 'EA1', level: 'Challenge', title: 'Delete only the retry record',
-        brief: 'Delete only Chan Tai Man (S001), then SELECT StudentID in ascending order to prove that every other record remains.',
-        starter: `DELETE FROM Student\n-- add a safe WHERE condition\n;\n\nSELECT StudentID\nFROM Student\nORDER BY StudentID;`,
-        checker: { type: 'database', query: 'SELECT StudentID FROM Student ORDER BY StudentID', columns: ['StudentID'], rows: [['S002'], ['S003'], ['S004'], ['S005']] }
-      }
-    ]
-  };
-
-  const localPackKey = 'ict-studio-local-task-pack-v1';
-  const localTaskIds = new Set();
-  const bank = global.StudioTaskBank;
-  const isText = (value) => typeof value === 'string' && value.trim().length > 0;
-
-  function validatePythonTask(task, label) {
+  function validateTask(task, kind, label) {
     const errors = [];
-    ['id', 'topic', 'level', 'title', 'brief', 'starter'].forEach((field) => {
+    for (const field of ['id', 'topic', 'skill', 'level', 'title', 'brief', 'starter']) {
       if (!isText(task?.[field])) errors.push(`${label}: ${field} must be text.`);
-    });
-    if (!Array.isArray(task?.tests) || !task.tests.length) {
-      errors.push(`${label}: add at least one tests entry.`);
-    } else {
-      task.tests.forEach((test, index) => {
-        if (!Array.isArray(test?.input) || !test.input.every(value => typeof value === 'string')) errors.push(`${label}, test ${index + 1}: input must be an array of text lines.`);
+    }
+    if (kind === 'python') {
+      if (!['complete', 'construct', 'modify', 'dse'].includes(task?.practiceType)) errors.push(`${label}: choose a practice type.`);
+      if (!Array.isArray(task?.tests) || !task.tests.length) errors.push(`${label}: add at least one test.`);
+      else task.tests.forEach((test, index) => {
+        if (!Array.isArray(test?.input) || !test.input.every(value => typeof value === 'string')) errors.push(`${label}, test ${index + 1}: input must be text lines.`);
         if (typeof test?.output !== 'string') errors.push(`${label}, test ${index + 1}: output must be text.`);
       });
+    } else {
+      // Older local JSON packs relied on the public practice database.
+      if (task?.seedSql != null && !isText(task.seedSql)) errors.push(`${label}: seedSql must be text when supplied.`);
+      if (!['result', 'database'].includes(task?.checker?.type)) errors.push(`${label}: checker.type must be result or database.`);
+      if (!Array.isArray(task?.checker?.columns) || !Array.isArray(task?.checker?.rows)) errors.push(`${label}: checker needs columns and rows.`);
+      if (task?.checker?.type === 'database' && !isText(task.checker.query)) errors.push(`${label}: a database checker needs a query.`);
     }
     return errors;
   }
 
-  function validateSqlTask(task, label) {
+  function importLocalPack(source) {
+    let pack;
+    try { pack = typeof source === 'string' ? JSON.parse(source) : source; }
+    catch (_) { return { ok: false, errors: ['The task pack is not valid JSON.'] }; }
+    if (!pack || typeof pack !== 'object' || !Array.isArray(pack.python) || !Array.isArray(pack.sql)) {
+      return { ok: false, errors: ['Task pack needs python and sql arrays.'] };
+    }
     const errors = [];
-    ['id', 'topic', 'level', 'title', 'brief', 'starter'].forEach((field) => {
-      if (!isText(task?.[field])) errors.push(`${label}: ${field} must be text.`);
-    });
-    const checker = task?.checker;
-    if (!checker || !['result', 'database'].includes(checker.type)) errors.push(`${label}: checker.type must be result or database.`);
-    if (!Array.isArray(checker?.columns) || !Array.isArray(checker?.rows)) errors.push(`${label}: checker needs columns and rows arrays.`);
-    if (checker?.type === 'database' && !isText(checker.query)) errors.push(`${label}: a database checker needs a query.`);
-    return errors;
-  }
-
-  function validatePack(pack) {
-    const errors = [];
-    if (!pack || typeof pack !== 'object' || Array.isArray(pack)) return { errors: ['Task pack must be a JSON object.'] };
-    const python = pack.python || [];
-    const sql = pack.sql || [];
-    if (!Array.isArray(python) || !Array.isArray(sql)) return { errors: ['python and sql must be arrays.'] };
-    if (!python.length && !sql.length) errors.push('Add at least one Python or SQL task.');
-    const ids = new Set([...bank.python, ...bank.sql].filter(task => !localTaskIds.has(task.id)).map(task => task.id));
-    [...python, ...sql].forEach((task, index) => {
-      const label = `Task ${index + 1}`;
-      if (ids.has(task?.id)) errors.push(`${label}: ${task.id} is already used.`);
-      if (task?.id) ids.add(task.id);
-    });
-    python.forEach((task, index) => errors.push(...validatePythonTask(task, `Python task ${index + 1}`)));
-    sql.forEach((task, index) => errors.push(...validateSqlTask(task, `SQL task ${index + 1}`)));
-    return { errors, python, sql };
-  }
-
-  function removeLocalPack() {
-    ['python', 'sql'].forEach(kind => {
-      for (let index = bank[kind].length - 1; index >= 0; index -= 1) {
-        if (localTaskIds.has(bank[kind][index].id)) bank[kind].splice(index, 1);
-      }
-    });
-    localTaskIds.clear();
-  }
-
-  function addLocalPack(pack, persist = true) {
-    const validation = validatePack(pack);
-    if (validation.errors.length) return { ok: false, errors: validation.errors };
-    removeLocalPack();
-    ['python', 'sql'].forEach(kind => {
-      validation[kind].forEach(task => {
-        bank[kind].push(task);
-        localTaskIds.add(task.id);
+    if (!pack.python.length && !pack.sql.length) errors.push('Add at least one task.');
+    const seen = new Set(publicIds);
+    for (const kind of ['python', 'sql']) {
+      pack[kind].forEach((task, index) => {
+        const label = `${kind} task ${index + 1}`;
+        errors.push(...validateTask(task, kind, label));
+        if (seen.has(task?.id)) errors.push(`${label}: ${task.id} is already used by a public task or this pack.`);
+        seen.add(task?.id);
       });
-    });
-    if (persist) localStorage.setItem(localPackKey, JSON.stringify({ python: validation.python, sql: validation.sql }));
-    return { ok: true, python: validation.python.length, sql: validation.sql.length, firstTaskId: validation.python[0]?.id || validation.sql[0]?.id || '' };
-  }
-
-  function restoreLocalPack() {
-    try {
-      const saved = localStorage.getItem(localPackKey);
-      if (saved) addLocalPack(JSON.parse(saved), false);
-    } catch (_error) {
-      localStorage.removeItem(localPackKey);
     }
+    if (errors.length) return { ok: false, errors };
+    preview.python = pack.python.map(task => ({ ...task, type: 'python' }));
+    preview.sql = pack.sql.map(task => ({ ...task, type: 'sql' }));
+    return { ok: true, python: preview.python.length, sql: preview.sql.length, firstTaskId: preview.python[0]?.id || preview.sql[0]?.id || '' };
   }
 
   global.StudioTaskBankAPI = {
-    importLocalPack(source) {
-      try {
-        return addLocalPack(typeof source === 'string' ? JSON.parse(source) : source);
-      } catch (_error) {
-        return { ok: false, errors: ['The task pack is not valid JSON.'] };
-      }
-    },
+    importLocalPack,
     clearLocalPack() {
-      const removed = localTaskIds.size;
-      removeLocalPack();
-      localStorage.removeItem(localPackKey);
+      const removed = preview.python.length + preview.sql.length;
+      preview.python = [];
+      preview.sql = [];
       return { removed };
     },
+    setPublicCatalog(catalog) {
+      publicIds = new Set([...catalog.python, ...catalog.sql].map(task => task.id));
+      publicCounts = { python: catalog.python.length, sql: catalog.sql.length };
+    },
+    getPreview(kind) { return preview[kind] || []; },
     getStats() {
-      return { python: bank.python.length, sql: bank.sql.length, local: localTaskIds.size };
+      return { python: publicCounts.python + preview.python.length, sql: publicCounts.sql + preview.sql.length, local: preview.python.length + preview.sql.length };
     }
   };
-
-  restoreLocalPack();
 })(window);

@@ -1,6 +1,6 @@
 # Studio task files
 
-Studio tasks are static, formative learning content. The public site loads `tasks/task-index.json` only when Studio opens, then fetches the referenced metadata and starter/test files. `studio-task-bank.js` remains a compatibility fallback for older links and local teacher previews; new public Python and SQL tasks belong under `tasks/`.
+Studio tasks are static, formative learning content. The public site loads `tasks/task-index.json` only when Studio opens, then fetches referenced metadata and assets. Public Python and SQL tasks have one source of truth under `tasks/`. `studio-task-bank.js` contains only the legacy local-pack import API and temporary teacher previews; it has no embedded public tasks or offline fallback. A failed catalog load shows a Retry tasks action.
 
 ## Repository structure
 
@@ -48,7 +48,7 @@ SQL uses `starter.sql`, `seed.sql`, and a declarative checker. The checker may h
 
 1. Create the folder under `tasks/python/<topic>/<skill>/<task-id>/`.
 2. Add `task.json`, `starter.py`, and matching numbered `.in`/`.out` files.
-3. Run `python3 scripts/generate_task_index.py`. It validates required fields, duplicate IDs, missing files, malformed JSON, unsupported types, and test references, then regenerates `tasks/task-index.json`.
+3. Run `python3 scripts/generate_task_index.py`. It validates required fields, duplicate IDs, missing files, malformed JSON, unsupported types, checker shape, and test references, then regenerates `tasks/task-index.json` only if valid.
 4. Open the local Studio, choose the task, run it, and use Check Solution.
 5. Commit the task folder and generated index. The GitHub Action rejects a stale or invalid index.
 
@@ -56,7 +56,7 @@ For SQL, add `starter.sql`, `seed.sql`, and the checker fields instead of `.in`/
 
 ## Teacher Task Builder
 
-Open `#view=studio&workspace=code&teacher=1` to reveal the lightweight Teacher Task Builder. Enter metadata, starter code, and one test per line in the form `input|input = expected`. Preview loads the task through the existing local task-pack path; Run all tests uses the real Python runner; Export downloads the repository-ready metadata, starter, and test files. It is a convenience tool, not authentication, and it does not publish to GitHub.
+Open `#view=studio&workspace=code&teacher=1` to reveal the lightweight Teacher Task Builder. Enter metadata, starter code, and one test per line in the form `input|input = expected`. Preview loads the task into temporary browser memory; Run all tests uses the real Python runner. Export downloads prefixed metadata, starter, and test files: rename them to `task.json`, `starter.py`, `01.in`, `01.out`, etc. inside the indicated task folder before running the generator. The teacher route is a convenience tool, not authentication, and it does not publish to GitHub. Local previews disappear on reload; student drafts and optional evidence profile use session storage.
 
 ## Publishing workflow
 
@@ -67,5 +67,5 @@ Teacher adds or edits a task folder, runs the validator, commits and pushes it, 
 - The task index is explicit because GitHub Pages cannot enumerate repository folders safely in the browser.
 - Public `.out` files are discoverable. This is formative practice, not secure summative assessment.
 - ZIP export/import is deferred; the builder uses a multi-file download fallback.
-- The compatibility bank remains for old deep links and local previews while file-backed loading is adopted.
+- The old JSON local-pack import API remains for temporary previews. Legacy SQL packs may omit `seedSql` and then use the first public SQL task's seed; explicit task seeds are preferred. Public content is never copied into this compatibility module.
 - Invalid indexed tasks are skipped with a developer-console warning; valid tasks continue loading.

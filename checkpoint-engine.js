@@ -285,6 +285,10 @@
 
   function mount(container, options = {}) {
     if (!container) return null;
+    // Reusing the Practice panel must not keep an older session's click handler.
+    container._checkpointEvents?.abort();
+    const events = new AbortController();
+    container._checkpointEvents = events;
     const count = options.count || 6;
     const pool = options.pool || collectPool(options.filter || {});
     const session = {
@@ -294,7 +298,7 @@
       items: pickSet(pool, count),
       index: 0,
       answered: false,
-      score: { correct: 0, wrong: 0 },
+      score: { correct: 0, wrong: 0, reviewed: 0 },
       misses: []
     };
 
@@ -305,7 +309,7 @@
     function updateScoreboard() {
       const xp = container.querySelector('[data-check-xp]');
       const done = container.querySelector('[data-check-done]');
-      if (xp) xp.textContent = `Correct ${session.score.correct}`;
+      if (xp) xp.textContent = `Correct ${session.score.correct}${session.score.reviewed ? ` · ${session.score.reviewed} self-reviewed` : ''}`;
       if (done) done.textContent = `${Math.min(session.index + (session.answered ? 1 : 0), session.items.length)}/${session.items.length} tried`;
     }
 
@@ -326,7 +330,7 @@
         container.querySelector('[data-check-body]').innerHTML = `
           <article class="checkpoint-summary">
             <h4>Checkpoint complete</h4>
-            <p>You answered ${session.score.correct} of ${session.items.length} correctly in this session set.</p>
+            <p>${session.score.correct} of ${session.score.correct + session.score.wrong} objectively marked questions correct${session.score.reviewed ? `; ${session.score.reviewed} short answer${session.score.reviewed === 1 ? '' : 's'} self-reviewed (not machine-marked)` : ''}.</p>
             <p>Ideas to retry:</p>
             <ul>${missText}</ul>
             <div class="checkpoint-actions">
@@ -354,14 +358,16 @@
       });
     }
 
-    function finishQuestion(question, correct, why, feedbackOverride) {
+    function finishQuestion(question, correct, why, feedbackOverride, selfReview = false) {
       session.answered = true;
       const feedback = feedbackOverride || teachFeedback(question, {
         correct,
         why,
         nextAction: question.nextAction
       });
-      if (!correct) {
+      if (selfReview) {
+        session.score.reviewed += 1;
+      } else if (!correct) {
         session.score.wrong += 1;
         session.misses.push(question);
         recordMiss(question);
@@ -437,7 +443,7 @@
              : 'Compare your answer with the marking points below. This browser check looks for likely ideas, not full exam logic.',
             concept: question.explanation || '',
             next: 'Tighten the explanation, then say the full answer in one clear DSE-style sentence.'
-          });
+          }, true);
           if (box) {
             box.insertAdjacentHTML('beforeend', `
               <ul class="checkpoint-marks">
@@ -484,18 +490,18 @@
       }
       if (event.target.closest('[data-check-retry]')) {
         session.index = 0;
-        session.score = { correct: 0, wrong: 0 };
+        session.score = { correct: 0, wrong: 0, reviewed: 0 };
         session.misses = [];
         paint();
       }
       if (event.target.closest('[data-check-new]')) {
         session.items = pickSet(session.pool, session.count);
         session.index = 0;
-        session.score = { correct: 0, wrong: 0 };
+        session.score = { correct: 0, wrong: 0, reviewed: 0 };
         session.misses = [];
         paint();
       }
-    });
+    }, { signal: events.signal });
     paint();
     return session;
   }

@@ -15,6 +15,13 @@ def require_text(value, field, path):
     if not isinstance(value, str) or not value.strip():
         errors.append(f"{path}: missing {field}")
 
+def referenced_file(folder, value, rel, field):
+    if not isinstance(value, str) or not value or Path(value).name != value:
+        errors.append(f"{rel}: {field} must name a file in the task folder")
+        return
+    if not (folder / value).is_file():
+        errors.append(f"{rel}: missing {field} file {value}")
+
 for kind in ("python", "sql"):
     for metadata_path in sorted((TASKS / kind).glob("**/task.json")):
         rel = metadata_path.relative_to(TASKS).as_posix()
@@ -39,21 +46,24 @@ for kind in ("python", "sql"):
                 for test in task["tests"]:
                     for field in ("input", "output"):
                         require_text(test.get(field), field, rel)
-                    folder = metadata_path.parent
-                    if isinstance(test.get("input"), str) and not (folder / test["input"]).is_file(): errors.append(f"{rel}: missing {test['input']}")
-                    if isinstance(test.get("output"), str) and not (folder / test["output"]).is_file(): errors.append(f"{rel}: missing {test['output']}")
+                    for field in ("input", "output"):
+                        referenced_file(metadata_path.parent, test.get(field), rel, field)
         if kind == "sql" and not isinstance(task.get("checker"), dict): errors.append(f"{rel}: checker must be an object")
-        starter = metadata_path.parent / str(task.get("starter", ""))
-        if not starter.is_file(): errors.append(f"{rel}: missing starter file {task.get('starter')}")
-        if kind == "sql" and not (metadata_path.parent / str(task.get("seed", ""))).is_file(): errors.append(f"{rel}: missing seed file {task.get('seed')}")
+        if kind == "sql" and isinstance(task.get("checker"), dict):
+            checker = task["checker"]
+            if checker.get("type") not in ("result", "database") or not isinstance(checker.get("columns"), list) or not isinstance(checker.get("rows"), list):
+                errors.append(f"{rel}: checker needs a supported type, columns and rows")
+            if checker.get("type") == "database": require_text(checker.get("query"), "checker.query", rel)
+        referenced_file(metadata_path.parent, task.get("starter"), rel, "starter")
+        if kind == "sql": referenced_file(metadata_path.parent, task.get("seed"), rel, "seed")
         task_id = task.get("id")
         if task_id in seen_ids: errors.append(f"{rel}: duplicate ID {task_id} also in {seen_ids[task_id]}")
         else: seen_ids[task_id] = rel
         index[kind].append(rel)
 
-(TASKS / "task-index.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
 if errors:
     print("Task index validation failed:", file=sys.stderr)
     print("\n".join(f"- {error}" for error in errors), file=sys.stderr)
     sys.exit(1)
+(TASKS / "task-index.json").write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
 print(f"Validated {sum(map(len, index.values()))} tasks and wrote tasks/task-index.json")

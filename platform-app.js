@@ -80,6 +80,7 @@
   function showPracticeHub(filter = {}) {
     showStudioHome('practice');
     const applyFilter = () => {
+      if (document.getElementById('studioWorkspaceStage')?.dataset.workspace !== 'practice') return;
       const strand = document.getElementById('practiceStrand');
       const chapter = document.getElementById('practiceChapter');
       if (filter.strand && strand) strand.value = filter.strand;
@@ -212,7 +213,15 @@
   }
 
   function hideStudioHome() {
-    document.getElementById('studioWorkspaceStage')?._studioCleanup?.();
+    const stage = document.getElementById('studioWorkspaceStage');
+    if (stage) {
+      stage._studioMountToken = null;
+      stage._studioCleanup?.();
+      stage._studioCleanup = null;
+      stage._studioReady = null;
+      stage.dataset.workspace = '';
+      stage.replaceChildren();
+    }
     document.getElementById('studioHomePage')?.classList.add('hidden');
   }
 
@@ -273,7 +282,7 @@
       button.setAttribute('aria-pressed', String(active));
     });
     if (!writingHash() && !document.getElementById('studioHomePage')?.classList.contains('hidden')) {
-      setHash({ view: 'studio', workspace });
+      setHash({ view: 'studio', workspace, teacher: document.querySelector('.studio-task-pack')?.hidden ? '' : '1' });
     }
     if (stage.dataset.workspace === workspace && stage.childElementCount) return;
     stage.dataset.workspace = workspace;
@@ -287,6 +296,8 @@
     }
     stage._studioCleanup?.();
     stage._studioCleanup = null;
+    stage._studioMountToken = null;
+    stage._studioReady = null;
     if (!mountExistingWorkspace(stage, workspace)) {
       stage.innerHTML = '<div class="studio-workspace-empty"><h3>Workspace unavailable</h3><p>Reload the page and try again.</p></div>';
     }
@@ -306,11 +317,13 @@
     stage.dataset.workspace = '';
     showStudioWorkspace(workspace);
     if (!firstTaskId) return;
-    const picker = stage.querySelector(workspace === 'code' ? '[data-python-task]' : '[data-sql-task]');
-    const options = picker ? [...picker.options] : [];
-    if (!options.some(option => option.value === firstTaskId)) return;
-    picker.value = firstTaskId;
-    picker.dispatchEvent(new Event('change'));
+    stage._studioReady?.then(() => {
+      if (stage.dataset.workspace !== workspace) return;
+      const picker = stage.querySelector(workspace === 'code' ? '[data-python-task]' : '[data-sql-task]');
+      if (![...(picker?.options || [])].some(option => option.value === firstTaskId)) return;
+      picker.value = firstTaskId;
+      picker.dispatchEvent(new Event('change'));
+    });
   }
 
   function bindTeacherTaskPack() {
@@ -326,7 +339,7 @@
     document.querySelector('[data-task-pack-template]')?.addEventListener('click', () => {
       input.value = JSON.stringify({
         python: [{
-          id: 'D4-PY-CUSTOM-01', topic: 'D4', level: 'Foundation', title: 'Custom two-number total',
+          id: 'D4-PY-CUSTOM-01', topic: 'D4', skill: 'input-output', practiceType: 'construct', level: 'Foundation', title: 'Custom two-number total',
           brief: 'Read two whole numbers and print their total.',
           starter: 'first = int(input())\\nsecond = int(input())\\n\\n# Calculate the total.\\n\\nprint(total)',
           tests: [{ label: 'Public test', input: ['8', '9'], output: '17' }]
@@ -335,7 +348,9 @@
       }, null, 2);
       showFeedback('Example loaded. Change the text, then test it in this browser.', 'info');
     });
-    loadButton.addEventListener('click', () => {
+    loadButton.addEventListener('click', async () => {
+      try { await global.ActivityLabs.loadTaskCatalog(); }
+      catch (error) { showFeedback(`Public tasks must load first: ${error.message}`, 'error'); return; }
       const result = global.StudioTaskBankAPI?.importLocalPack(input.value);
       if (!result?.ok) {
         showFeedback(result?.errors?.slice(0, 2).join(' ') || 'Task pack could not be loaded.', 'error');
@@ -343,7 +358,7 @@
       }
       updateTaskBankCount();
       refreshStudioWorkspace(result.firstTaskId);
-      showFeedback(`Loaded ${result.python} Python and ${result.sql} SQL local task(s). Test them now; publish the task-bank file when ready.`, 'success');
+      showFeedback(`Loaded ${result.python} Python and ${result.sql} SQL temporary task(s). Test them now; export the repository files when ready.`, 'success');
     });
     document.querySelector('[data-task-pack-clear]')?.addEventListener('click', () => {
       const result = global.StudioTaskBankAPI?.clearLocalPack?.();
@@ -377,9 +392,10 @@
       if (!tests.length) throw new Error('Add at least one test.');
       return task;
     };
-    field('preview').addEventListener('click', () => {
+    field('preview').addEventListener('click', async () => {
       try {
         const task = readTask();
+        await global.ActivityLabs.loadTaskCatalog();
         const result = global.StudioTaskBankAPI?.importLocalPack({ python: [task], sql: [] });
         if (!result?.ok) throw new Error(result?.errors?.join(' ') || 'Task could not be loaded.');
         refreshStudioWorkspace(task.id);
@@ -400,11 +416,11 @@
         const task = readTask();
         const folder = `${task.topic}/${task.skill}/${task.id}`;
         const download = (name, content) => { const link = document.createElement('a'); link.download = name; link.href = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' })); link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000); };
-        const metadata = { ...task, starter: 'starter.py', tests: task.tests.map((test, index) => ({ label: test.label, input: `${String(index + 1).padStart(2, '0')}.in`, output: `${String(index + 1).padStart(2, '0')}.out` })) };
+        const metadata = { ...task, type: 'python', starter: 'starter.py', tests: task.tests.map((test, index) => ({ label: test.label, input: `${String(index + 1).padStart(2, '0')}.in`, output: `${String(index + 1).padStart(2, '0')}.out` })) };
         download(`${task.id}-task.json`, JSON.stringify(metadata, null, 2));
         download(`${task.id}-starter.py`, task.starter);
         task.tests.forEach((test, index) => { const stem = String(index + 1).padStart(2, '0'); download(`${task.id}-${stem}.in`, test.input.join('\n')); download(`${task.id}-${stem}.out`, test.output); });
-        feedback(`Exported repository files for tasks/python/${folder}.`, 'success');
+        feedback(`Downloaded the files for tasks/python/${folder}. Rename the downloaded files to task.json, starter.py and numbered .in/.out before adding them to that folder.`, 'success');
       } catch (error) { feedback(error.message, 'error'); }
     });
   }
@@ -420,9 +436,10 @@
     document.getElementById('studioHomePage')?.classList.remove('hidden');
     const taskPack = document.querySelector('.studio-task-pack');
     if (taskPack) taskPack.hidden = !options.teacher;
+    if (options.teacher) bindTeacherTaskPack();
     setModeNav('studio');
     showStudioWorkspace(workspace);
-    if (!writingHash()) setHash({ view: 'studio', workspace });
+    if (!writingHash()) setHash({ view: 'studio', workspace, teacher: options.teacher ? '1' : '' });
   }
 
   function openStudioAction(action) {
@@ -665,7 +682,6 @@
       button.dataset.platformBound = 'true';
       button.addEventListener('click', () => showStudioWorkspace(button.dataset.studioWorkspace));
     });
-    bindTeacherTaskPack();
     document.querySelectorAll('[data-dashboard-action]').forEach(button => {
       if (button.dataset.platformBound) return;
       button.dataset.platformBound = 'true';
@@ -720,7 +736,7 @@
     else setHash({ view: 'home' }, { replace: true });
   }
 
-  global.PlatformApp = { showPracticeHub, showNotesHome, showStudioHome, showStudioWorkspace, openStudioAction, applyHash, setHash, DEMO_GROUPS };
+  global.PlatformApp = { showPracticeHub, showNotesHome, showStudioHome, showStudioWorkspace, openStudioAction, applyHash, setHash, updateTaskBankCount, DEMO_GROUPS };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })(window);
