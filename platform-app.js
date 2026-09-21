@@ -15,6 +15,7 @@
   ];
   const STUDIO_MODES = new Set(['pythonCodeStudio', 'sqlCodeStudio']);
   const STUDIO_WORKSPACES = new Set(['code', 'sql', 'visual', 'practice']);
+  const STUDIO_DEMO_KEY = 'ict-learning-platform-studio-demo';
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -40,10 +41,6 @@
     if (options.replace) history.replaceState(null, '', next || '#');
     else history.pushState(null, '', next || '#');
     global.__platformWritingHash = false;
-  }
-
-  function teacherMode() {
-    return parseHash().teacher === '1';
   }
 
   function parseHash() {
@@ -81,27 +78,16 @@
   }
 
   function showPracticeHub(filter = {}) {
-    stopAuto?.();
-    stopTopicSimulation?.();
-    dashboardPage.classList.add('hidden');
-    document.getElementById('studioHomePage')?.classList.add('hidden');
-    topicPage.classList.add('hidden');
-    arcadePage.classList.add('hidden');
-    programmingSections.forEach(section => section.classList.add('hidden'));
-    const page = document.getElementById('dsePracticePage');
-    if (!page) return;
-    page.classList.remove('hidden');
-    setModeNav(document.querySelector('.nav-item[data-page="practice"]') ? 'practice' : 'studio');
-    const strand = document.getElementById('practiceStrand');
-    const chapter = document.getElementById('practiceChapter');
-    if (filter.strand && strand) strand.value = filter.strand;
-    if (filter.chapter && chapter) chapter.value = filter.chapter;
-    runPracticeHub({ count: 8 });
-    updatePracticePoolMeta();
-    setHash({
-      practice: filter.chapter || 'all',
-      strand: filter.strand || ''
-    });
+    showStudioHome('practice');
+    const applyFilter = () => {
+      const strand = document.getElementById('practiceStrand');
+      const chapter = document.getElementById('practiceChapter');
+      if (filter.strand && strand) strand.value = filter.strand;
+      if (filter.chapter && chapter) chapter.value = filter.chapter;
+      runPracticeHub({ count: 8 });
+      updatePracticePoolMeta();
+    };
+    setTimeout(applyFilter, 0);
   }
 
   function fillPracticeFilters() {
@@ -141,51 +127,6 @@
     return size;
   }
 
-  function updateDerivedCounts() {
-    const notesCount = document.querySelector('[data-notes-count]');
-    const demoCount = document.querySelector('[data-demo-count]');
-    if (notesCount) notesCount.textContent = String(document.querySelectorAll('.nav-item[data-topic]').length || 0);
-    if (demoCount) demoCount.textContent = String(DEMO_GROUPS.reduce((total, group) => total + group.keys.length, 0));
-  }
-
-  function revealTeacherTools() {
-    const panel = document.querySelector('[data-teacher-task-pack]');
-    if (!panel) return;
-    panel.hidden = !teacherMode();
-  }
-
-  function clearRouteFallback() {
-    document.querySelector('[data-route-fallback]')?.remove();
-  }
-
-  function showRouteFallback(title, detail, mode = 'notes') {
-    if (mode === 'studio') showStudioHome('code');
-    else showNotesHome();
-    clearRouteFallback();
-    const host = mode === 'studio'
-      ? document.querySelector('.studio-home-page')
-      : document.querySelector('.notes-dashboard-content');
-    if (!host) return;
-    const searchHint = detail ? `<p>${escapeHtml(detail)}</p>` : '';
-    const primaryAction = mode === 'studio'
-      ? '<button class="primary-btn" type="button" data-home-action="studio">Go to Studio</button>'
-      : '<button class="primary-btn" type="button" data-home-action="notes">Go to Notes home</button>';
-    const secondaryActions = mode === 'studio'
-      ? '<button class="secondary-btn" type="button" data-home-action="studio">Open Studio</button><button class="ghost-btn" type="button" data-home-focus="search">Search topic</button>'
-      : '<button class="secondary-btn" type="button" data-home-focus="search">Search topic</button><button class="ghost-btn" type="button" data-home-resume>Resume last chapter</button>';
-    host.insertAdjacentHTML('afterbegin', `
-      <section class="checkpoint-empty route-fallback" data-route-fallback>
-        <h3>${escapeHtml(title)}</h3>
-        ${searchHint}
-        <div class="checkpoint-actions">
-          ${primaryAction}
-          ${secondaryActions}
-        </div>
-      </section>
-    `);
-    enhanceDashboard();
-  }
-
   function runPracticeHub(options = {}) {
     fillPracticeFilters();
     const panel = document.getElementById('dsePracticePanel');
@@ -210,7 +151,7 @@
     const count = options.count || 8;
     updatePracticePoolMeta(filter, count);
     global.CheckpointEngine.mount(panel, {
-      title: options.title || 'DSE Practice',
+      title: options.title || 'DSE Practice Hub',
       lead: options.lead || 'Questions come from the same chapter pools as the topic checkpoints. Filters change the mix; they do not invent a second bank.',
       count,
       pool,
@@ -271,7 +212,41 @@
   }
 
   function hideStudioHome() {
+    document.getElementById('studioWorkspaceStage')?._studioCleanup?.();
     document.getElementById('studioHomePage')?.classList.add('hidden');
+  }
+
+  function mountExistingWorkspace(stage, workspace) {
+    const selector = workspace === 'visual'
+      ? '#programmingLabStart, .mode-panel, .program-storyboard, .lab-grid, .exercise-section'
+      : '#dsePracticePage';
+    const nodes = [...document.querySelectorAll(selector)];
+    if (!nodes.length) return false;
+    const marker = document.createComment(`studio-${workspace}-home`);
+    nodes[0].parentNode.insertBefore(marker, nodes[0]);
+    stage.replaceChildren(...nodes);
+    nodes.forEach(node => node.classList.remove('hidden'));
+    global.__studioEmbeddedWorkspace = workspace;
+    stage._studioCleanup = () => {
+      stopAuto?.();
+      nodes.forEach(node => {
+        node.classList.add('hidden');
+        marker.parentNode?.insertBefore(node, marker);
+      });
+      marker.remove();
+      if (global.__studioEmbeddedWorkspace === workspace) global.__studioEmbeddedWorkspace = '';
+      stage._studioCleanup = null;
+    };
+    if (workspace === 'visual') {
+      let key = 'sequence';
+      try { key = sessionStorage.getItem(STUDIO_DEMO_KEY) || key; } catch (_) { /* storage unavailable */ }
+      if (demos[key]) loadDemo(key);
+    } else {
+      fillPracticeFilters();
+      runPracticeHub({ count: 8, title: 'DSE Practice', lead: 'Choose filters, then practise exam-style questions.' });
+      updatePracticePoolMeta();
+    }
+    return true;
   }
 
   function showNotesHome() {
@@ -290,14 +265,6 @@
 
   function showStudioWorkspace(requestedWorkspace = 'code') {
     const workspace = STUDIO_WORKSPACES.has(requestedWorkspace) ? requestedWorkspace : 'code';
-    if (workspace === 'visual') {
-      openStudioAction('visual');
-      return;
-    }
-    if (workspace === 'practice') {
-      openStudioAction('practice');
-      return;
-    }
     const stage = document.getElementById('studioWorkspaceStage');
     if (!stage) return;
     document.querySelectorAll('[data-studio-workspace]').forEach(button => {
@@ -320,13 +287,16 @@
     }
     stage._studioCleanup?.();
     stage._studioCleanup = null;
+    if (!mountExistingWorkspace(stage, workspace)) {
+      stage.innerHTML = '<div class="studio-workspace-empty"><h3>Workspace unavailable</h3><p>Reload the page and try again.</p></div>';
+    }
   }
 
   function updateTaskBankCount() {
     const output = document.querySelector('[data-task-bank-count]');
     const stats = global.StudioTaskBankAPI?.getStats?.();
     if (!output || !stats) return;
-    output.textContent = `${stats.python} Python tasks · ${stats.sql} SQL tasks${teacherMode() && stats.local ? ` · ${stats.local} teacher preview` : ''}`;
+    output.textContent = `${stats.python} Python · ${stats.sql} SQL${stats.local ? ` · ${stats.local} local preview` : ''}`;
   }
 
   function refreshStudioWorkspace(firstTaskId = '') {
@@ -344,7 +314,6 @@
   }
 
   function bindTeacherTaskPack() {
-    revealTeacherTools();
     const input = document.querySelector('[data-task-pack-input]');
     const feedback = document.querySelector('[data-task-pack-feedback]');
     const loadButton = document.querySelector('[data-task-pack-load]');
@@ -402,11 +371,7 @@
 
   function openStudioAction(action) {
     if (action === 'code' || action === 'sql') return showStudioHome(action);
-    if (action === 'visual') {
-      loadDemo('sequence');
-      return;
-    }
-    if (action === 'practice') showPracticeHub({});
+    if (action === 'visual' || action === 'practice') return showStudioHome(action);
   }
 
   function reduceMotion() {
@@ -418,8 +383,6 @@
     global.__platformWritingHash = true;
     const hash = parseHash();
     try {
-    revealTeacherTools();
-    clearRouteFallback();
     if (hash.activity === 'pythonCodeStudio') {
       showStudioHome('code');
       return;
@@ -430,8 +393,10 @@
     }
     if (hash.demo || hash.lab) {
       const key = hash.demo || hash.lab;
-      if (demos[key]) loadDemo(key);
-      else showRouteFallback('Trace Lab demo not found', `The demo link “${key}” is no longer available. Open Trace Lab and choose another programming demonstration.`, 'studio');
+      if (demos[key]) {
+        try { sessionStorage.setItem(STUDIO_DEMO_KEY, key); } catch (_) { /* storage unavailable */ }
+        showStudioHome('visual');
+      }
       return;
     }
     if (hash.practice != null) {
@@ -446,8 +411,6 @@
       if (button) {
         showTopicPage(button);
         if (hash.activity) setTimeout(() => openActivity(hash.activity), 0);
-      } else {
-        showRouteFallback('Topic not found', `The chapter link “${hash.chapter || hash.topic}” does not match the current syllabus navigation. Use Notes or Search to reopen the right chapter.`);
       }
       return;
     }
@@ -459,8 +422,6 @@
       if (button) {
         showTopicPage(button);
         setTimeout(() => openActivity(hash.activity), 0);
-      } else if (hash.activity) {
-        showRouteFallback('Activity not found', `The activity link “${hash.activity}” is not available here. Open the chapter in Notes or move to Studio.`, 'studio');
       }
       return;
     }
@@ -472,9 +433,7 @@
       showNotesHome();
       return;
     }
-    const routeKeys = Object.keys(hash).filter(key => key !== 'teacher');
-    if (hash.view === 'home' || hash.page === 'dashboard' || !routeKeys.length) showDashboardPage();
-    else showRouteFallback('Link not recognised', 'This saved link does not match the current site structure. Open Notes, Search, or Studio from here.');
+    if (hash.view === 'home' || hash.page === 'dashboard') showDashboardPage();
     } finally {
       global.__platformWritingHash = false;
     }
@@ -496,6 +455,24 @@
         </button>
       `);
     }
+    nav.insertAdjacentHTML('beforeend', DEMO_GROUPS.map((group, index) => `
+      <section class="curriculum-group">
+        <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="${group.id}">
+          <span class="nav-emoji nav-strand">${index === 0 ? 'D' : 'C'}</span>
+          <span>
+            <strong>${escapeHtml(group.labelEn)}</strong>
+            <small class="nav-item-zh" lang="zh-Hant">${escapeHtml(group.labelZh)}</small>
+          </span>
+        </button>
+        <div class="topic-list" id="${group.id}">
+          ${group.keys.map(key => {
+            const demo = demos[key];
+            if (!demo) return '';
+            return `<button class="nav-item nav-demo" type="button" data-demo="${key}"><span class="nav-item-copy"><span class="nav-item-en">${escapeHtml(demo.title)}</span></span></button>`;
+          }).join('')}
+        </div>
+      </section>
+    `).join(''));
   }
 
   function bindPlatformNav() {
@@ -518,6 +495,10 @@
         showStudioHome();
         return;
       }
+      if (item.dataset.demo) {
+        loadDemo(item.dataset.demo);
+        setHash({ demo: item.dataset.demo });
+      }
     });
   }
 
@@ -525,7 +506,7 @@
     const origProg = global.showProgrammingView;
     global.showProgrammingView = function () {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
-      hideStudioHome();
+      if (global.__studioEmbeddedWorkspace !== 'visual') hideStudioHome();
       origProg();
       revealDemoSelect();
     };
@@ -533,7 +514,7 @@
     const origLoad = global.loadDemo;
     global.loadDemo = function (key, keepExercise) {
       document.getElementById('dsePracticePage')?.classList.add('hidden');
-      hideStudioHome();
+      if (global.__studioEmbeddedWorkspace !== 'visual') hideStudioHome();
       origLoad(key, keepExercise);
       revealDemoSelect();
       markDemoChips(key);
@@ -541,7 +522,10 @@
       if (story && /sidebar/i.test(story.textContent)) {
         story.textContent = 'Choose a demonstration, then run the program one line at a time. Watch the variable table before you predict.';
       }
-      if (!writingHash()) setHash({ demo: key });
+      if (global.__studioEmbeddedWorkspace === 'visual') {
+        try { sessionStorage.setItem(STUDIO_DEMO_KEY, key); } catch (_) { /* storage unavailable */ }
+        if (!writingHash()) setHash({ view: 'studio', workspace: 'visual' });
+      } else if (!writingHash()) setHash({ demo: key });
     };
 
     const origTopic = global.showTopicPage;
@@ -614,37 +598,6 @@
         if (button.dataset.homeAction === 'notes') showNotesHome();
         if (button.dataset.homeAction === 'studio') showStudioHome();
       });
-      document.querySelectorAll('[data-home-resume]').forEach(button => {
-        if (button.dataset.platformBound) return;
-        button.dataset.platformBound = 'true';
-        button.addEventListener('click', () => {
-          const lastTopic = (() => {
-            try {
-              return JSON.parse(sessionStorage.getItem('hkdse-ict-session-v1') || '{}')?.lastTopic || '';
-            } catch (_error) {
-              return '';
-            }
-          })();
-          const match = findTopicButton(lastTopic || 'A1 Introduction to Information Processing');
-          if (match) showTopicPage(match);
-          else showNotesHome();
-        });
-      });
-      document.querySelectorAll('[data-home-focus]').forEach(button => {
-        if (button.dataset.platformBound) return;
-        button.dataset.platformBound = 'true';
-        button.addEventListener('click', () => {
-          if (button.dataset.homeFocus === 'search') {
-            showNotesHome();
-            document.getElementById('studySearchInput')?.focus();
-            return;
-          }
-          if (button.dataset.homeFocus === 'syllabus') {
-            showNotesHome();
-            document.querySelector('.curriculum-heading')?.focus();
-          }
-        });
-      });
     });
     document.querySelectorAll('[data-studio-action]').forEach(button => {
       if (button.dataset.platformBound) return;
@@ -657,7 +610,6 @@
       button.addEventListener('click', () => showStudioWorkspace(button.dataset.studioWorkspace));
     });
     bindTeacherTaskPack();
-    updateDerivedCounts();
     document.querySelectorAll('[data-dashboard-action]').forEach(button => {
       if (button.dataset.platformBound) return;
       button.dataset.platformBound = 'true';
@@ -688,7 +640,7 @@
       setHash({ practice: chapter || 'all', strand });
     });
     document.getElementById('practiceMore3')?.addEventListener('click', () => {
-      runPracticeHub({ count: 3, title: 'New 3-question set', lead: 'A fresh short set from the current filter.' });
+      runPracticeHub({ count: 3, title: 'Three more', lead: 'A short top-up set from the current filter.' });
     });
     document.getElementById('practiceWrongsOnly')?.addEventListener('click', () => {
       runPracticeHub({

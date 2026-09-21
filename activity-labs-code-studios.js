@@ -6,6 +6,8 @@
 (function (global) {
   const SQL_ASSET_ROOT = 'https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist/';
   const STUDENT_PROFILE_KEY = 'ict-learning-platform-evidence-profile';
+  const STUDIO_DRAFTS_KEY = 'ict-learning-platform-drafts-v1';
+  const STUDIO_LAST_TASK_KEY = 'ict-learning-platform-last-tasks-v1';
   let sqlLibraryPromise;
 
   function escapeHtml(value) {
@@ -39,13 +41,9 @@
     return String(value || '').trim().replace(/\r\n/g, '\n');
   }
 
-  function normaliseCell(value) {
-    return value == null ? '' : String(value);
-  }
-
   function safeProfile() {
     try {
-      return JSON.parse(localStorage.getItem(STUDENT_PROFILE_KEY)) || { name: '', className: '' };
+      return JSON.parse(sessionStorage.getItem(STUDENT_PROFILE_KEY)) || { name: '', className: '' };
     } catch (_) {
       return { name: '', className: '' };
     }
@@ -56,8 +54,40 @@
       name: lab.querySelector('[data-evidence-name]')?.value.trim() || '',
       className: lab.querySelector('[data-evidence-class]')?.value.trim() || ''
     };
-    localStorage.setItem(STUDENT_PROFILE_KEY, JSON.stringify(profile));
+    sessionStorage.setItem(STUDENT_PROFILE_KEY, JSON.stringify(profile));
     return profile;
+  }
+
+  function sessionValue(key, fallback) {
+    try { return JSON.parse(sessionStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
+  }
+
+  function saveDraft(kind, taskId, value) {
+    const drafts = sessionValue(STUDIO_DRAFTS_KEY, {});
+    drafts[`${kind}:${taskId}`] = value;
+    sessionStorage.setItem(STUDIO_DRAFTS_KEY, JSON.stringify(drafts));
+  }
+
+  function readDraft(kind, task) {
+    const drafts = sessionValue(STUDIO_DRAFTS_KEY, {});
+    return Object.prototype.hasOwnProperty.call(drafts, `${kind}:${task.id}`) ? drafts[`${kind}:${task.id}`] : task.starter;
+  }
+
+  function clearDraft(kind, taskId) {
+    const drafts = sessionValue(STUDIO_DRAFTS_KEY, {});
+    delete drafts[`${kind}:${taskId}`];
+    sessionStorage.setItem(STUDIO_DRAFTS_KEY, JSON.stringify(drafts));
+  }
+
+  function lastTask(kind, tasks) {
+    const saved = sessionValue(STUDIO_LAST_TASK_KEY, {});
+    return tasks.find(task => task.id === saved[kind]) || tasks[0];
+  }
+
+  function rememberTask(kind, taskId) {
+    const saved = sessionValue(STUDIO_LAST_TASK_KEY, {});
+    saved[kind] = taskId;
+    sessionStorage.setItem(STUDIO_LAST_TASK_KEY, JSON.stringify(saved));
   }
 
   function wrapCanvasText(ctx, text, maxWidth) {
@@ -145,12 +175,15 @@
     download();
   }
 
-  function evidencePanel(profile, studio) {
+  function evidencePanel(profile) {
     return `
-      <aside class="evidence-panel" data-evidence-panel>
+      <section class="evidence-export" data-evidence-export>
+        <button type="button" class="secondary-btn" data-evidence-open disabled>Export evidence</button>
+      </section>
+      <aside class="evidence-panel" data-evidence-panel hidden>
         <div>
           <p class="eyebrow">功課證據卡</p>
-          <h4>完成一次有效執行後，下載 PNG</h4>
+          <h4>Export completed work as PNG</h4>
           <p>卡內會記錄姓名、班別、題目、程式／SQL、輸出、時間及執行次數。</p>
         </div>
         <div class="evidence-profile">
@@ -158,8 +191,8 @@
           <label>班別<input type="text" data-evidence-class maxlength="20" value="${escapeHtml(profile.className)}" placeholder="例如 5A"></label>
         </div>
         <div class="evidence-submit-route">
-          <button type="button" class="secondary-btn" data-evidence-download disabled>1. 下載證據卡 PNG</button>
-          <a class="text-btn" href="https://classroom.google.com/" target="_blank" rel="noopener">2. 開啟 Google Classroom 上載 ↗</a>
+          <button type="button" class="secondary-btn" data-evidence-download disabled>Download PNG</button>
+          <a class="text-btn" href="https://classroom.google.com/" target="_blank" rel="noopener">Open Google Classroom ↗</a>
         </div>
         <small>這是提交輔助紀錄，不是防篡改的身份驗證；老師仍可要求學生說明或交原始碼。</small>
       </aside>
@@ -222,29 +255,29 @@
   const PYTHON_TASKS = global.StudioTaskBank?.python || [];
 
   function renderPythonStudio(activity, options = {}) {
-    const task = randomItem(PYTHON_TASKS);
+    const task = lastTask('python', PYTHON_TASKS);
     if (!task) return '<div class="studio-workspace-empty"><h3>Task bank unavailable</h3><p>Reload the page. The Code Studio task bank did not load.</p></div>';
     const profile = safeProfile();
     const content = `
       <div class="lab-shell execution-studio python-studio" data-python-studio data-task-id="${task.id}">
         <div class="studio-banner">
-          <div><p class="eyebrow">真正執行 · browser Python</p><h4>Code Studio</h4><p>寫完整 Python，執行、看錯誤、修正，然後把有效結果交成證據卡。</p></div>
-          <div class="runtime-status-stack"><span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span><button type="button" class="text-btn" data-python-retry hidden>Retry runtime</button></div>
+          <div><p class="eyebrow">Python</p><h4>Code Studio</h4><p>Write and run Python.</p></div>
+          <span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span>
         </div>
         <div class="task-toolbar">
-          <label>練習題<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label>
-          <label>公開測試<select data-python-test></select></label>
+          <label>Task<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label>
+          <label>Test input<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
         </div>
         <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview>公開測試資料載入中…</small></article>
         <div class="execution-grid">
           <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor">${escapeHtml(task.starter)}</textarea></section>
-          <section class="console-panel"><div class="editor-heading"><span>Output</span><span>local run</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
+          <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
         </div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run Python</button><button type="button" class="secondary-btn" data-python-check disabled>Check public test</button></div>
+        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run</button><button type="button" class="secondary-btn" data-python-check disabled>Check solution</button></div>
         <div data-python-feedback></div>
-        ${evidencePanel(profile, 'Code Studio')}
+        ${evidencePanel(profile)}
         <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>指出哪一個測試值揭示了你的程式正確或錯誤，然後說明你改了哪一行。</p><small>網站只檢查可重現的輸出；解釋請用剛才的執行證據說出來。</small></div></aside>
       </div>
     `;
@@ -262,22 +295,22 @@
     const taskSelector = lab.querySelector('[data-python-task]');
     const testSelector = lab.querySelector('[data-python-test]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
-    const retryButton = lab.querySelector('[data-python-retry]');
+    const evidenceOpen = lab.querySelector('[data-evidence-open]');
     let runtimeReady = false;
     let runCount = 0;
     let lastResult = null;
-    let runner = null;
 
     const selectedTask = () => PYTHON_TASKS.find((item) => item.id === taskSelector.value) || PYTHON_TASKS[0];
     const testsFor = (task) => task.tests?.length ? task.tests : [{ label: 'Public test', input: [], output: task.expected || '' }];
     const selectedTest = () => testsFor(selectedTask())[Number(testSelector.value) || 0] || testsFor(selectedTask())[0];
     const updateTestPreview = () => {
       const test = selectedTest();
-      const inputText = test.input?.length ? `Input: ${test.input.join(' , ')}` : 'Input: no input lines';
-      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Public test'} · ${inputText}`;
+      const inputText = test.input?.length ? `input: ${test.input.join(' | ')}` : 'input: no input lines';
+      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Test'} · ${inputText}`;
       lastResult = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
     };
     const showTask = (task) => {
       lab.dataset.taskId = task.id;
@@ -285,22 +318,17 @@
       testSelector.innerHTML = testsFor(task).map((test, index) => `<option value="${index}">${escapeHtml(test.label || `Public test ${index + 1}`)}</option>`).join('');
       lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview></small>`;
       lab.querySelector('[data-python-task-label]').textContent = task.id;
-      code.value = task.starter;
+      code.value = readDraft('python', task);
+      rememberTask('python', task.id);
       output.textContent = 'Starter code loaded. Trace it before running.';
       checkButton.disabled = true;
       evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
       lastResult = null;
       updateTestPreview();
     };
 
-    const mountRunner = () => {
-      runtimeReady = false;
-      runButton.disabled = true;
-      checkButton.disabled = true;
-      retryButton.hidden = true;
-      status.classList.remove('is-ready', 'is-error');
-      runner?.dispose?.();
-      runner = createPythonRunner((state) => {
+    const runner = createPythonRunner((state) => {
       if (state.status === 'loading') {
         status.textContent = 'Preparing Python…';
       } else if (state.status === 'ready') {
@@ -312,31 +340,31 @@
       } else if (state.status === 'error') {
         status.textContent = 'Python unavailable';
         status.classList.add('is-error');
-        output.textContent = `The Python execution engine could not load. ${state.error || 'Check the network connection, then retry the runtime.'}`;
-        retryButton.hidden = false;
+        output.textContent = `Could not prepare Python: ${state.error || 'Check your internet connection and reload.'}`;
       }
-      });
-    };
+    });
 
-    mountRunner();
     showTask(selectedTask());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
+    code.addEventListener('input', () => saveDraft('python', selectedTask().id, code.value));
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
     testSelector.addEventListener('change', updateTestPreview);
     lab.querySelector('[data-python-random]').addEventListener('click', () => {
       const options = PYTHON_TASKS.filter((item) => item.id !== selectedTask().id);
       showTask(randomItem(options));
     });
-    lab.querySelector('[data-python-reset]').addEventListener('click', () => showTask(selectedTask()));
-    retryButton.addEventListener('click', () => {
-      output.textContent = 'Retrying Python runtime…';
-      mountRunner();
+    lab.querySelector('[data-python-reset]').addEventListener('click', () => {
+      const task = selectedTask();
+      if (code.value !== task.starter && !global.confirm('Reset this task and discard the current draft?')) return;
+      clearDraft('python', task.id);
+      showTask(task);
     });
     runButton.addEventListener('click', async () => {
       if (!runtimeReady) return;
       runButton.disabled = true;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
       output.textContent = 'Running Python…';
       const test = selectedTest();
       const result = await runner.run(code.value, test.input || []);
@@ -345,21 +373,32 @@
       output.textContent = result.ok ? (result.stdout || '(Program completed with no printed output.)') : `Error:\n${result.error}`;
       runButton.disabled = false;
       checkButton.disabled = false;
-      evidenceButton.disabled = false;
       lab.querySelector('[data-python-feedback]').innerHTML = result.ok
-        ? feedback('info', 'Run recorded.', 'Now compare this public test output with the brief. A clean run is not yet proof that the output is correct.', 'Use “Check public test”, then export the evidence card when ready.')
+        ? feedback('info', 'Run recorded.', 'A clean run is not yet proof that the output is correct.', 'Use “Check solution” to run every required test.')
         : feedback('bad', 'Python stopped with an error.', result.error || 'Read the line named in the message, then repair one thing at a time.', 'Run again after the smallest sensible repair.');
     });
-    checkButton.addEventListener('click', () => {
-      if (!lastResult) return;
+    checkButton.addEventListener('click', async () => {
+      if (!runtimeReady) return;
       const task = selectedTask();
-      const test = selectedTest();
-      const correct = lastResult.ok && lastResult.test === test && normaliseOutput(lastResult.stdout) === normaliseOutput(test.output);
-      lab.querySelector('[data-python-feedback]').innerHTML = correct
-        ? feedback('good', 'Public test matches.', `The expected output is ${test.output}. Keep the code and the output visible in your evidence card.`, 'Say which test value you would change to test a boundary or an error case.')
-        : feedback('bad', 'The public test does not yet match.', `Expected: ${test.output}  |  Your output: ${normaliseOutput(lastResult.stdout) || 'no output'}`, 'Trace one variable or condition at a time, then run again.');
+      runButton.disabled = true;
+      checkButton.disabled = true;
+      const results = [];
+      for (const test of testsFor(task)) {
+        const result = await runner.run(code.value, test.input || []);
+        results.push({ test, result, passed: result.ok && normaliseOutput(result.stdout) === normaliseOutput(test.output) });
+      }
+      runCount += results.length;
+      const correct = results.every(item => item.passed);
+      lastResult = { ...results[results.length - 1].result, code: code.value, task, results, runCount, checked: correct };
+      const report = results.map((item, index) => `${item.passed ? '✓' : '✗'} ${item.test.label || `Test ${index + 1}`}`).join('  •  ');
+      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? 'All required tests passed.' : `${results.filter(item => item.passed).length} / ${results.length} tests passed.`, report, correct ? 'You can export evidence for this completed task.' : 'Fix the code, then check all required tests again.');
       lastResult.checked = correct;
+      evidenceButton.disabled = !correct;
+      evidenceOpen.disabled = !correct;
+      runButton.disabled = false;
+      checkButton.disabled = false;
     });
+    evidenceOpen.addEventListener('click', () => { lab.querySelector('[data-evidence-panel]').hidden = false; });
     evidenceButton.addEventListener('click', () => {
       if (!lastResult) return;
       makeEvidenceCard(lab, {
@@ -367,7 +406,7 @@
         taskId: selectedTask().id,
         code: lastResult.code,
         output: lastResult.ok ? lastResult.stdout : `Error: ${lastResult.error}`,
-        ok: Boolean(lastResult.ok && lastResult.checked),
+        ok: Boolean(lastResult.checked),
         runCount
       });
     });
@@ -376,9 +415,9 @@
     return dispose;
   }
 
-  function loadSqlLibrary(forceReload = false) {
-    if (!forceReload && sqlLibraryPromise) return sqlLibraryPromise;
-    const promise = new Promise((resolve, reject) => {
+  function loadSqlLibrary() {
+    if (sqlLibraryPromise) return sqlLibraryPromise;
+    sqlLibraryPromise = new Promise((resolve, reject) => {
       if (typeof global.initSqlJs === 'function') {
         resolve(global.initSqlJs);
         return;
@@ -390,8 +429,7 @@
       script.onerror = () => reject(new Error('Could not load the SQL runtime. Check your internet connection and reload.'));
       document.head.appendChild(script);
     }).then((initSqlJs) => initSqlJs({ locateFile: (file) => `${SQL_ASSET_ROOT}${file}` }));
-    if (!forceReload) sqlLibraryPromise = promise;
-    return promise;
+    return sqlLibraryPromise;
   }
 
   const SEED_SQL = global.StudioTaskBank?.seedSql || '';
@@ -400,8 +438,8 @@
   function matchesSqlCheck(result, checker) {
     const set = result?.[0];
     return Boolean(set
-      && JSON.stringify(set.columns.map(normaliseCell)) === JSON.stringify(checker.columns.map(normaliseCell))
-      && JSON.stringify(set.values.map(row => row.map(normaliseCell))) === JSON.stringify(checker.rows.map(row => row.map(normaliseCell))));
+      && JSON.stringify(set.columns) === JSON.stringify(checker.columns)
+      && JSON.stringify(set.values) === JSON.stringify(checker.rows));
   }
 
   function verifySqlTask(task, db, lastResult) {
@@ -422,19 +460,19 @@
   }
 
   function renderSqlStudio(activity, options = {}) {
-    const task = randomItem(SQL_TASKS);
+    const task = lastTask('sql', SQL_TASKS);
     if (!task) return '<div class="studio-workspace-empty"><h3>Task bank unavailable</h3><p>Reload the page. The SQL Studio task bank did not load.</p></div>';
     const profile = safeProfile();
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
-        <div class="studio-banner"><div><p class="eyebrow">真正執行 · in-memory SQLite</p><h4>SQL Studio</h4><p>直接寫 SQL，看看查詢結果或資料變更；每次重設都回到同一份練習資料。</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQLite…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry runtime</button></div></div>
-        <div class="task-toolbar"><label>練習題<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${item.id} · ${escapeHtml(item.title)}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>重設資料庫</button></div>
-        <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>可執行 SELECT、INSERT、UPDATE、DELETE 及 CREATE 等 SQL；全部資料只會留在此瀏覽器記憶體。</small></article>
-        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor">${escapeHtml(task.starter)}</textarea></section><section class="console-panel"><div class="editor-heading"><span>Result set</span><span>temporary database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQLite is loading in the background…</div></section></div>
-        <div class="schema-strip"><strong>Schema</strong><code>Student(StudentID TEXT PRIMARY KEY, Name TEXT, Class TEXT, Mark INTEGER)</code><button type="button" class="text-btn" data-sql-show-seed>View start data</button></div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run SQL</button><button type="button" class="secondary-btn" data-sql-check disabled>Check task result</button></div>
+        <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span></div>
+        <div class="task-toolbar"><label>Task<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
+        <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>Each run starts from the same practice database.</small></article>
+        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor">${escapeHtml(task.starter)}</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
+        <div class="schema-strip"><strong>Schema</strong><code>Student(StudentID TEXT PRIMARY KEY, Name TEXT, Class TEXT, Mark INTEGER)</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
+        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run</button><button type="button" class="secondary-btn" data-sql-check disabled>Check solution</button></div>
         <div data-sql-feedback></div>
-        ${evidencePanel(profile, 'SQL Studio')}
+        ${evidencePanel(profile)}
         <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>講出 WHERE 如何限制了記錄，或說明你為何先 SELECT 再相信 UPDATE／INSERT 已經正確。</p><small>系統可檢查資料狀態，但不會代替你判斷題目的語意和風險。</small></div></aside>
       </div>
     `;
@@ -450,8 +488,8 @@
     const runButton = lab.querySelector('[data-sql-run]');
     const checkButton = lab.querySelector('[data-sql-check]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
+    const evidenceOpen = lab.querySelector('[data-evidence-open]');
     const taskSelector = lab.querySelector('[data-sql-task]');
-    const retryButton = lab.querySelector('[data-sql-retry]');
     let SQL;
     let db;
     let runCount = 0;
@@ -466,82 +504,68 @@
     const showTask = (task, reset = true) => {
       taskSelector.value = task.id;
       lab.dataset.taskId = task.id;
-      lab.querySelector('[data-sql-brief]').innerHTML = `<p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>可執行 SELECT、INSERT、UPDATE、DELETE 及 CREATE 等 SQL；全部資料只會留在此瀏覽器記憶體。</small>`;
+      lab.querySelector('[data-sql-brief]').innerHTML = `<p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>Each run starts from the same practice database.</small>`;
       lab.querySelector('[data-sql-task-label]').textContent = task.id;
-      code.value = task.starter;
+      code.value = readDraft('sql', task);
+      rememberTask('sql', task.id);
       output.innerHTML = '<p class="console-muted">Starter SQL loaded. Read the schema and predict the result before running.</p>';
       lastResult = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
       if (reset && SQL) resetDatabase();
     };
 
-    const mountSqlRuntime = () => {
-      const forceReload = retryButton.dataset.retried === 'true';
-      SQL = null;
-      db?.close();
-      db = null;
-      runButton.disabled = true;
-      checkButton.disabled = true;
-      retryButton.hidden = true;
-      status.classList.remove('is-ready', 'is-error');
-      status.textContent = 'Preparing SQLite…';
-      output.innerHTML = '<p class="console-muted">Preparing the SQL execution engine…</p>';
-      loadSqlLibrary(forceReload).then((library) => {
-        SQL = library;
-        delete retryButton.dataset.retried;
-        resetDatabase();
-        status.textContent = 'SQLite ready · runs locally';
-        status.classList.add('is-ready');
-        runButton.disabled = false;
-        output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
-      }).catch((error) => {
-        delete retryButton.dataset.retried;
-        status.textContent = 'SQLite unavailable';
-        status.classList.add('is-error');
-        output.innerHTML = `<p class="console-error">The SQL execution engine could not load. ${escapeHtml(error.message)}</p>`;
-        retryButton.hidden = false;
-      });
-    };
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
-    mountSqlRuntime();
+    code.addEventListener('input', () => saveDraft('sql', selectedTask().id, code.value));
+    loadSqlLibrary().then((library) => {
+      SQL = library;
+      const task = selectedTask();
+      if (code.value !== task.starter && !global.confirm('Reset this task and discard the current draft?')) return;
+      clearDraft('sql', task.id);
+      code.value = task.starter;
+      resetDatabase();
+      status.textContent = 'SQLite ready · runs locally';
+      status.classList.add('is-ready');
+      runButton.disabled = false;
+      output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
+    }).catch((error) => {
+      status.textContent = 'SQLite unavailable';
+      status.classList.add('is-error');
+      output.innerHTML = `<p class="console-error">${escapeHtml(error.message)}</p>`;
+    });
     taskSelector.addEventListener('change', () => showTask(selectedTask()));
     lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(SQL_TASKS.filter((task) => task.id !== selectedTask().id))));
-    retryButton.addEventListener('click', () => {
-      retryButton.dataset.retried = 'true';
-      mountSqlRuntime();
-    });
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
       if (!SQL) return;
       resetDatabase();
       lastResult = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
       output.innerHTML = '<p class="console-muted">Practice database reset to its starting records.</p>';
-      lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'Database reset.', 'All practice-only changes have been removed.', 'Run your SQL again and inspect the result set.');
+      lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'Task reset.', 'The starter SQL and practice database have been restored.', 'Run your SQL again and inspect the result.');
     });
-    lab.querySelector('[data-sql-show-seed]').addEventListener('click', () => {
-      if (!db) return;
-      output.innerHTML = sqlTable(db.exec('SELECT * FROM Student ORDER BY StudentID'));
-    });
+    lab.querySelector('[data-sql-seed-output]').innerHTML = sqlTable([{ columns: ['StudentID', 'Name', 'Class', 'Mark'], values: [['S001', 'Chan Tai Man', '5A', 42], ['S002', 'Lee Ka Ming', '5A', 50], ['S003', 'Wong Mei', '5A', 68], ['S004', 'Ho Ying', '5A', 91], ['S005', 'Ng Chi', '5B', 75]] }]);
     runButton.addEventListener('click', () => {
       if (!db) return;
       runButton.disabled = true;
+      checkButton.disabled = true;
+      evidenceButton.disabled = true;
+      evidenceOpen.disabled = true;
       try {
+        resetDatabase();
         const resultSets = db.exec(code.value);
         runCount += 1;
         lastResult = { ok: true, code: code.value, output: output.textContent, resultSets, task: selectedTask(), runCount };
         output.innerHTML = sqlTable(resultSets);
         lastResult.output = output.innerText;
         checkButton.disabled = false;
-        evidenceButton.disabled = false;
-        lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'SQL executed.', 'Read the result set or add a SELECT statement to verify a changed record.', 'Use “Check task result” for a deterministic check of this task’s final database state.');
+        lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'SQL executed.', 'This run began with fresh starting data.', 'Use “Check solution” to verify the required result.');
       } catch (error) {
         runCount += 1;
         lastResult = { ok: false, code: code.value, error: error.message || String(error), task: selectedTask(), runCount };
         output.innerHTML = `<pre class="console-error">SQL error:\n${escapeHtml(lastResult.error)}</pre>`;
-        checkButton.disabled = false;
-        evidenceButton.disabled = false;
         lab.querySelector('[data-sql-feedback]').innerHTML = feedback('bad', 'SQL could not run.', lastResult.error, 'Repair one clause or punctuation mark, then run again.');
       } finally {
         runButton.disabled = false;
@@ -551,10 +575,13 @@
       if (!lastResult || !db) return;
       const correct = lastResult.ok && verifySqlTask(selectedTask(), db, lastResult);
       lastResult.checked = correct;
+      evidenceButton.disabled = !correct;
+      evidenceOpen.disabled = !correct;
       lab.querySelector('[data-sql-feedback]').innerHTML = correct
-        ? feedback('good', 'Task result confirmed.', 'The temporary database now contains the requested result. Keep the SQL and result set in the evidence card.', 'Explain which clause made the action safe or which fields prove the change.')
+        ? feedback('good', 'Task result confirmed.', 'The practice database now contains the requested result. You can export evidence for this completed task.', 'Explain which clause made the action safe or which fields prove the change.')
         : feedback('bad', 'Task result is not there yet.', 'The statement may be valid SQL, but the current database state does not yet match the task brief.', 'Reset if needed, then compare the required fields, condition and values carefully.');
     });
+    evidenceOpen.addEventListener('click', () => { lab.querySelector('[data-evidence-panel]').hidden = false; });
     evidenceButton.addEventListener('click', () => {
       if (!lastResult) return;
       makeEvidenceCard(lab, {

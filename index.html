@@ -29,7 +29,7 @@
 
         <button class="nav-item nav-root active" data-page="dashboard">
           <span class="nav-emoji">⌂</span>
-          Home
+          ICT revision arcade
         </button>
 
         <section class="curriculum-group is-open">
@@ -140,7 +140,7 @@
     </aside>
 
     <main class="content">
-      <section id="dashboardPage" class="dashboard-page" data-home-mode="gateway">
+      <section id="dashboardPage" class="dashboard-page" data-home-mode="gateway" aria-live="polite">
         <section class="mode-gateway" aria-labelledby="modeGatewayTitle">
           <div class="mode-gateway-intro">
             <p class="eyebrow">HKDSE ICT · 資訊及通訊科技</p>
@@ -179,36 +179,40 @@
             <p class="creator-line">Created by Mr Ivan Fung</p>
           </div>
           <div class="hub-metrics" aria-label="Learning coverage">
-            <div><strong data-notes-count>—</strong><span>topic notes</span></div>
-            <div><strong>Notes</strong><span>big ideas → explanations</span></div>
-            <div><strong>Studio</strong><span>run → check → retry</span></div>
+            <div><strong>36</strong><span>topic notes</span></div>
+            <div><strong>C&amp;A</strong><span>outcomes + keywords</span></div>
+            <div><strong>DSE</strong><span>traps + checkpoints</span></div>
           </div>
         </section>
 
-        <section class="learning-path-grid" aria-label="Choose your next step in Notes">
-          <button class="path-card path-topic" type="button" data-home-resume>
-            <p>Continue / Start learning</p>
-            <h3>Open the next Notes chapter</h3>
-            <span class="path-card-copy">Return to your most recent chapter, or start from A1 if this is your first visit.</span>
-            <em>Open Notes</em>
+        <section class="learning-path-grid" aria-label="Open notes by topic">
+          <button class="path-card path-lab" type="button" data-open-topic="A3 Data Representation" data-open-group="Core A Information Processing">
+            <p>Core A</p>
+            <h3>Data Representation</h3>
+            <span class="path-card-zh" lang="zh-Hant">數據表示</span>
+            <span class="path-card-copy">Binary, hex, two’s complement and character codes. Multimedia digitisation is A4.</span>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-lab" type="button" data-home-focus="syllabus">
-            <p>Browse by syllabus</p>
-            <h3>Open a strand below</h3>
-            <span class="path-card-copy">Use the chapter list when you already know which HKDSE area you need.</span>
-            <em>Browse strands</em>
+          <button class="path-card path-topic" type="button" data-open-topic="C1 Networking and Internet Basics I" data-open-group="Core C Internet and its Applications">
+            <p>Core C</p>
+            <h3>Networking Basics</h3>
+            <span class="path-card-zh" lang="zh-Hant">建網及互聯網基本知識</span>
+            <span class="path-card-copy">Local and wide area networks, devices and how data travels.</span>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-practice" type="button" data-home-focus="search">
-            <p>Search a concept</p>
-            <h3>Jump to a keyword or chapter</h3>
-            <span class="path-card-copy">Search terms such as validation, Unicode, router, SQL or A6.</span>
-            <em>Focus search</em>
+          <button class="path-card path-practice" type="button" data-open-topic="D4 Introduction to Python Programming" data-open-group="Core D Computational Thinking and Programming">
+            <p>Core D</p>
+            <h3>Python Foundations</h3>
+            <span class="path-card-zh" lang="zh-Hant">Python 程式編寫入門</span>
+            <span class="path-card-copy">Variables, input/output, syntax and tracing before you open Code Studio.</span>
+            <em>Read notes</em>
           </button>
-          <button class="path-card path-practice" type="button" data-home-action="studio">
-            <p>Open Studio</p>
-            <h3>Move from Notes to practice</h3>
-            <span class="path-card-copy">Write, run, trace or check work in Code Studio, SQL Studio, Trace Lab and DSE Practice.</span>
-            <em>Open Studio</em>
+          <button class="path-card path-practice" type="button" data-open-topic="EA1 Managing Data Using SQL" data-open-group="Elective A Databases">
+            <p>Elective A</p>
+            <h3>SQL Foundations</h3>
+            <span class="path-card-zh" lang="zh-Hant">以 SQL 管理數據</span>
+            <span class="path-card-copy">Table structure, safe updates and query reasoning before you open SQL Studio.</span>
+            <em>Read notes</em>
           </button>
         </section>
 
@@ -262,46 +266,27 @@
         </div>
       </section>
 
-      <section id="studioHomePage" class="studio-home-page hidden">
-        <section class="studio-home-hero">
-          <div>
-            <p class="eyebrow">STUDIO · WRITE · RUN · CHECK</p>
-            <h2>Studio</h2>
-            <p>這裡不是 Notes 裡的一個活動，而是一個獨立的練習工作區：選題、寫答案、實際執行、核對結果，再交出證據。</p>
-          </div>
-          <div class="studio-home-route" aria-label="Recommended Studio route">
-            <span>1. 選工作區</span><span>2. 完成題目</span><span>3. 執行及檢查</span><span>4. 下載證據卡</span>
-          </div>
-        </section>
+      <section id="studioHomePage" class="studio-home-page hidden" aria-live="polite">
+        <header class="studio-simple-header"><h2>Studio</h2><p>Practise and test what you learned.</p></header>
 
         <section class="studio-workspace-switcher" aria-label="Studio workspaces">
           <button class="studio-workspace-tab is-active" type="button" data-studio-workspace="code" aria-pressed="true">
-            <span class="studio-tool-icon" aria-hidden="true">&lt;/&gt;</span><span><strong>Code Studio</strong><small>Python 題目 · 執行 · 公開測試</small></span>
+            <span class="studio-tool-icon" aria-hidden="true">&lt;/&gt;</span><span><strong>Code Studio</strong><small>Write and run Python.</small></span>
           </button>
           <button class="studio-workspace-tab" type="button" data-studio-workspace="sql" aria-pressed="false">
-            <span class="studio-tool-icon" aria-hidden="true">SQL</span><span><strong>SQL Studio</strong><small>資料庫題目 · result set · state check</small></span>
+            <span class="studio-tool-icon" aria-hidden="true">SQL</span><span><strong>SQL Studio</strong><small>Write and test SQL.</small></span>
           </button>
           <button class="studio-workspace-tab" type="button" data-studio-workspace="visual" aria-pressed="false">
-            <span class="studio-tool-icon" aria-hidden="true">◫</span><span><strong>Trace Lab</strong><small>逐行追蹤 · 預測 · 除錯</small></span>
+            <span class="studio-tool-icon" aria-hidden="true">◫</span><span><strong>Trace Lab</strong><small>Trace algorithms step by step.</small></span>
           </button>
           <button class="studio-workspace-tab" type="button" data-studio-workspace="practice" aria-pressed="false">
-            <span class="studio-tool-icon" aria-hidden="true">✓</span><span><strong>DSE Practice</strong><small>按題型抽題 · 溫習訓練</small></span>
+            <span class="studio-tool-icon" aria-hidden="true">✓</span><span><strong>DSE Practice</strong><small>Practise exam-style questions.</small></span>
           </button>
         </section>
 
         <section class="studio-workspace-layout">
-          <aside class="studio-task-pack">
-            <p class="eyebrow">STUDIO PRACTICE</p>
-            <h3>每一題都要真正執行，再核對結果</h3>
-            <p>先閱讀題目，再寫程式或 SQL、執行、檢查，最後保留證據卡。Studio 不是平台設定工具。</p>
-            <dl>
-              <div><dt>Code Studio</dt><dd>讀題 → 寫 Python → Run → Check public test</dd></div>
-              <div><dt>SQL Studio</dt><dd>看 schema → 寫 SQL → Run → Check task result</dd></div>
-              <div><dt>Evidence</dt><dd>下載 PNG 證據卡，再附到 Google Classroom</dd></div>
-            </dl>
-            <p class="studio-task-bank-count" data-task-bank-count>Loading task-bank count…</p>
-            <p class="studio-task-pack-note">公開測試只在你檢查後顯示期望結果，用來學習與自查。</p>
-            <details class="teacher-task-pack" hidden data-teacher-task-pack>
+          <aside class="studio-task-pack" hidden>
+            <details class="teacher-task-pack">
               <summary>Teacher tool · test a new task pack locally</summary>
               <p>貼上 JSON 題目包即可即時加入這個瀏覽器的 Studio 測試；它不會發佈給學生或改動公開題庫。</p>
               <textarea data-task-pack-input aria-label="Teacher task pack JSON" spellcheck="false" placeholder='{"python":[...],"sql":[]}'></textarea>
@@ -314,11 +299,11 @@
             </details>
             <button type="button" class="text-btn" data-home-action="notes">概念未穩？先看 Notes</button>
           </aside>
-          <div id="studioWorkspaceStage" class="studio-workspace-stage"></div>
+          <div id="studioWorkspaceStage" class="studio-workspace-stage" aria-live="polite"></div>
         </section>
       </section>
 
-      <section id="topicPage" class="topic-page hidden">
+      <section id="topicPage" class="topic-page hidden" aria-live="polite">
         <nav id="chapterJump" class="chapter-jump" hidden aria-label="Jump to chapter section"></nav>
         <section class="chapter-section chapter-introduction" id="chapter-intro">
           <p class="eyebrow" id="topicGroupLabel">Topic</p>
@@ -329,48 +314,52 @@
           <div id="topicStatGrid" class="topic-stat-grid"></div>
         </section>
 
+        <div class="chapter-study-board">
         <section class="chapter-section chapter-ca" id="chapter-outcomes">
           <div class="chapter-section-heading">
-            <p class="eyebrow">What you will learn</p>
-            <h3>C&amp;A-aligned learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
+            <p class="eyebrow">C&amp;A Guide</p>
+            <h3>Learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
           </div>
-          <p class="chapter-section-lead">Keep this as a reference list after you read the chapter purpose and focus points above.</p>
-          <details class="chapter-ca-reference">
-            <summary>Detailed outcome list <span lang="zh-Hant">學習成果</span><span class="chapter-ca-toggle-indicator" aria-hidden="true">Open ▾</span></summary>
-            <div id="topicCaPanel" class="topic-ca-panel"></div>
-          </details>
+          <p class="chapter-section-lead">Command words such as identify <span lang="zh-Hant">(識別)</span> and distinguish <span lang="zh-Hant">(區分)</span> tell you how to answer.</p>
+          <div id="topicCaPanel" class="topic-ca-panel"></div>
         </section>
 
-        <div class="chapter-study-board">
+        <section class="chapter-section chapter-keywords" id="chapter-keywords">
+          <div class="chapter-section-heading">
+            <p class="eyebrow">Self-check</p>
+            <h3>Keywords <span class="heading-zh" lang="zh-Hant">關鍵詞</span></h3>
+          </div>
+          <p class="chapter-section-lead">Tap a card to reveal the DSE meaning. Harder words include a Chinese gloss.</p>
+          <div id="topicKeywordGrid" class="topic-keyword-grid"></div>
+        </section>
+        </div>
+
+        <section class="chapter-section chapter-mistakes" id="chapter-mistakes">
+          <div class="chapter-section-heading">
+            <p class="eyebrow">Watch out</p>
+            <h3>Common mistakes <span class="heading-zh" lang="zh-Hant">常見錯誤</span></h3>
+          </div>
+          <p class="chapter-section-lead">Read the trap first, then tap the card to reveal the correct DSE-safe statement.</p>
+          <div id="topicMisconceptionGrid" class="topic-misconception-grid"></div>
+        </section>
+
         <section class="chapter-section chapter-details" id="chapter-details">
           <div class="chapter-section-heading">
-            <p class="eyebrow">Big idea first</p>
-            <h3>Build the concept <span class="heading-zh" lang="zh-Hant">先理解概念</span></h3>
+            <p class="eyebrow">Details</p>
+            <h3>Build the concept <span class="heading-zh" lang="zh-Hant">詳情</span></h3>
           </div>
           <div id="topicCardGrid" class="topic-card-grid"></div>
           <div id="topicKeypointGrid" class="topic-keypoint-grid"></div>
           <div id="topicFormulaPanel" class="topic-formula-panel hidden"></div>
           <div id="topicExamGrid" class="topic-exam-grid"></div>
           <div id="topicSimulationPanel" class="topic-simulation-panel hidden"></div>
-        </section>
-
-        <section class="chapter-section chapter-keywords" id="chapter-keywords">
-          <div class="chapter-section-heading">
-            <p class="eyebrow">Vocabulary after meaning</p>
-            <h3>Keywords <span class="heading-zh" lang="zh-Hant">關鍵詞</span></h3>
+          <div class="topic-workbench">
+            <div>
+              <p class="eyebrow">Revision path</p>
+              <h3>Syllabus point → game → DSE transfer</h3>
+            </div>
+            <ol id="topicSteps"></ol>
           </div>
-          <p class="chapter-section-lead">Read the term, the Chinese label and the DSE meaning together while you revise the notes.</p>
-          <div id="topicKeywordGrid" class="topic-keyword-grid"></div>
-        </section>
-        </div>
- 
-        <section class="chapter-section chapter-mistakes" id="chapter-mistakes">
-          <div class="chapter-section-heading">
-            <p class="eyebrow">Common traps</p>
-            <h3>Common mistakes <span class="heading-zh" lang="zh-Hant">常見錯誤</span></h3>
-          </div>
-          <p class="chapter-section-lead">Check these only after the explanation, so you can compare the trap with the correct idea.</p>
-          <div id="topicMisconceptionGrid" class="topic-misconception-grid"></div>
         </section>
 
         <section class="chapter-section chapter-activities" id="chapter-practice">
@@ -382,7 +371,7 @@
         </section>
       </section>
 
-      <section id="arcadePage" class="arcade-page hidden">
+      <section id="arcadePage" class="arcade-page hidden" aria-live="polite">
         <section class="arcade-hero">
           <div>
             <p class="eyebrow" id="arcadeGroupLabel">ICT Game Lab</p>
@@ -399,11 +388,11 @@
         <div id="arcadeMissionGrid" class="arcade-mission-grid"></div>
       </section>
 
-      <section id="dsePracticePage" class="topic-page practice-hub-page hidden">
+      <section id="dsePracticePage" class="topic-page practice-hub-page hidden" aria-live="polite">
         <section class="chapter-section">
           <p class="eyebrow">Paper 1 / Paper 2 style</p>
-          <h2>DSE Practice</h2>
-          <p>Questions come from the same chapter pools as topic checkpoints. Filter the mix, then generate a fresh set. Feedback explains the idea, not only right or wrong.</p>
+          <h2>DSE Practice Hub</h2>
+          <p>Questions come from the same chapter pools as topic checkpoints. Filter the mix, then generate another set. Feedback explains the idea, not only right or wrong.</p>
           <form class="practice-hub-filters" id="practiceHubFilters" onsubmit="return false;">
             <label>Strand
               <select id="practiceStrand"></select>
@@ -428,7 +417,7 @@
               </select>
             </label>
             <button class="primary-btn" type="button" id="practiceRun">Generate set</button>
-            <button class="ghost-btn" type="button" id="practiceMore3">New 3-question set</button>
+            <button class="ghost-btn" type="button" id="practiceMore3">3 more</button>
             <button class="ghost-btn" type="button" id="practiceWrongsOnly">Wrongs only</button>
           </form>
           <p class="practice-pool-meta" id="practicePoolMeta" aria-live="polite">Choose filters, then generate a set.</p>
@@ -439,7 +428,7 @@
       <section class="hero-card hidden" id="programmingLabStart">
         <div>
           <p class="eyebrow">Core D / Elective C</p>
-          <h2>Trace Lab</h2>
+          <h2>Programming Visual Lab</h2>
           <p class="hero-copy">
             Step through HKDSE programming structures and logic, watch variables, arrays and abstract data structures change, then challenge yourself with randomised DSE-style exercises.
           </p>
@@ -452,7 +441,7 @@
           </div>
         </div>
         <div class="demo-meter" aria-label="Learning coverage">
-          <div class="meter-item"><strong data-demo-count>—</strong><span>demo types</span></div>
+          <div class="meter-item"><strong>20</strong><span>demo types</span></div>
           <div class="meter-item"><strong>∞</strong><span>random cases</span></div>
           <div class="meter-item"><strong>DSE</strong><span>style drills</span></div>
         </div>
@@ -508,7 +497,7 @@
           <div>
             <p class="eyebrow">Visual walkthrough</p>
             <h3 id="storyTitle">Before running</h3>
-            <p id="storyText">Choose a demonstration from the Trace Lab picker above or a chapter activity. Then run the program one line at a time.</p>
+            <p id="storyText">Choose a demonstration from the sidebar, the picker above, or a chapter activity. Then run the program one line at a time.</p>
           </div>
         </article>
         <article class="flow-card">

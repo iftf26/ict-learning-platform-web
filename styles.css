@@ -8983,6 +8983,15 @@ body:has(.study-studio) {
   gap: 18px;
   align-items: start;
 }
+.studio-simple-header { margin: 0 0 16px; }
+.studio-simple-header h2 { margin: 0; }
+.studio-simple-header p { margin: 5px 0 0; color: #5a7188; }
+.studio-task-pack[hidden] + .studio-workspace-stage { grid-column: 1 / -1; }
+.evidence-export { margin-top: 16px; }
+.evidence-panel[hidden] { display: none; }
+.sql-start-data { margin-left: auto; }
+.sql-start-data > summary { cursor: pointer; color: #285b84; font-weight: 800; }
+.sql-start-data .sql-result-table { margin-top: 10px; max-width: 100%; overflow-x: auto; }
 .studio-task-pack {
   position: sticky;
   top: 18px;
