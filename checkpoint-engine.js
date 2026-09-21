@@ -181,7 +181,6 @@
       at: Date.now()
     });
     if (SESSION_MISSES.length > 40) SESSION_MISSES.shift();
-    global.StudyTools?.recordCheckpointMiss?.(question, question.explanation || '');
   }
 
   function teachFeedback(question, result) {

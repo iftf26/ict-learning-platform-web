@@ -10163,6 +10163,17 @@ function renderC3DsePanel() {
 function renderCaOutcomesSection(topicConfig) {
   const items = topicConfig.caOutcomes || [];
   if (!topicCaPanel) return;
+  const reference = document.querySelector('#chapter-outcomes .chapter-ca-reference');
+  function syncReference() {
+    if (!reference) return;
+    const indicator = reference.querySelector('.chapter-ca-toggle-indicator');
+    if (indicator) indicator.textContent = reference.open ? 'Close ▴' : 'Open ▾';
+  }
+  if (reference) {
+    reference.open = false;
+    reference.ontoggle = syncReference;
+    syncReference();
+  }
   topicCaPanel.innerHTML = items.map((item, index) => {
     const command = typeof matchStudyCommand === 'function' ? matchStudyCommand(item) : null;
     return `
@@ -10180,16 +10191,16 @@ function renderCaOutcomesSection(topicConfig) {
 function renderKeywordsSection(topicConfig) {
   const items = topicConfig.keywords || [];
   if (!topicKeywordGrid) return;
-  topicKeywordGrid.innerHTML = items.map((item, index) => {
+  topicKeywordGrid.innerHTML = items.map((item) => {
     const term = item.term || item;
     const meaning = item.meaning || '';
     const zh = typeof getKeywordChinese === 'function' ? getKeywordChinese(term) : '';
     return `
-    <button class="keyword-card" type="button" data-keyword-toggle aria-expanded="false">
-      <strong>${escapeHtml(term)}${zh ? `<span class="keyword-zh" lang="zh-Hant">(${escapeHtml(zh)})</span>` : ''}</strong>
-      <p class="keyword-hint">Tap to check the DSE meaning · 點擊查看意思</p>
+    <article class="keyword-card">
+      <strong>${escapeHtml(term)}</strong>
+      ${zh ? `<p class="keyword-zh" lang="zh-Hant">${escapeHtml(zh)}</p>` : ''}
       <p class="keyword-meaning">${annotateStudyText(meaning)}</p>
-    </button>`;
+    </article>`;
   }).join('');
   setChapterSectionVisible(topicKeywordGrid, Boolean(items.length));
 }
@@ -10887,24 +10898,15 @@ function toggleTopicSimulationAuto() {
 }
 
 function renderTopicActivities(items) {
-  topicActivityPanel.classList.remove('hidden');
+  const practiceSection = topicActivityPanel ? topicActivityPanel.closest('.chapter-section') : null;
   if (!items.length) {
-    topicActivityPanel.innerHTML = `
-      <div class="activity-header">
-        <div>
-          <p class="eyebrow">Activities</p>
-          <h3>Activity coming later</h3>
-          <p>Use Keywords + Mistakes + Practice for now. A hands-on lab will appear here when it is ready.</p>
-        </div>
-        <span class="activity-count">Coming later</span>
-      </div>
-      <article class="activity-coming-later" aria-live="polite">
-        <strong>Activity coming later</strong>
-        <p>Do now: Keywords → Mistakes → Checkpoint. No shallow click-only task is shown for this chapter until a meaningful lab is ready.</p>
-      </article>
-    `;
+    topicActivityPanel.innerHTML = '';
+    topicActivityPanel.classList.add('hidden');
+    if (practiceSection) practiceSection.classList.add('hidden');
     return;
   }
+  if (practiceSection) practiceSection.classList.remove('hidden');
+  topicActivityPanel.classList.remove('hidden');
   topicActivityPanel.innerHTML = `
     <div class="activity-header">
       <div>
@@ -10924,7 +10926,7 @@ function renderTopicActivities(items) {
         </button>
       `).join('')}
     </div>
-    <div id="activityStage" class="activity-stage" aria-live="polite"></div>
+    <div id="activityStage" class="activity-stage"></div>
   `;
   topicActivityPanel.querySelectorAll('[data-activity-index]').forEach(button => {
     button.addEventListener('click', () => {
@@ -13312,6 +13314,7 @@ function updateTopicPracticeScoreboard() {
 }
 
 function renderTopicSteps(items) {
+  if (!topicSteps) return;
   topicSteps.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
 }
 
@@ -13490,12 +13493,6 @@ function initStudyUiInteractions() {
     if (jump) {
       const target = document.getElementById(jump.dataset.jump);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-    const keyword = event.target.closest('[data-keyword-toggle]');
-    if (keyword) {
-      keyword.classList.toggle('is-open');
-      keyword.setAttribute('aria-expanded', String(keyword.classList.contains('is-open')));
       return;
     }
     const mistake = event.target.closest('[data-mistake-toggle]');

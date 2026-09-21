@@ -140,7 +140,7 @@
     </aside>
 
     <main class="content">
-      <section id="dashboardPage" class="dashboard-page" data-home-mode="gateway" aria-live="polite">
+      <section id="dashboardPage" class="dashboard-page" data-home-mode="gateway">
         <section class="mode-gateway" aria-labelledby="modeGatewayTitle">
           <div class="mode-gateway-intro">
             <p class="eyebrow">HKDSE ICT · 資訊及通訊科技</p>
@@ -262,7 +262,7 @@
         </div>
       </section>
 
-      <section id="studioHomePage" class="studio-home-page hidden" aria-live="polite">
+      <section id="studioHomePage" class="studio-home-page hidden">
         <section class="studio-home-hero">
           <div>
             <p class="eyebrow">STUDIO · WRITE · RUN · CHECK</p>
@@ -314,11 +314,11 @@
             </details>
             <button type="button" class="text-btn" data-home-action="notes">概念未穩？先看 Notes</button>
           </aside>
-          <div id="studioWorkspaceStage" class="studio-workspace-stage" aria-live="polite"></div>
+          <div id="studioWorkspaceStage" class="studio-workspace-stage"></div>
         </section>
       </section>
 
-      <section id="topicPage" class="topic-page hidden" aria-live="polite">
+      <section id="topicPage" class="topic-page hidden">
         <nav id="chapterJump" class="chapter-jump" hidden aria-label="Jump to chapter section"></nav>
         <section class="chapter-section chapter-introduction" id="chapter-intro">
           <p class="eyebrow" id="topicGroupLabel">Topic</p>
@@ -327,6 +327,18 @@
           <p class="topic-title-zh" id="topicPageTitleZh" lang="zh-Hant" hidden></p>
           <p id="topicPageDescription">Content for this topic will be added later.</p>
           <div id="topicStatGrid" class="topic-stat-grid"></div>
+        </section>
+
+        <section class="chapter-section chapter-ca" id="chapter-outcomes">
+          <div class="chapter-section-heading">
+            <p class="eyebrow">What you will learn</p>
+            <h3>C&amp;A-aligned learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
+          </div>
+          <p class="chapter-section-lead">Keep this as a reference list after you read the chapter purpose and focus points above.</p>
+          <details class="chapter-ca-reference">
+            <summary>Detailed outcome list <span lang="zh-Hant">學習成果</span><span class="chapter-ca-toggle-indicator" aria-hidden="true">Open ▾</span></summary>
+            <div id="topicCaPanel" class="topic-ca-panel"></div>
+          </details>
         </section>
 
         <div class="chapter-study-board">
@@ -340,22 +352,6 @@
           <div id="topicFormulaPanel" class="topic-formula-panel hidden"></div>
           <div id="topicExamGrid" class="topic-exam-grid"></div>
           <div id="topicSimulationPanel" class="topic-simulation-panel hidden"></div>
-          <div class="topic-workbench">
-            <div>
-              <p class="eyebrow">Revision path</p>
-              <h3>Concept → examples → DSE transfer</h3>
-            </div>
-            <ol id="topicSteps"></ol>
-          </div>
-        </section>
-
-        <section class="chapter-section chapter-ca" id="chapter-outcomes">
-          <div class="chapter-section-heading">
-            <p class="eyebrow">What you will learn</p>
-            <h3>C&amp;A-aligned learning outcomes <span class="heading-zh" lang="zh-Hant">學習成果</span></h3>
-          </div>
-          <p class="chapter-section-lead">These are student-friendly outcomes aligned to the official guide. Command words such as identify <span lang="zh-Hant">(識別)</span> and distinguish <span lang="zh-Hant">(區分)</span> tell you how to answer.</p>
-          <div id="topicCaPanel" class="topic-ca-panel"></div>
         </section>
 
         <section class="chapter-section chapter-keywords" id="chapter-keywords">
@@ -363,7 +359,7 @@
             <p class="eyebrow">Vocabulary after meaning</p>
             <h3>Keywords <span class="heading-zh" lang="zh-Hant">關鍵詞</span></h3>
           </div>
-          <p class="chapter-section-lead">Use these terms after you understand the idea. Tap a card to reveal the DSE meaning.</p>
+          <p class="chapter-section-lead">Read the term, the Chinese label and the DSE meaning together while you revise the notes.</p>
           <div id="topicKeywordGrid" class="topic-keyword-grid"></div>
         </section>
         </div>
@@ -386,7 +382,7 @@
         </section>
       </section>
 
-      <section id="arcadePage" class="arcade-page hidden" aria-live="polite">
+      <section id="arcadePage" class="arcade-page hidden">
         <section class="arcade-hero">
           <div>
             <p class="eyebrow" id="arcadeGroupLabel">ICT Game Lab</p>
@@ -403,7 +399,7 @@
         <div id="arcadeMissionGrid" class="arcade-mission-grid"></div>
       </section>
 
-      <section id="dsePracticePage" class="topic-page practice-hub-page hidden" aria-live="polite">
+      <section id="dsePracticePage" class="topic-page practice-hub-page hidden">
         <section class="chapter-section">
           <p class="eyebrow">Paper 1 / Paper 2 style</p>
           <h2>DSE Practice</h2>

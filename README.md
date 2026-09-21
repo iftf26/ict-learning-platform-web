@@ -20,10 +20,8 @@ Activity *mode names* such as `b2Fde`, `c3Stream` and `a5Database` are unchanged
 The Phase 1–2 labs stay. This pass adds the brief’s remaining site-wide learning tools:
 
 - **Global concept search** in the sidebar (English + Chinese keywords, Ctrl/Cmd+K)
-- **Learning path strip** on every chapter: Learn → See → Try → Explain → Transfer → Checkpoint
-- **Related topics** links between syllabus-connected chapters
-- **Revision view** and **Print notes** for cleaner revision / paper notes
-- **Session review** (browser-tab only, no accounts): recent chapters, hesitation signals, suggested retry
+- **Learning path strip** on every chapter so students can follow the current Notes flow from concept to checkpoint
+- **Related topics** links between syllabus-connected chapters, shown after the checkpoint
 
 ## What changed in this version
 
