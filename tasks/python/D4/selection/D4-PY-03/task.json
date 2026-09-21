@@ -1,0 +1,18 @@
+{
+  "id": "D4-PY-03",
+  "topic": "D4",
+  "skill": "selection",
+  "level": "Foundation",
+  "practiceType": "complete",
+  "title": "Boundary result",
+  "brief": "Set result to \"Pass\" when mark is 50 or above; otherwise set it to \"Retry\". Print result for the boundary value supplied.",
+  "type": "python",
+  "starter": "starter.py",
+  "tests": [
+    {
+      "label": "Public test 1",
+      "input": "01.in",
+      "output": "01.out"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "EA1-SQL-04",
+  "topic": "EA1",
+  "skill": "group-by",
+  "level": "Developing",
+  "title": "Class average",
+  "brief": "Display each Class and its average Mark. Name the calculated field AverageMark and order classes alphabetically.",
+  "checker": {
+    "type": "result",
+    "columns": [
+      "Class",
+      "AverageMark"
+    ],
+    "rows": [
+      [
+        "5A",
+        62.75
+      ],
+      [
+        "5B",
+        75
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

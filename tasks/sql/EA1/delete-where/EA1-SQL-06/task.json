@@ -1,0 +1,32 @@
+{
+  "id": "EA1-SQL-06",
+  "topic": "EA1",
+  "skill": "delete-where",
+  "level": "Challenge",
+  "title": "Delete only the retry record",
+  "brief": "Delete only Chan Tai Man (S001), then SELECT StudentID in ascending order to prove that every other record remains.",
+  "checker": {
+    "type": "database",
+    "query": "SELECT StudentID FROM Student ORDER BY StudentID",
+    "columns": [
+      "StudentID"
+    ],
+    "rows": [
+      [
+        "S002"
+      ],
+      [
+        "S003"
+      ],
+      [
+        "S004"
+      ],
+      [
+        "S005"
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

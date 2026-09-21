@@ -1,0 +1,23 @@
+{
+  "id": "D4-PY-06",
+  "topic": "D4",
+  "skill": "input-output",
+  "level": "Developing",
+  "practiceType": "construct",
+  "title": "Five-mark average",
+  "brief": "Read five whole-number marks, one line at a time. Store them in a list and print their average as a number.",
+  "type": "python",
+  "starter": "starter.py",
+  "tests": [
+    {
+      "label": "Public test 1",
+      "input": "01.in",
+      "output": "01.out"
+    },
+    {
+      "label": "Public test 2",
+      "input": "02.in",
+      "output": "02.out"
+    }
+  ]
+}

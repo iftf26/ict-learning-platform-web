@@ -1,0 +1,36 @@
+{
+  "id": "EA1-SQL-01",
+  "topic": "EA1",
+  "skill": "select-where",
+  "level": "Foundation",
+  "title": "Filter passing students",
+  "brief": "Display StudentID, Name and Mark for 5A students who pass (50 or above), with the highest mark first.",
+  "checker": {
+    "type": "result",
+    "columns": [
+      "StudentID",
+      "Name",
+      "Mark"
+    ],
+    "rows": [
+      [
+        "S004",
+        "Ho Ying",
+        91
+      ],
+      [
+        "S003",
+        "Wong Mei",
+        68
+      ],
+      [
+        "S002",
+        "Lee Ka Ming",
+        50
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

@@ -1,0 +1,21 @@
+{
+  "python": [
+    "python/D4/input-output/D4-PY-02/task.json",
+    "python/D4/input-output/D4-PY-05/task.json",
+    "python/D4/input-output/D4-PY-06/task.json",
+    "python/D4/iteration/D4-PY-01/task.json",
+    "python/D4/list-processing/D4-PY-04/task.json",
+    "python/D4/selection/D4-PY-03/task.json",
+    "python/D4/validation/D4-PY-07/task.json",
+    "python/EC1/subprogram/EC1-PY-01/task.json",
+    "python/EC6/linear-search/EC6-PY-01/task.json"
+  ],
+  "sql": [
+    "sql/EA1/aggregate/EA1-SQL-05/task.json",
+    "sql/EA1/delete-where/EA1-SQL-06/task.json",
+    "sql/EA1/group-by/EA1-SQL-04/task.json",
+    "sql/EA1/insert/EA1-SQL-03/task.json",
+    "sql/EA1/select-where/EA1-SQL-01/task.json",
+    "sql/EA1/update-where/EA1-SQL-02/task.json"
+  ]
+}

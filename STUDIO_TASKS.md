@@ -1,39 +1,71 @@
-# Studio task-bank format
+# Studio task files
 
-`studio-task-bank.js` is the single content file for tasks that run in the public Studio.
+Studio tasks are static, formative learning content. The public site loads `tasks/task-index.json` only when Studio opens, then fetches the referenced metadata and starter/test files. `studio-task-bank.js` remains a compatibility fallback for older links and local teacher previews; new public Python and SQL tasks belong under `tasks/`.
 
-## Python
+## Repository structure
 
-Each task has an `id`, `topic`, `level`, `title`, `brief`, `starter`, and `tests` list. A test corresponds to a traditional pair of files:
+```text
+tasks/
+  task-index.json
+  python/<topic>/<skill>/<task-id>/
+    task.json
+    starter.py
+    01.in
+    01.out
+  sql/<topic>/<skill>/<task-id>/
+    task.json
+    starter.sql
+    seed.sql
+scripts/generate_task_index.py
+```
 
-```js
+## Python task format
+
+`task.json` requires `id`, `type`, `topic`, `skill`, `level`, `practiceType`, `title`, `brief`, `starter`, and `tests`. `type` is `python`; `practiceType` is one of `complete`, `construct`, `modify`, or `dse`. Each test names an `.in` and `.out` file:
+
+```json
 {
-  id: 'D4-PY-XX',
-  topic: 'D4',
-  level: 'Foundation',
-  title: 'Short task name',
-  brief: 'What the student must do.',
-  starter: 'answer = int(input())\\nprint(answer)',
-  tests: [
-    { label: 'Public test 1', input: ['12', '30'], output: '42' }
-  ]
+  "id": "D4-SEL-08",
+  "type": "python",
+  "topic": "D4",
+  "skill": "selection",
+  "level": "Developing",
+  "practiceType": "construct",
+  "title": "Choose a result",
+  "brief": "...",
+  "starter": "starter.py",
+  "tests": [{"label": "Boundary", "input": "01.in", "output": "01.out"}]
 }
 ```
 
-`input` is the content of the `.in` file split into lines. `output` is the exact expected `.out` text after trailing whitespace is removed.
+`.in` contains stdin lines. `.out` contains expected stdout. Check Solution runs every test independently; passing one test is not completion.
 
-## SQL
+## SQL task format
 
-Every SQL task starts from the same `seedSql` data. The checker is declarative: `result` checks the final displayed result set; `database` runs the supplied `query` against the database after the student's SQL finishes. This permits `SELECT`, `INSERT`, `UPDATE`, and `DELETE` tasks without putting checking code inside each question.
+SQL uses `starter.sql`, `seed.sql`, and a declarative checker. The checker may have `type: "result"` or `type: "database"`, with `columns` and `rows`; database checkers also provide a verification `query`. Each run starts from the task seed.
 
-## Publishing a new set
+## Adding a task manually
 
-1. Add task objects to `studio-task-bank.js`.
-2. Test every public Python input/output pair and every SQL checker in a browser.
-3. Publish the changed file to `main`. GitHub Pages serves the same bank to every student.
+1. Create the folder under `tasks/python/<topic>/<skill>/<task-id>/`.
+2. Add `task.json`, `starter.py`, and matching numbered `.in`/`.out` files.
+3. Run `python3 scripts/generate_task_index.py`. It validates required fields, duplicate IDs, missing files, malformed JSON, unsupported types, and test references, then regenerates `tasks/task-index.json`.
+4. Open the local Studio, choose the task, run it, and use Check Solution.
+5. Commit the task folder and generated index. The GitHub Action rejects a stale or invalid index.
 
-## Teacher-side preview
+For SQL, add `starter.sql`, `seed.sql`, and the checker fields instead of `.in`/`.out` files.
 
-The Studio sidebar includes **Teacher tool · test a new task pack locally**. Paste a JSON object with `python` and/or `sql` arrays to load it into the current browser only. It validates the fields, immediately refreshes Code Studio or SQL Studio, and remembers one preview pack in that browser. **It is not a publishing tool:** students cannot see it until the tested tasks are added to `studio-task-bank.js` and published to `main`.
+## Teacher Task Builder
 
-The current public page intentionally exposes public tests so students can learn from them. A hidden final test, reliable marks, or automatic Google Classroom submission must run on an authenticated server; browser-only JavaScript cannot keep answers secret or safely identify a student. The current evidence-card route is: complete check → download PNG → attach it to the assigned Google Classroom work.
+Open `#view=studio&workspace=code&teacher=1` to reveal the lightweight Teacher Task Builder. Enter metadata, starter code, and one test per line in the form `input|input = expected`. Preview loads the task through the existing local task-pack path; Run all tests uses the real Python runner; Export downloads the repository-ready metadata, starter, and test files. It is a convenience tool, not authentication, and it does not publish to GitHub.
+
+## Publishing workflow
+
+Teacher adds or edits a task folder, runs the validator, commits and pushes it, and GitHub Pages serves the resulting static files. No token, OAuth flow, backend, or GitHub publishing action exists in the browser.
+
+## Current limitations
+
+- The task index is explicit because GitHub Pages cannot enumerate repository folders safely in the browser.
+- Public `.out` files are discoverable. This is formative practice, not secure summative assessment.
+- ZIP export/import is deferred; the builder uses a multi-file download fallback.
+- The compatibility bank remains for old deep links and local previews while file-backed loading is adopted.
+- Invalid indexed tasks are skipped with a developer-console warning; valid tasks continue loading.

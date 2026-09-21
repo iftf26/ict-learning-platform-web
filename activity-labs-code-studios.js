@@ -8,7 +8,9 @@
   const STUDENT_PROFILE_KEY = 'ict-learning-platform-evidence-profile';
   const STUDIO_DRAFTS_KEY = 'ict-learning-platform-drafts-v1';
   const STUDIO_LAST_TASK_KEY = 'ict-learning-platform-last-tasks-v1';
+  const TASK_INDEX_URL = 'tasks/task-index.json';
   let sqlLibraryPromise;
+  let taskCatalogPromise;
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -39,6 +41,86 @@
 
   function normaliseOutput(value) {
     return String(value || '').trim().replace(/\r\n/g, '\n');
+  }
+
+  function taskUrl(path) {
+    return new URL(`tasks/${path.replace(/^tasks\//, '')}`, document.baseURI).href;
+  }
+
+  function taskWarning(message) {
+    if (global.console?.warn) global.console.warn(`[Studio tasks] ${message}`);
+  }
+
+  function validMetadata(task, kind, path) {
+    const required = kind === 'python'
+      ? ['id', 'type', 'topic', 'skill', 'level', 'practiceType', 'title', 'brief', 'starter', 'tests']
+      : ['id', 'type', 'topic', 'skill', 'level', 'title', 'brief', 'starter', 'seed', 'checker'];
+    const missing = required.filter(field => task?.[field] == null || (typeof task[field] === 'string' && !task[field].trim()));
+    const types = kind === 'python' ? ['complete', 'construct', 'modify', 'dse'] : null;
+    if (missing.length || task.type !== kind || (types && !types.includes(task.practiceType))) {
+      taskWarning(`${path}: invalid metadata${missing.length ? `; missing ${missing.join(', ')}` : ''}`);
+      return false;
+    }
+    return true;
+  }
+
+  async function fetchText(path) {
+    const response = await fetch(taskUrl(path));
+    if (!response.ok) throw new Error(`${path} (${response.status})`);
+    return response.text();
+  }
+
+  async function loadTaskCatalog() {
+    if (taskCatalogPromise) return taskCatalogPromise;
+    taskCatalogPromise = (async () => {
+      try {
+        const indexResponse = await fetch(TASK_INDEX_URL);
+        if (!indexResponse.ok) throw new Error(`task-index.json (${indexResponse.status})`);
+        const index = await indexResponse.json();
+        const catalog = { python: [], sql: [] };
+        for (const kind of ['python', 'sql']) {
+          const paths = Array.isArray(index[kind]) ? index[kind] : [];
+          const seenIds = new Set();
+          for (const path of paths) {
+            try {
+              const metadata = JSON.parse(await fetchText(path));
+              if (!validMetadata(metadata, kind, path) || seenIds.has(metadata.id)) {
+                taskWarning(`${path}: duplicate or invalid task ID`);
+                continue;
+              }
+              seenIds.add(metadata.id);
+              const folder = path.slice(0, path.lastIndexOf('/') + 1);
+              if (kind === 'python') {
+                const starter = await fetchText(`${folder}${metadata.starter}`);
+                const tests = [];
+                for (const test of metadata.tests) {
+                  if (!test?.input || !test?.output) throw new Error('test must name input and output files');
+                  const input = await fetchText(`${folder}${test.input}`);
+                  const output = await fetchText(`${folder}${test.output}`);
+                  tests.push({ label: test.label, input: input.replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n').filter(Boolean), output: normaliseOutput(output) });
+                }
+                catalog.python.push({ ...metadata, starter, tests });
+              } else {
+                const starter = await fetchText(`${folder}${metadata.starter}`);
+                const seedSql = await fetchText(`${folder}${metadata.seed}`);
+                catalog.sql.push({ ...metadata, starter, seedSql });
+              }
+            } catch (error) {
+              taskWarning(`${path}: skipped (${error.message})`);
+            }
+          }
+        }
+        if (!catalog.python.length && !catalog.sql.length) throw new Error('No valid tasks found');
+        PYTHON_TASKS.splice(0, PYTHON_TASKS.length, ...catalog.python);
+        SQL_TASKS.splice(0, SQL_TASKS.length, ...catalog.sql);
+        SEED_SQL = SQL_TASKS[0]?.seedSql || SEED_SQL;
+        return catalog;
+      } catch (error) {
+        taskWarning(`file catalog unavailable; using compatibility bank (${error.message})`);
+        return { python: PYTHON_TASKS, sql: SQL_TASKS };
+      }
+    })();
+    return taskCatalogPromise;
   }
 
   function safeProfile() {
@@ -206,7 +288,7 @@
 
     const boot = () => {
       worker?.terminate();
-      worker = new Worker('python-runner-worker.mjs?v=20260916-2', { type: 'module' });
+      worker = new Worker('python-runner-worker.mjs?v=20260922-1', { type: 'module' });
       worker.addEventListener('message', (event) => {
         const data = event.data || {};
         if (data.type === 'status') {
@@ -252,7 +334,9 @@
     };
   }
 
+  // Keep the bank live so Teacher Task Builder imports update the picker.
   const PYTHON_TASKS = global.StudioTaskBank?.python || [];
+  const SQL_TASKS = global.StudioTaskBank?.sql || [];
 
   function renderPythonStudio(activity, options = {}) {
     const task = lastTask('python', PYTHON_TASKS);
@@ -265,7 +349,7 @@
           <span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span>
         </div>
         <div class="task-toolbar">
-          <label>Task<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label>
+          <label>Task<select data-python-task>${PYTHON_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.practiceType || item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label>
           <label>Test input<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
@@ -432,8 +516,7 @@
     return sqlLibraryPromise;
   }
 
-  const SEED_SQL = global.StudioTaskBank?.seedSql || '';
-  const SQL_TASKS = global.StudioTaskBank?.sql || [];
+  let SEED_SQL = global.StudioTaskBank?.seedSql || '';
 
   function matchesSqlCheck(result, checker) {
     const set = result?.[0];
@@ -466,7 +549,7 @@
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span></div>
-        <div class="task-toolbar"><label>Task<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
+        <div class="task-toolbar"><label>Task<select data-sql-task>${SQL_TASKS.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>Each run starts from the same practice database.</small></article>
         <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor">${escapeHtml(task.starter)}</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code>Student(StudentID TEXT PRIMARY KEY, Name TEXT, Class TEXT, Mark INTEGER)</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
@@ -499,7 +582,7 @@
     const resetDatabase = () => {
       db?.close();
       db = new SQL.Database();
-      db.run(SEED_SQL);
+      db.run(selectedTask()?.seedSql || SEED_SQL);
     };
     const showTask = (task, reset = true) => {
       taskSelector.value = task.id;
@@ -600,15 +683,43 @@
 
   function mountStandaloneStudio(stage, studio) {
     if (!stage) return;
+    const mountToken = Symbol(studio);
+    stage._studioMountToken = mountToken;
     stage._studioCleanup?.();
-    if (studio === 'code') {
-      stage.innerHTML = renderPythonStudio(null, { standalone: true });
-      stage._studioCleanup = bindPythonStudio(stage);
-      return;
-    }
-    if (studio === 'sql') {
-      stage.innerHTML = renderSqlStudio(null, { standalone: true });
-      stage._studioCleanup = bindSqlStudio(stage);
+    stage.innerHTML = '<div class="studio-workspace-empty"><h3>Loading tasks…</h3><p>Studio is loading the task catalog.</p></div>';
+    loadTaskCatalog().then(() => {
+      if (stage._studioMountToken !== mountToken) return;
+      if (studio === 'code') {
+        stage.innerHTML = renderPythonStudio(null, { standalone: true });
+        stage._studioCleanup = bindPythonStudio(stage);
+      } else if (studio === 'sql') {
+        stage.innerHTML = renderSqlStudio(null, { standalone: true });
+        stage._studioCleanup = bindSqlStudio(stage);
+      }
+    }).catch((error) => {
+      if (stage._studioMountToken !== mountToken) return;
+      console.warn('[Studio] task catalog load failed', error);
+      if (studio === 'code') {
+        stage.innerHTML = renderPythonStudio(null, { standalone: true });
+        stage._studioCleanup = bindPythonStudio(stage);
+      } else if (studio === 'sql') {
+        stage.innerHTML = renderSqlStudio(null, { standalone: true });
+        stage._studioCleanup = bindSqlStudio(stage);
+      }
+    });
+  }
+
+  async function runPythonTaskTests(task) {
+    const runner = createPythonRunner(() => {});
+    try {
+      const results = [];
+      for (const test of task.tests || []) {
+        const result = await runner.run(task.starter, test.input || []);
+        results.push({ label: test.label, passed: result.ok && normaliseOutput(result.stdout) === normaliseOutput(test.output), result });
+      }
+      return results;
+    } finally {
+      runner.dispose();
     }
   }
 
@@ -617,6 +728,7 @@
     global.ActivityLabs.register('pythonCodeStudio', renderPythonStudio, bindPythonStudio);
     global.ActivityLabs.register('sqlCodeStudio', renderSqlStudio, bindSqlStudio);
     global.ActivityLabs.mountStandaloneStudio = mountStandaloneStudio;
+    global.ActivityLabs.runPythonTaskTests = runPythonTaskTests;
     if (typeof global.updateTopicLabBadges === 'function') global.updateTopicLabBadges();
   }
 

@@ -353,9 +353,63 @@
       showFeedback(result?.removed ? `Removed ${result.removed} local preview task(s).` : 'There were no local preview tasks.', 'info');
     });
     updateTaskBankCount();
+    bindTeacherTaskBuilder();
   }
 
-  function showStudioHome(workspace = 'code') {
+  function bindTeacherTaskBuilder() {
+    const builder = document.querySelector('[data-task-builder]');
+    if (!builder || builder.dataset.bound) return;
+    builder.dataset.bound = 'true';
+    const field = name => builder.querySelector(`[data-builder-${name}]`);
+    const feedback = (message, state = 'info') => {
+      const node = field('feedback');
+      node.textContent = message;
+      node.dataset.state = state;
+    };
+    const readTask = () => {
+      const tests = String(field('tests').value || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean).map((line, index) => {
+        const split = line.split('=');
+        if (split.length < 2) throw new Error(`Test ${index + 1} needs “input = expected output”.`);
+        return { label: `Test ${index + 1}`, input: split[0].trim() ? split[0].split('|').map(item => item.trim()) : [], output: split.slice(1).join('=').trim() };
+      });
+      const task = { id: field('id').value.trim(), topic: field('topic').value.trim(), skill: field('skill').value.trim(), level: field('level').value, practiceType: field('practice').value, title: field('title').value.trim(), brief: field('brief').value.trim(), starter: field('starter').value, tests };
+      ['id', 'topic', 'skill', 'title', 'brief', 'starter'].forEach(key => { if (!task[key]) throw new Error(`${key} is required.`); });
+      if (!tests.length) throw new Error('Add at least one test.');
+      return task;
+    };
+    field('preview').addEventListener('click', () => {
+      try {
+        const task = readTask();
+        const result = global.StudioTaskBankAPI?.importLocalPack({ python: [task], sql: [] });
+        if (!result?.ok) throw new Error(result?.errors?.join(' ') || 'Task could not be loaded.');
+        refreshStudioWorkspace(task.id);
+        feedback(`Preview loaded: ${task.id}. Open Code Studio to run it.`, 'success');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+    field('run').addEventListener('click', async () => {
+      try {
+        const task = readTask();
+        if (!global.ActivityLabs?.runPythonTaskTests) throw new Error('Python execution engine is not ready.');
+        feedback('Running all tests…', 'info');
+        const results = await global.ActivityLabs.runPythonTaskTests(task);
+        feedback(`${results.filter(item => item.passed).length} / ${results.length} tests passed.`, results.every(item => item.passed) ? 'success' : 'error');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+    field('export').addEventListener('click', () => {
+      try {
+        const task = readTask();
+        const folder = `${task.topic}/${task.skill}/${task.id}`;
+        const download = (name, content) => { const link = document.createElement('a'); link.download = name; link.href = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' })); link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000); };
+        const metadata = { ...task, starter: 'starter.py', tests: task.tests.map((test, index) => ({ label: test.label, input: `${String(index + 1).padStart(2, '0')}.in`, output: `${String(index + 1).padStart(2, '0')}.out` })) };
+        download(`${task.id}-task.json`, JSON.stringify(metadata, null, 2));
+        download(`${task.id}-starter.py`, task.starter);
+        task.tests.forEach((test, index) => { const stem = String(index + 1).padStart(2, '0'); download(`${task.id}-${stem}.in`, test.input.join('\n')); download(`${task.id}-${stem}.out`, test.output); });
+        feedback(`Exported repository files for tasks/python/${folder}.`, 'success');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+  }
+
+  function showStudioHome(workspace = 'code', options = {}) {
     stopAuto?.();
     stopTopicSimulation?.();
     arcadePage.classList.add('hidden');
@@ -364,6 +418,8 @@
     programmingSections.forEach(section => section.classList.add('hidden'));
     dashboardPage.classList.add('hidden');
     document.getElementById('studioHomePage')?.classList.remove('hidden');
+    const taskPack = document.querySelector('.studio-task-pack');
+    if (taskPack) taskPack.hidden = !options.teacher;
     setModeNav('studio');
     showStudioWorkspace(workspace);
     if (!writingHash()) setHash({ view: 'studio', workspace });
@@ -426,7 +482,7 @@
       return;
     }
     if (hash.view === 'studio') {
-      showStudioHome(hash.workspace || 'code');
+      showStudioHome(hash.workspace || 'code', { teacher: hash.teacher === '1' });
       return;
     }
     if (hash.view === 'notes') {

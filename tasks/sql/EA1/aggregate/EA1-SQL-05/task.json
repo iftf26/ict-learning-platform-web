@@ -1,0 +1,22 @@
+{
+  "id": "EA1-SQL-05",
+  "topic": "EA1",
+  "skill": "aggregate",
+  "level": "Foundation",
+  "title": "Count a condition",
+  "brief": "Display one field named PassCount that counts students whose Mark is at least 50.",
+  "checker": {
+    "type": "result",
+    "columns": [
+      "PassCount"
+    ],
+    "rows": [
+      [
+        4
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "EA1-SQL-03",
+  "topic": "EA1",
+  "skill": "insert",
+  "level": "Developing",
+  "title": "Insert then check",
+  "brief": "Add S006, Ng Mei, 5B, 82 to Student. Then use SELECT to show the new record.",
+  "checker": {
+    "type": "database",
+    "query": "SELECT Name, Class, Mark FROM Student WHERE StudentID = 'S006'",
+    "columns": [
+      "Name",
+      "Class",
+      "Mark"
+    ],
+    "rows": [
+      [
+        "Ng Mei",
+        "5B",
+        82
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

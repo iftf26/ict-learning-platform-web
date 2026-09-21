@@ -1,0 +1,41 @@
+{
+  "id": "EA1-SQL-02",
+  "topic": "EA1",
+  "skill": "update-where",
+  "level": "Developing",
+  "title": "Update one record safely",
+  "brief": "Correct Wong Mei (S003) to 74. Use a WHERE condition so that no other student is changed. Then SELECT S003 to show the changed record.",
+  "checker": {
+    "type": "database",
+    "query": "SELECT StudentID, Mark FROM Student ORDER BY StudentID",
+    "columns": [
+      "StudentID",
+      "Mark"
+    ],
+    "rows": [
+      [
+        "S001",
+        42
+      ],
+      [
+        "S002",
+        50
+      ],
+      [
+        "S003",
+        74
+      ],
+      [
+        "S004",
+        91
+      ],
+      [
+        "S005",
+        75
+      ]
+    ]
+  },
+  "type": "sql",
+  "starter": "starter.sql",
+  "seed": "seed.sql"
+}

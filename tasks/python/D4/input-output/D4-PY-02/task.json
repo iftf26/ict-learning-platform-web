@@ -1,0 +1,18 @@
+{
+  "id": "D4-PY-02",
+  "topic": "D4",
+  "skill": "input-output",
+  "level": "Foundation",
+  "practiceType": "complete",
+  "title": "Text-to-number total",
+  "brief": "priceText and quantityText are strings. Convert both values so that the program prints the numerical total.",
+  "type": "python",
+  "starter": "starter.py",
+  "tests": [
+    {
+      "label": "Public test 1",
+      "input": "01.in",
+      "output": "01.out"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+name: Validate Studio tasks
+
+on:
+  push:
+    paths:
+      - 'tasks/**'
+      - 'scripts/generate_task_index.py'
+      - '.github/workflows/validate-studio-tasks.yml'
+  pull_request:
+    paths:
+      - 'tasks/**'
+      - 'scripts/generate_task_index.py'
+      - '.github/workflows/validate-studio-tasks.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and regenerate task index
+        run: python3 scripts/generate_task_index.py
+      - name: Keep task index current
+        if: github.event_name == 'push'
+        run: |
+          git diff --exit-code tasks/task-index.json
