@@ -1,7 +1,7 @@
 # ICT Learning Platform — Current Project State
 
 Last reviewed: 2026-09-22
-Last verified Studio commit: pending completion verification of the Phase 1 task-bank pass
+Last verified Studio commit: `d745ff8f23ffe871e65bcc0b01c56186766ed00e`
 
 ## Current architecture
 
