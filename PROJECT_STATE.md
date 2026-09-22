@@ -1,7 +1,7 @@
 # ICT Learning Platform — Current Project State
 
 Last reviewed: 2026-09-22
-Last verified commit: pending final verification of the Studio authoring-polish pass
+Last verified Studio commit: `a1e80ff7129fad4df21ae76093dd5ad67307150f`
 
 ## Current architecture
 
