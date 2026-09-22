@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260922-2" />
+  <link rel="stylesheet" href="styles.css?v=20260922-3" />
 </head>
 <body>
   <div class="app-shell study-studio" id="appShell">
@@ -299,12 +299,17 @@
               </div>
               <label>Brief<textarea data-builder-brief rows="3"></textarea></label>
               <label>Starter code<textarea data-builder-starter rows="8" spellcheck="false"></textarea></label>
-              <label>Tests, one per line: input lines separated by <code>|</code>, then <code>= expected</code><textarea data-builder-tests rows="4" placeholder="12|30 = 42\n0|7 = 7"></textarea></label>
-              <div class="teacher-task-pack-actions"><button type="button" class="ghost-btn" data-builder-preview>Preview task</button><button type="button" class="secondary-btn" data-builder-run>Run all tests</button><button type="button" class="secondary-btn" data-builder-export>Export task</button></div>
+              <section class="teacher-test-list" aria-label="Public test cases">
+                <div class="teacher-test-list-heading"><strong>Public test cases</strong><button type="button" class="text-btn" data-builder-add-test>+ Add test case</button></div>
+                <p>Each field accepts multiple lines. An empty Input field is a valid no-stdin test.</p>
+                <div data-builder-tests></div>
+              </section>
+              <label>Test solution code <small>Teacher-only. It validates your tests and is never previewed or exported.</small><textarea data-builder-solution rows="8" spellcheck="false"></textarea></label>
+              <div class="teacher-task-pack-actions"><button type="button" class="ghost-btn" data-builder-preview>Preview task</button><button type="button" class="secondary-btn" data-builder-run disabled>Run all tests</button><button type="button" class="secondary-btn" data-builder-export>Export task ZIP</button></div>
               <p data-builder-feedback class="teacher-task-pack-feedback" aria-live="polite"></p>
             </details>
             <details class="teacher-task-pack">
-              <summary>Teacher tool · test a new task pack locally</summary>
+              <summary>Advanced · Import JSON task pack</summary>
               <p>貼上 JSON 題目包即可即時加入這個瀏覽器的 Studio 測試；它不會發佈給學生或改動公開題庫。</p>
               <textarea data-task-pack-input aria-label="Teacher task pack JSON" spellcheck="false" placeholder='{"python":[...],"sql":[]}'></textarea>
               <div class="teacher-task-pack-actions">
@@ -644,8 +649,9 @@
   <script src="activity-labs-pass2.js"></script>
   <script src="activity-labs-core-studios.js"></script>
   <script src="studio-task-bank.js?v=20260922-2"></script>
-  <script src="activity-labs-code-studios.js?v=20260922-2"></script>
-  <script src="platform-app.js?v=20260922-2"></script>
+  <script src="studio-task-utils.js?v=20260922-1"></script>
+  <script src="activity-labs-code-studios.js?v=20260922-3"></script>
+  <script src="platform-app.js?v=20260922-3"></script>
   <script src="study-tools.js"></script>
 </body>
 </html>

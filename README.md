@@ -151,3 +151,9 @@ Open `index.html` in a browser, or visit the GitHub Pages site.
 - **DSE Practice Hub:** homepage tile, sidebar, or `index.html#practice`.
 - **A chapter:** sidebar or `index.html#chapter=C1`.
 - **An activity:** open the chapter, then the Activities section, or `index.html#chapter=C1&activity=c1Network`.
+
+## Project documentation
+
+- This README describes the product and student-facing site.
+- `STUDIO_TASKS.md` documents file-backed Studio task authoring and publishing.
+- `AGENTS.md` contains durable operating rules for agents; `PROJECT_STATE.md` records the current factual project state and next priority.

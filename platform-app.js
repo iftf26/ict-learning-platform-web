@@ -16,6 +16,7 @@
   const STUDIO_MODES = new Set(['pythonCodeStudio', 'sqlCodeStudio']);
   const STUDIO_WORKSPACES = new Set(['code', 'sql', 'visual', 'practice']);
   const STUDIO_DEMO_KEY = 'ict-learning-platform-studio-demo';
+  let zipLibraryPromise;
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -24,6 +25,23 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function loadZipLibrary() {
+    if (global.JSZip) return Promise.resolve(global.JSZip);
+    if (zipLibraryPromise) return zipLibraryPromise;
+    zipLibraryPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+      script.async = true;
+      script.onload = () => global.JSZip ? resolve(global.JSZip) : reject(new Error('ZIP library did not initialise.'));
+      script.onerror = () => reject(new Error('Could not load ZIP export support. Check your connection and try again.'));
+      document.head.appendChild(script);
+    }).catch(error => {
+      zipLibraryPromise = null;
+      throw error;
+    });
+    return zipLibraryPromise;
   }
 
   function writingHash() {
@@ -376,22 +394,62 @@
     if (!builder || builder.dataset.bound) return;
     builder.dataset.bound = 'true';
     const field = name => builder.querySelector(`[data-builder-${name}]`);
+    const testList = field('tests');
+    const inputLines = global.StudioTaskUtils?.inputLinesFromText || (value => {
+      const text = String(value ?? '').replace(/\r\n?/g, '\n');
+      if (text === '') return [];
+      return (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n');
+    });
+    const normaliseText = value => String(value ?? '').replace(/\r\n?/g, '\n');
     const feedback = (message, state = 'info') => {
       const node = field('feedback');
       node.textContent = message;
       node.dataset.state = state;
     };
-    const readTask = () => {
-      const tests = String(field('tests').value || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean).map((line, index) => {
-        const split = line.split('=');
-        if (split.length < 2) throw new Error(`Test ${index + 1} needs “input = expected output”.`);
-        return { label: `Test ${index + 1}`, input: split[0].trim() ? split[0].split('|').map(item => item.trim()) : [], output: split.slice(1).join('=').trim() };
+    const refreshTestLabels = () => {
+      [...testList.querySelectorAll('[data-builder-test-card]')].forEach((card, index) => {
+        card.querySelector('[data-builder-test-number]').textContent = `Test ${index + 1}`;
+        card.querySelector('[data-builder-test-label]').placeholder = `Public test ${index + 1}`;
       });
+    };
+    const addTest = (test = {}) => {
+      const card = document.createElement('article');
+      card.className = 'teacher-test-card';
+      card.dataset.builderTestCard = 'true';
+      card.innerHTML = `
+        <div class="teacher-test-card-heading"><strong data-builder-test-number></strong><button type="button" class="text-btn" data-builder-remove-test>Remove test</button></div>
+        <label>Label<input type="text" data-builder-test-label maxlength="80"></label>
+        <label>Input<textarea data-builder-test-input rows="4" spellcheck="false"></textarea></label>
+        <label>Expected output<textarea data-builder-test-output rows="4" spellcheck="false"></textarea></label>
+      `;
+      card.querySelector('[data-builder-test-label]').value = test.label || '';
+      card.querySelector('[data-builder-test-input]').value = Array.isArray(test.input) ? test.input.join('\n') : (test.input || '');
+      card.querySelector('[data-builder-test-output]').value = test.output || '';
+      card.querySelector('[data-builder-remove-test]').addEventListener('click', () => {
+        card.remove();
+        refreshTestLabels();
+      });
+      testList.append(card);
+      refreshTestLabels();
+    };
+    const readTask = () => {
+      const tests = [...testList.querySelectorAll('[data-builder-test-card]')].map((card, index) => ({
+        label: card.querySelector('[data-builder-test-label]').value.trim() || `Public test ${index + 1}`,
+        input: inputLines(card.querySelector('[data-builder-test-input]').value),
+        output: normaliseText(card.querySelector('[data-builder-test-output]').value)
+      }));
       const task = { id: field('id').value.trim(), topic: field('topic').value.trim(), skill: field('skill').value.trim(), level: field('level').value, practiceType: field('practice').value, title: field('title').value.trim(), brief: field('brief').value.trim(), starter: field('starter').value, tests };
       ['id', 'topic', 'skill', 'title', 'brief', 'starter'].forEach(key => { if (!task[key]) throw new Error(`${key} is required.`); });
       if (!tests.length) throw new Error('Add at least one test.');
       return task;
     };
+    const syncSolutionControl = () => {
+      field('run').disabled = !field('solution').value.trim();
+    };
+    field('add-test').addEventListener('click', () => addTest());
+    field('solution').addEventListener('input', syncSolutionControl);
+    addTest();
+    syncSolutionControl();
     field('preview').addEventListener('click', async () => {
       try {
         const task = readTask();
@@ -405,22 +463,38 @@
     field('run').addEventListener('click', async () => {
       try {
         const task = readTask();
+        const solution = field('solution').value;
+        if (!solution.trim()) throw new Error('Enter teacher-only solution code before running all tests.');
         if (!global.ActivityLabs?.runPythonTaskTests) throw new Error('Python execution engine is not ready.');
         feedback('Running all tests…', 'info');
-        const results = await global.ActivityLabs.runPythonTaskTests(task);
-        feedback(`${results.filter(item => item.passed).length} / ${results.length} tests passed.`, results.every(item => item.passed) ? 'success' : 'error');
+        const results = await global.ActivityLabs.runPythonTaskTests(task, solution);
+        const report = results.map(result => `${result.passed ? '✓' : '✗'} ${result.label}${result.passed ? '' : ` (${result.result.error || 'wrong output'})`}`).join(' · ');
+        feedback(`${results.filter(item => item.passed).length} / ${results.length} tests passed. ${report}`, results.every(item => item.passed) ? 'success' : 'error');
       } catch (error) { feedback(error.message, 'error'); }
     });
-    field('export').addEventListener('click', () => {
+    field('export').addEventListener('click', async () => {
       try {
         const task = readTask();
         const folder = `${task.topic}/${task.skill}/${task.id}`;
-        const download = (name, content) => { const link = document.createElement('a'); link.download = name; link.href = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' })); link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000); };
         const metadata = { ...task, type: 'python', starter: 'starter.py', tests: task.tests.map((test, index) => ({ label: test.label, input: `${String(index + 1).padStart(2, '0')}.in`, output: `${String(index + 1).padStart(2, '0')}.out` })) };
-        download(`${task.id}-task.json`, JSON.stringify(metadata, null, 2));
-        download(`${task.id}-starter.py`, task.starter);
-        task.tests.forEach((test, index) => { const stem = String(index + 1).padStart(2, '0'); download(`${task.id}-${stem}.in`, test.input.join('\n')); download(`${task.id}-${stem}.out`, test.output); });
-        feedback(`Downloaded the files for tasks/python/${folder}. Rename the downloaded files to task.json, starter.py and numbered .in/.out before adding them to that folder.`, 'success');
+        feedback('Preparing repository-ready ZIP…', 'info');
+        const JSZip = await loadZipLibrary();
+        const zip = new JSZip();
+        const taskFolder = zip.folder(task.id);
+        taskFolder.file('task.json', JSON.stringify(metadata, null, 2));
+        taskFolder.file('starter.py', task.starter);
+        task.tests.forEach((test, index) => {
+          const stem = String(index + 1).padStart(2, '0');
+          taskFolder.file(`${stem}.in`, test.input.join('\n'));
+          taskFolder.file(`${stem}.out`, test.output);
+        });
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.download = `${task.id}.zip`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        feedback(`Downloaded ${task.id}.zip. Extract it into tasks/python/${folder}/, then run python3 scripts/generate_task_index.py. Teacher solution code is not included.`, 'success');
       } catch (error) { feedback(error.message, 'error'); }
     });
   }

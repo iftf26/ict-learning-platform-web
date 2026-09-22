@@ -1,21 +1,384 @@
 {
   "python": [
-    "python/D4/input-output/D4-PY-02/task.json",
-    "python/D4/input-output/D4-PY-05/task.json",
-    "python/D4/input-output/D4-PY-06/task.json",
-    "python/D4/iteration/D4-PY-01/task.json",
-    "python/D4/list-processing/D4-PY-04/task.json",
-    "python/D4/selection/D4-PY-03/task.json",
-    "python/D4/validation/D4-PY-07/task.json",
-    "python/EC1/subprogram/EC1-PY-01/task.json",
-    "python/EC6/linear-search/EC6-PY-01/task.json"
+    {
+      "path": "python/D4/input-output/D4-PY-02/task.json",
+      "id": "D4-PY-02",
+      "type": "python",
+      "topic": "D4",
+      "skill": "input-output",
+      "level": "Foundation",
+      "title": "Text-to-number total",
+      "brief": "priceText and quantityText are strings. Convert both values so that the program prints the numerical total.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/input-output/D4-PY-05/task.json",
+      "id": "D4-PY-05",
+      "type": "python",
+      "topic": "D4",
+      "skill": "input-output",
+      "level": "Developing",
+      "title": "Two-mark total",
+      "brief": "Read two whole-number marks, one line at a time. Convert them to integers and print their total. Use input() exactly as a DSE-style input/output task would require.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/input-output/D4-PY-06/task.json",
+      "id": "D4-PY-06",
+      "type": "python",
+      "topic": "D4",
+      "skill": "input-output",
+      "level": "Developing",
+      "title": "Five-mark average",
+      "brief": "Read five whole-number marks, one line at a time. Store them in a list and print their average as a number.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/iteration/D4-PY-01/task.json",
+      "id": "D4-PY-01",
+      "type": "python",
+      "topic": "D4",
+      "skill": "iteration",
+      "level": "Foundation",
+      "title": "Pass counter",
+      "brief": "The list below stores five test marks. Write a loop to count how many marks are at least 50, then print the final count.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/list-processing/D4-PY-04/task.json",
+      "id": "D4-PY-04",
+      "type": "python",
+      "topic": "D4",
+      "skill": "list-processing",
+      "level": "Developing",
+      "title": "Highest mark",
+      "brief": "Traverse the supplied list and print its highest mark. Do not change the values in the list.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/selection/D4-PY-03/task.json",
+      "id": "D4-PY-03",
+      "type": "python",
+      "topic": "D4",
+      "skill": "selection",
+      "level": "Foundation",
+      "title": "Boundary result",
+      "brief": "Set result to \"Pass\" when mark is 50 or above; otherwise set it to \"Retry\". Print result for the boundary value supplied.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/validation/D4-PY-07/task.json",
+      "id": "D4-PY-07",
+      "type": "python",
+      "topic": "D4",
+      "skill": "validation",
+      "level": "Developing",
+      "title": "Valid score gate",
+      "brief": "Read one whole-number score. Print \"Accept\" only if it is from 0 to 100 inclusive; otherwise print \"Retry\".",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC1/subprogram/EC1-PY-01/task.json",
+      "id": "EC1-PY-01",
+      "type": "python",
+      "topic": "EC1",
+      "skill": "subprogram",
+      "level": "Challenge",
+      "title": "Reusable pass counter",
+      "brief": "Complete countPassed so that it returns the number of marks that are at least 50. Do not print inside the function; the final print is provided.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC6/linear-search/EC6-PY-01/task.json",
+      "id": "EC6-PY-01",
+      "type": "python",
+      "topic": "EC6",
+      "skill": "linear-search",
+      "level": "Challenge",
+      "title": "First matching index",
+      "brief": "Traverse marks from left to right and print the first index at which target appears. You may assume target appears once.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    }
   ],
   "sql": [
-    "sql/EA1/aggregate/EA1-SQL-05/task.json",
-    "sql/EA1/delete-where/EA1-SQL-06/task.json",
-    "sql/EA1/group-by/EA1-SQL-04/task.json",
-    "sql/EA1/insert/EA1-SQL-03/task.json",
-    "sql/EA1/select-where/EA1-SQL-01/task.json",
-    "sql/EA1/update-where/EA1-SQL-02/task.json"
+    {
+      "path": "sql/EA1/aggregate/EA1-SQL-05/task.json",
+      "id": "EA1-SQL-05",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "aggregate",
+      "level": "Foundation",
+      "title": "Count a condition",
+      "brief": "Display one field named PassCount that counts students whose Mark is at least 50.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "result",
+        "columns": [
+          "PassCount"
+        ],
+        "rows": [
+          [
+            4
+          ]
+        ]
+      }
+    },
+    {
+      "path": "sql/EA1/delete-where/EA1-SQL-06/task.json",
+      "id": "EA1-SQL-06",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "delete-where",
+      "level": "Challenge",
+      "title": "Delete only the retry record",
+      "brief": "Delete only Chan Tai Man (S001), then SELECT StudentID in ascending order to prove that every other record remains.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "database",
+        "query": "SELECT StudentID FROM Student ORDER BY StudentID",
+        "columns": [
+          "StudentID"
+        ],
+        "rows": [
+          [
+            "S002"
+          ],
+          [
+            "S003"
+          ],
+          [
+            "S004"
+          ],
+          [
+            "S005"
+          ]
+        ]
+      }
+    },
+    {
+      "path": "sql/EA1/group-by/EA1-SQL-04/task.json",
+      "id": "EA1-SQL-04",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "group-by",
+      "level": "Developing",
+      "title": "Class average",
+      "brief": "Display each Class and its average Mark. Name the calculated field AverageMark and order classes alphabetically.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "result",
+        "columns": [
+          "Class",
+          "AverageMark"
+        ],
+        "rows": [
+          [
+            "5A",
+            62.75
+          ],
+          [
+            "5B",
+            75
+          ]
+        ]
+      }
+    },
+    {
+      "path": "sql/EA1/insert/EA1-SQL-03/task.json",
+      "id": "EA1-SQL-03",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "insert",
+      "level": "Developing",
+      "title": "Insert then check",
+      "brief": "Add S006, Ng Mei, 5B, 82 to Student. Then use SELECT to show the new record.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "database",
+        "query": "SELECT Name, Class, Mark FROM Student WHERE StudentID = 'S006'",
+        "columns": [
+          "Name",
+          "Class",
+          "Mark"
+        ],
+        "rows": [
+          [
+            "Ng Mei",
+            "5B",
+            82
+          ]
+        ]
+      }
+    },
+    {
+      "path": "sql/EA1/select-where/EA1-SQL-01/task.json",
+      "id": "EA1-SQL-01",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "select-where",
+      "level": "Foundation",
+      "title": "Filter passing students",
+      "brief": "Display StudentID, Name and Mark for 5A students who pass (50 or above), with the highest mark first.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "result",
+        "columns": [
+          "StudentID",
+          "Name",
+          "Mark"
+        ],
+        "rows": [
+          [
+            "S004",
+            "Ho Ying",
+            91
+          ],
+          [
+            "S003",
+            "Wong Mei",
+            68
+          ],
+          [
+            "S002",
+            "Lee Ka Ming",
+            50
+          ]
+        ]
+      }
+    },
+    {
+      "path": "sql/EA1/update-where/EA1-SQL-02/task.json",
+      "id": "EA1-SQL-02",
+      "type": "sql",
+      "topic": "EA1",
+      "skill": "update-where",
+      "level": "Developing",
+      "title": "Update one record safely",
+      "brief": "Correct Wong Mei (S003) to 74. Use a WHERE condition so that no other student is changed. Then SELECT S003 to show the changed record.",
+      "starter": "starter.sql",
+      "seed": "seed.sql",
+      "checker": {
+        "type": "database",
+        "query": "SELECT StudentID, Mark FROM Student ORDER BY StudentID",
+        "columns": [
+          "StudentID",
+          "Mark"
+        ],
+        "rows": [
+          [
+            "S001",
+            42
+          ],
+          [
+            "S002",
+            50
+          ],
+          [
+            "S003",
+            74
+          ],
+          [
+            "S004",
+            91
+          ],
+          [
+            "S005",
+            75
+          ]
+        ]
+      }
+    }
   ]
 }

@@ -9037,6 +9037,17 @@ body:has(.study-studio) {
 .teacher-task-builder input, .teacher-task-builder select, .teacher-task-builder textarea { width: 100%; box-sizing: border-box; padding: 7px; border: 1px solid #b8d0e3; border-radius: 7px; background: #fff; color: #24394e; font: inherit; font-size: 0.78rem; }
 .teacher-task-builder textarea { resize: vertical; font-family: "SFMono-Regular", Consolas, monospace; }
 .teacher-task-builder code { padding: 1px 3px; background: #dfeefa; }
+.teacher-task-builder label small { color: #58728a; font-weight: 700; line-height: 1.35; }
+.teacher-test-list { display: grid; gap: 9px; margin: 11px; padding: 11px; border: 1px solid #c9ddeb; border-radius: 9px; background: #f8fbfe; }
+.teacher-test-list-heading,
+.teacher-test-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.teacher-test-list-heading { color: #285b84; font-size: 0.78rem; }
+.teacher-test-list > p { margin: 0; color: #58728a; font-size: 0.73rem; line-height: 1.4; }
+.teacher-test-list > div[data-builder-tests] { display: grid; gap: 9px; }
+.teacher-test-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px; border: 1px solid #c9ddeb; border-radius: 8px; background: #fff; }
+.teacher-test-card-heading { grid-column: 1 / -1; color: #285b84; font-size: 0.77rem; }
+.teacher-test-card label:first-of-type { grid-column: 1 / -1; }
+.teacher-test-card label { margin: 0; }
 .route-fallback { margin-bottom: 4px; }
 @keyframes task-pack-feedback-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 .studio-task-pack .text-btn { margin-top: 14px; font-size: 0.82rem; }
@@ -9061,4 +9072,5 @@ body:has(.study-studio) {
   .teacher-task-pack-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .teacher-task-pack-actions .text-btn { grid-column: 1 / -1; justify-self: start; }
   .teacher-builder-grid { grid-template-columns: 1fr; }
+  .teacher-test-card { grid-template-columns: 1fr; }
 }

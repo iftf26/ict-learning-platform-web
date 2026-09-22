@@ -26,8 +26,32 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate and regenerate task index
         run: python3 scripts/generate_task_index.py
-      - name: Keep task index current
+      - name: Require current index on pull requests
+        if: github.event_name == 'pull_request'
         run: |
           git diff --exit-code tasks/task-index.json
+      - name: Preserve Python stdin lines
+        run: node scripts/test_studio_input_lines.mjs
       - name: Validate chapter checkpoint questions
         run: node scripts/validate_checkpoint_bank.mjs
+
+  update-index-on-main:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate task index
+        run: python3 scripts/generate_task_index.py
+      - name: Commit generated index when needed
+        run: |
+          if git diff --quiet -- tasks/task-index.json; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tasks/task-index.json
+          git commit -m 'chore: regenerate Studio task index'
+          git push

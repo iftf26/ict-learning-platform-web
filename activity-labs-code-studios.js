@@ -12,11 +12,21 @@
   let sqlLibraryPromise;
   let taskCatalogPromise;
   let publicTasks = { python: [], sql: [] };
-  const studioTasks = kind => [...publicTasks[kind], ...(global.StudioTaskBankAPI?.getPreview(kind) || []).map(task =>
-    kind === 'sql' ? { ...task, seedSql: task.seedSql || publicTasks.sql[0]?.seedSql } : task)];
+  const hydratedTaskCache = new Map();
+  const studioTasks = kind => [...publicTasks[kind], ...(global.StudioTaskBankAPI?.getPreview(kind) || []).map(task => ({
+    ...task,
+    isPreview: true,
+    starterText: task.starter,
+    ...(kind === 'sql' ? { seedSql: task.seedSql || publicTasks.sql[0]?.seedSql } : {})
+  }))];
   const taskStarter = task => task.starterText ?? task.starter;
   const testInput = test => test.inputLines ?? test.input ?? [];
   const testOutput = test => test.expectedOutput ?? test.output ?? '';
+  const inputLinesFromText = global.StudioTaskUtils?.inputLinesFromText || (value => {
+    const text = String(value ?? '').replace(/\r\n?/g, '\n');
+    if (text === '') return [];
+    return (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n');
+  });
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -63,7 +73,7 @@
       : ['id', 'type', 'topic', 'skill', 'level', 'title', 'brief', 'starter', 'seed', 'checker'];
     const missing = required.filter(field => task?.[field] == null || (typeof task[field] === 'string' && !task[field].trim()));
     const types = kind === 'python' ? ['complete', 'construct', 'modify', 'dse'] : null;
-    if (missing.length || task.type !== kind || (types && !types.includes(task.practiceType))) {
+    if (missing.length || task.type !== kind || !task.path || (types && !types.includes(task.practiceType))) {
       taskWarning(`${path}: invalid metadata${missing.length ? `; missing ${missing.join(', ')}` : ''}`);
       return false;
     }
@@ -76,6 +86,49 @@
     return response.text();
   }
 
+  function taskCacheKey(task) {
+    return `${task.type}:${task.id}`;
+  }
+
+  function taskFolder(task) {
+    return task.path.slice(0, task.path.lastIndexOf('/') + 1);
+  }
+
+  function hydrateTask(task) {
+    if (task.isPreview) return Promise.resolve(task);
+    const key = taskCacheKey(task);
+    if (hydratedTaskCache.has(key)) return hydratedTaskCache.get(key);
+    const hydration = (async () => {
+      const folder = taskFolder(task);
+      if (task.type === 'python') {
+        const starterText = await fetchText(`${folder}${task.starter}`);
+        const tests = await Promise.all((task.tests || []).map(async (test, index) => {
+          if (!test?.input || !test?.output) throw new Error(`test ${index + 1} must name input and output files`);
+          const [input, output] = await Promise.all([
+            fetchText(`${folder}${test.input}`),
+            fetchText(`${folder}${test.output}`)
+          ]);
+          return {
+            label: test.label || `Public test ${index + 1}`,
+            inputLines: inputLinesFromText(input),
+            expectedOutput: normaliseOutput(output)
+          };
+        }));
+        return { ...task, starterText, tests };
+      }
+      const [starterText, seedSql] = await Promise.all([
+        fetchText(`${folder}${task.starter}`),
+        fetchText(`${folder}${task.seed}`)
+      ]);
+      return { ...task, starterText, seedSql };
+    })().catch(error => {
+      hydratedTaskCache.delete(key);
+      throw error;
+    });
+    hydratedTaskCache.set(key, hydration);
+    return hydration;
+  }
+
   async function loadTaskCatalog() {
     if (taskCatalogPromise) return taskCatalogPromise;
     taskCatalogPromise = (async () => {
@@ -85,41 +138,16 @@
         const index = await indexResponse.json();
         const catalog = { python: [], sql: [] };
         for (const kind of ['python', 'sql']) {
-          const paths = Array.isArray(index[kind]) ? index[kind] : [];
+          const entries = Array.isArray(index[kind]) ? index[kind] : [];
           const seenIds = new Set();
-          for (const path of paths) {
-            try {
-              const metadata = JSON.parse(await fetchText(path));
-              if (!validMetadata(metadata, kind, path) || seenIds.has(metadata.id)) {
-                taskWarning(`${path}: duplicate or invalid task ID`);
-                continue;
-              }
-              seenIds.add(metadata.id);
-              const folder = path.slice(0, path.lastIndexOf('/') + 1);
-              if (kind === 'python') {
-                const starter = await fetchText(`${folder}${metadata.starter}`);
-                const tests = [];
-                for (const test of metadata.tests) {
-                  if (!test?.input || !test?.output) throw new Error('test must name input and output files');
-                  const input = await fetchText(`${folder}${test.input}`);
-                  const output = await fetchText(`${folder}${test.output}`);
-                  const lines = input.replace(/\r\n/g, '\n').split('\n');
-                  if (input.endsWith('\n')) lines.pop();
-                  tests.push({ label: test.label, input: input ? lines : [], output: normaliseOutput(output) });
-                }
-                catalog.python.push({ ...metadata, metadata, starterText: starter, tests: tests.map(test => ({
-                  label: test.label,
-                  inputLines: test.input,
-                  expectedOutput: test.output
-                })) });
-              } else {
-                const starter = await fetchText(`${folder}${metadata.starter}`);
-                const seedSql = await fetchText(`${folder}${metadata.seed}`);
-                catalog.sql.push({ ...metadata, metadata, starterText: starter, seedSql });
-              }
-            } catch (error) {
-              taskWarning(`${path}: skipped (${error.message})`);
+          for (const metadata of entries) {
+            const path = metadata?.path || '(unknown task)';
+            if (!validMetadata(metadata, kind, path) || seenIds.has(metadata.id)) {
+              taskWarning(`${path}: duplicate or invalid task ID`);
+              continue;
             }
+            seenIds.add(metadata.id);
+            catalog[kind].push(Object.freeze({ ...metadata }));
           }
         }
         if (!catalog.python.length && !catalog.sql.length) throw new Error('No valid tasks found');
@@ -374,9 +402,9 @@
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
         </div>
-        <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview>公開測試資料載入中…</small></article>
+        <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-task-state>Loading this task’s starter code and public tests…</small><button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button><small data-python-test-preview></small></article>
         <div class="execution-grid">
-          <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor">${escapeHtml(taskStarter(task))}</textarea></section>
+          <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
           <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
         </div>
         <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run</button><button type="button" class="secondary-btn" data-python-check disabled>Check solution</button></div>
@@ -406,12 +434,24 @@
     let lastRun = null;
     let checkedRun = null;
     let disposed = false;
+    let taskReady = false;
+    let currentTask = null;
+    let taskLoadToken = 0;
 
-    const selectedTask = () => studioTasks('python').find(item => item.id === taskSelector.value) || studioTasks('python')[0];
+    const selectedTaskMetadata = () => studioTasks('python').find(item => item.id === taskSelector.value) || studioTasks('python')[0];
+    const selectedTask = () => currentTask?.id === taskSelector.value ? currentTask : null;
     const testsFor = (task) => task.tests?.length ? task.tests : [{ label: 'Public test', input: [], output: task.expected || '' }];
-    const selectedTest = () => testsFor(selectedTask())[Number(testSelector.value) || 0] || testsFor(selectedTask())[0];
+    const selectedTest = () => {
+      const task = selectedTask();
+      return task ? (testsFor(task)[Number(testSelector.value) || 0] || testsFor(task)[0]) : null;
+    };
+    const updateRunAvailability = () => {
+      runButton.disabled = !runtimeReady || !taskReady;
+      checkButton.disabled = true;
+    };
     const updateTestPreview = () => {
       const test = selectedTest();
+      if (!test) return;
       const inputText = testInput(test).length ? `input: ${testInput(test).join(' | ')}` : 'input: no input lines';
       lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Test'} · ${inputText}`;
       checkedRun = null;
@@ -419,23 +459,48 @@
       evidenceButton.disabled = true;
       evidenceOpen.disabled = true;
     };
-    const showTask = (task) => {
-      lab.dataset.taskId = task.id;
-      taskSelector.value = task.id;
-      testSelector.innerHTML = testsFor(task).map((test, index) => `<option value="${index}">${escapeHtml(test.label || `Public test ${index + 1}`)}</option>`).join('');
-      lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-test-preview></small>`;
-      lab.querySelector('[data-python-task-label]').textContent = task.id;
-      code.value = readDraft('python', task);
-      rememberTask('python', task.id);
-      output.textContent = 'Starter code loaded. Trace it before running.';
-      checkButton.disabled = true;
+    const showTask = async (metadata) => {
+      const request = ++taskLoadToken;
+      taskReady = false;
+      currentTask = null;
+      taskSelector.value = metadata.id;
+      lab.dataset.taskId = metadata.id;
+      testSelector.innerHTML = '';
+      testSelector.disabled = true;
+      code.disabled = true;
+      code.value = 'Loading selected task…';
+      lab.querySelector('[data-python-task-state]').textContent = 'Loading this task’s starter code and public tests…';
+      lab.querySelector('[data-python-task-retry]').hidden = true;
+      lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(metadata.title)}</h4><p>${escapeHtml(metadata.brief)}</p><small data-python-task-state>Loading this task’s starter code and public tests…</small><button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button><small data-python-test-preview></small>`;
+      lab.querySelector('[data-python-task-retry]').addEventListener('click', () => showTask(metadata));
+      lab.querySelector('[data-python-task-label]').textContent = metadata.id;
+      output.textContent = 'Loading selected task files…';
+      checkedRun = null;
+      lastRun = null;
       evidenceButton.disabled = true;
       evidenceOpen.disabled = true;
-      lastRun = null;
-      checkedRun = null;
-      updateTestPreview();
+      updateRunAvailability();
+      try {
+        const task = await hydrateTask(metadata);
+        if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
+        currentTask = task;
+        taskReady = true;
+        testSelector.innerHTML = testsFor(task).map((test, index) => `<option value="${index}">${escapeHtml(test.label || `Public test ${index + 1}`)}</option>`).join('');
+        testSelector.disabled = false;
+        code.disabled = false;
+        code.value = readDraft('python', task);
+        rememberTask('python', task.id);
+        lab.querySelector('[data-python-task-state]').textContent = 'Task files ready.';
+        output.textContent = runtimeReady ? 'Starter code loaded. Trace it before running.' : 'Starter code loaded. Python is still preparing.';
+        updateTestPreview();
+        updateRunAvailability();
+      } catch (error) {
+        if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
+        lab.querySelector('[data-python-task-state]').textContent = `Could not load this task: ${error.message}`;
+        lab.querySelector('[data-python-task-retry]').hidden = false;
+        output.textContent = 'This task’s files could not load. Retry the task files or choose another task.';
+      }
     };
-
     const runner = createPythonRunner((state) => {
       if (disposed) return;
       if (state.status === 'loading') {
@@ -443,15 +508,15 @@
         status.classList.remove('is-ready', 'is-error');
         retryButton.hidden = true;
         runtimeReady = false;
-        runButton.disabled = true;
+        updateRunAvailability();
       } else if (state.status === 'ready') {
         runtimeReady = true;
         retryButton.hidden = true;
         status.classList.remove('is-error');
         status.textContent = 'Python ready · runs locally';
         status.classList.add('is-ready');
-        runButton.disabled = false;
-        output.textContent = 'Python is ready. Run the starter code or write your own solution.';
+        runButton.disabled = !taskReady;
+        if (taskReady) output.textContent = 'Python is ready. Run the starter code or write your own solution.';
       } else if (state.status === 'error') {
         runtimeReady = false;
         runButton.disabled = true;
@@ -462,29 +527,35 @@
       }
     });
 
-    showTask(selectedTask());
+    showTask(selectedTaskMetadata());
     retryButton.addEventListener('click', () => runner.retry());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
     code.addEventListener('input', () => {
+      if (!selectedTask()) return;
       saveDraft('python', selectedTask().id, code.value);
       checkedRun = null;
       evidenceButton.disabled = true;
       evidenceOpen.disabled = true;
     });
-    taskSelector.addEventListener('change', () => showTask(selectedTask()));
+    taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     testSelector.addEventListener('change', updateTestPreview);
     lab.querySelector('[data-python-random]').addEventListener('click', () => {
-      const options = studioTasks('python').filter((item) => item.id !== selectedTask().id);
+      const options = studioTasks('python').filter((item) => item.id !== selectedTaskMetadata().id);
       showTask(randomItem(options));
     });
     lab.querySelector('[data-python-reset]').addEventListener('click', () => {
       const task = selectedTask();
+      if (!task) return;
       if (code.value !== taskStarter(task) && !global.confirm('Reset this task and discard the current draft?')) return;
       clearDraft('python', task.id);
-      showTask(task);
+      code.value = taskStarter(task);
+      output.textContent = 'Starter code restored. Trace it before running.';
+      lastRun = null;
+      checkedRun = null;
+      updateTestPreview();
     });
     runButton.addEventListener('click', async () => {
-      if (!runtimeReady) return;
+      if (!runtimeReady || !taskReady) return;
       runButton.disabled = true;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
@@ -493,6 +564,7 @@
       const test = selectedTest();
       const submittedCode = code.value;
       const task = selectedTask();
+      if (!test || !task) return;
       const result = await runner.run(submittedCode, testInput(test));
       if (disposed || taskSelector.value !== task.id || code.value !== submittedCode) {
         if (!disposed) { runButton.disabled = !runtimeReady; checkButton.disabled = !runtimeReady; }
@@ -510,6 +582,7 @@
     checkButton.addEventListener('click', async () => {
       if (!runtimeReady) return;
       const task = selectedTask();
+      if (!task) return;
       const checkedCode = code.value;
       runButton.disabled = true;
       checkButton.disabled = true;
@@ -608,8 +681,8 @@
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry SQL</button></div></div>
         <div class="task-toolbar"><label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
-        <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>Each run starts from the same practice database.</small></article>
-        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor">${escapeHtml(taskStarter(task))}</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
+        <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button></article>
+        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code data-sql-schema>Loading practice schema…</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
         <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run</button><button type="button" class="secondary-btn" data-sql-check disabled>Check solution</button></div>
         <div data-sql-feedback></div>
@@ -638,36 +711,73 @@
     let lastRun = null;
     let checkedRun = null;
     let disposed = false;
+    let taskReady = false;
+    let currentTask = null;
+    let taskLoadToken = 0;
 
-    const selectedTask = () => studioTasks('sql').find(item => item.id === taskSelector.value) || studioTasks('sql')[0];
+    const selectedTaskMetadata = () => studioTasks('sql').find(item => item.id === taskSelector.value) || studioTasks('sql')[0];
+    const selectedTask = () => currentTask?.id === taskSelector.value ? currentTask : null;
+    const updateRunAvailability = () => {
+      runButton.disabled = !SQL || !taskReady;
+      checkButton.disabled = true;
+    };
     const resetDatabase = () => {
+      const task = selectedTask();
+      if (!task || !SQL) return;
       db?.close();
       db = new SQL.Database();
-      db.run(selectedTask().seedSql);
+      db.run(task.seedSql);
       const tables = db.exec("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")[0]?.values || [];
       lab.querySelector('[data-sql-schema]').textContent = tables.map(row => row[1]).join('  ');
       lab.querySelector('[data-sql-seed-output]').innerHTML = tables.map(row =>
         `<strong>${escapeHtml(row[0])}</strong>${sqlTable(db.exec(`SELECT * FROM "${String(row[0]).replace(/"/g, '""')}"`))}`
       ).join('');
     };
-    const showTask = (task, reset = true) => {
-      taskSelector.value = task.id;
-      lab.dataset.taskId = task.id;
-      lab.querySelector('[data-sql-brief]').innerHTML = `<p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small>Each run starts from the same practice database.</small>`;
-      lab.querySelector('[data-sql-task-label]').textContent = task.id;
-      code.value = readDraft('sql', task);
-      rememberTask('sql', task.id);
-      output.innerHTML = '<p class="console-muted">Starter SQL loaded. Read the schema and predict the result before running.</p>';
+    const showTask = async (metadata) => {
+      const request = ++taskLoadToken;
+      taskReady = false;
+      currentTask = null;
+      taskSelector.value = metadata.id;
+      lab.dataset.taskId = metadata.id;
+      code.disabled = true;
+      code.value = 'Loading selected task…';
+      lab.querySelector('[data-sql-brief]').innerHTML = `<p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(metadata.title)}</h4><p>${escapeHtml(metadata.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button>`;
+      lab.querySelector('[data-sql-task-retry]').addEventListener('click', () => showTask(metadata));
+      lab.querySelector('[data-sql-task-label]').textContent = metadata.id;
+      output.innerHTML = '<p class="console-muted">Loading selected task files…</p>';
       lastRun = null;
       checkedRun = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
       evidenceOpen.disabled = true;
-      if (reset && SQL) resetDatabase();
+      updateRunAvailability();
+      try {
+        const task = await hydrateTask(metadata);
+        if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
+        currentTask = task;
+        taskReady = true;
+        code.disabled = false;
+        code.value = readDraft('sql', task);
+        rememberTask('sql', task.id);
+        lab.querySelector('[data-sql-task-state]').textContent = 'Task files ready.';
+        if (SQL) {
+          resetDatabase();
+          output.innerHTML = '<p class="console-muted">Starter SQL loaded. Read the schema and predict the result before running.</p>';
+        } else {
+          output.innerHTML = '<p class="console-muted">Starter SQL loaded. SQLite is still preparing.</p>';
+        }
+        updateRunAvailability();
+      } catch (error) {
+        if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
+        lab.querySelector('[data-sql-task-state]').textContent = `Could not load this task: ${error.message}`;
+        lab.querySelector('[data-sql-task-retry]').hidden = false;
+        output.innerHTML = '<p class="console-error">This task’s files could not load. Retry the task files or choose another task.</p>';
+      }
     };
 
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
     code.addEventListener('input', () => {
+      if (!selectedTask()) return;
       saveDraft('sql', selectedTask().id, code.value);
       checkedRun = null;
       evidenceButton.disabled = true;
@@ -684,8 +794,8 @@
         resetDatabase();
         status.textContent = 'SQLite ready · runs locally';
         status.classList.add('is-ready');
-        runButton.disabled = false;
-        output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
+        runButton.disabled = !taskReady;
+        if (taskReady) output.innerHTML = '<p class="console-muted">SQLite is ready. Run the starter SQL or write your own solution.</p>';
       }).catch(error => {
         if (disposed) return;
         retryButton.hidden = false;
@@ -695,13 +805,14 @@
       });
     };
     retryButton.addEventListener('click', prepareSql);
-    showTask(selectedTask(), false);
+    showTask(selectedTaskMetadata());
     prepareSql();
-    taskSelector.addEventListener('change', () => showTask(selectedTask()));
-    lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(studioTasks('sql').filter(task => task.id !== selectedTask().id))));
+    taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
+    lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(studioTasks('sql').filter(task => task.id !== selectedTaskMetadata().id))));
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
-      if (!SQL) return;
+      if (!SQL || !taskReady) return;
       const task = selectedTask();
+      if (!task) return;
       if (code.value !== taskStarter(task) && !global.confirm('Reset this task and discard the current draft?')) return;
       clearDraft('sql', task.id);
       code.value = taskStarter(task);
@@ -715,7 +826,7 @@
       lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'Task reset.', 'The starter SQL and practice database have been restored.', 'Run your SQL again and inspect the result.');
     });
     runButton.addEventListener('click', () => {
-      if (!db) return;
+      if (!db || !taskReady) return;
       runButton.disabled = true;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
@@ -796,12 +907,12 @@
     return ready;
   }
 
-  async function runPythonTaskTests(task) {
+  async function runPythonTaskTests(task, solutionCode = taskStarter(task)) {
     const runner = createPythonRunner(() => {});
     try {
       const results = [];
       for (const test of task.tests || []) {
-        const result = await runner.run(taskStarter(task), testInput(test));
+        const result = await runner.run(solutionCode, testInput(test));
         results.push({ label: test.label, passed: result.ok && normaliseOutput(result.stdout) === normaliseOutput(testOutput(test)), result });
       }
       return results;
