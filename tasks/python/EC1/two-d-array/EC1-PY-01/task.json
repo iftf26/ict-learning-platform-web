@@ -1,0 +1,1 @@
+{"id":"EC1-PY-01","type":"python","topic":"EC1","skill":"two-d-array","level":"Foundation","practiceType":"complete","title":"Grid element","brief":"Complete the expression to print the value in row 1, column 2 of the supplied grid (indexes start at 0).","starter":"starter.py","tests":[{"label":"Public test 1","input":"01.in","output":"01.out"}]}

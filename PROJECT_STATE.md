@@ -1,7 +1,7 @@
 # ICT Learning Platform — Current Project State
 
 Last reviewed: 2026-09-22
-Last verified Studio commit: `a1e80ff7129fad4df21ae76093dd5ad67307150f`
+Last verified Studio commit: pending completion verification of the Phase 1 task-bank pass
 
 ## Current architecture
 
@@ -13,7 +13,7 @@ Last verified Studio commit: `a1e80ff7129fad4df21ae76093dd5ad67307150f`
 
 ## Current Studio task-bank status
 
-- Public Python tasks: 9
+- Public Python tasks: 34
 - Public SQL tasks: 6
 
 ## Confirmed design decisions
@@ -30,9 +30,9 @@ Last verified Studio commit: `a1e80ff7129fad4df21ae76093dd5ad67307150f`
 
 ## Next content phase
 
-Phase 1 will add reviewed, source-aligned data-only tasks—without another infrastructure rewrite—for Core D input/output, selection, iteration, validation, 1-D list processing, and string processing, plus Elective C 2-D arrays and subprograms. Use Complete, Construct, Modify, and DSE Challenge variants where pedagogically appropriate.
+Phase 1 is complete for teacher review: it adds/revises source-aligned data-only Python tasks for Core D input/output, selection, iteration, validation, 1-D list processing, and string processing, plus Elective C 2-D arrays and subprograms. Each family has a Complete → Construct → Modify → DSE Challenge progression. The prior EC1 subprogram task is now correctly classified as `EC4-PY-01`; the deeper list-processing task is now `D5-PY-01`.
 
-Later Phase 2 may cover advanced control; scope, parameters, and stubs; stack, queue, circular queue, linked list; linear/binary search; sorting; merging; text files; and suitable real-life/event-driven applications.
+Next priority is a reviewed Phase 2 programming bank: advanced control; scope, parameters, and stubs; stack, queue, circular queue, linked list; linear/binary search; sorting; merging; text files; and suitable real-life/event-driven applications. Do not reopen Studio infrastructure without a real defect.
 
 ## Known issues / deferred work
 

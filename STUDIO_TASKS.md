@@ -60,7 +60,11 @@ Open `#view=studio&workspace=code&teacher=1` to reveal the lightweight Teacher T
 
 **Preview task** adds only the public task fields to browser memory and opens the real Code Studio with the temporary task. It disappears after refresh, cannot use a public ID, and does not modify repository files. The older JSON task-pack interface remains under **Advanced · Import JSON task pack** for specialist local preview use.
 
-**Export task ZIP** downloads `TASK-ID.zip`, containing `TASK-ID/task.json`, `starter.py`, `01.in`, `01.out`, and so on. Extract that folder into the displayed `tasks/python/<topic>/<skill>/<task-id>/` destination, then run the generator. ZIP import is deliberately deferred; it is not needed for normal authoring and a teacher solution would not be recoverable from an export.
+**Export task ZIP** downloads `TASK-ID.zip`, containing `TASK-ID/task.json`, `starter.py`, `01.in`, `01.out`, and so on. Extract that folder into `tasks/python/<topic>/<skill>/`; the included `TASK-ID/` folder then becomes the final `tasks/python/<topic>/<skill>/<task-id>/` path. Run the generator afterwards. ZIP import is deliberately deferred; it is not needed for normal authoring and a teacher solution would not be recoverable from an export.
+
+## Python practice progression
+
+Use the task metadata to describe the student action honestly: **Complete** is focused scaffolding, **Construct** leaves the central algorithm to the student, **Modify** changes a supplied requirement, and **DSE Challenge** reduces scaffolding and requires transfer. New task fixtures should use meaningful boundary cases and multiple tests where input permits; public `.out` files remain formative evidence rather than hidden answers.
 
 ## Publishing workflow
 

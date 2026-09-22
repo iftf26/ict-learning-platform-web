@@ -1,0 +1,18 @@
+{
+  "id": "EC4-PY-01",
+  "topic": "EC4",
+  "skill": "subprogram",
+  "level": "Challenge",
+  "practiceType": "construct",
+  "title": "Reusable pass counter",
+  "brief": "Complete countPassed so that it returns the number of marks that are at least 50. Do not print inside the function; the final print is provided.",
+  "type": "python",
+  "starter": "starter.py",
+  "tests": [
+    {
+      "label": "Public test 1",
+      "input": "01.in",
+      "output": "01.out"
+    }
+  ]
+}

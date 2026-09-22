@@ -68,6 +68,54 @@
       ]
     },
     {
+      "path": "python/D4/input-output/D4-PY-08/task.json",
+      "id": "D4-PY-08",
+      "type": "python",
+      "topic": "D4",
+      "skill": "input-output",
+      "level": "Developing",
+      "title": "Club fee after discount",
+      "brief": "A club fee is $80. Read the number of members and a discount per member. Modify the program to print the total fee after subtracting the discount for every member.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Two members",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "No discount",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/input-output/D4-PY-09/task.json",
+      "id": "D4-PY-09",
+      "type": "python",
+      "topic": "D4",
+      "skill": "input-output",
+      "level": "Challenge",
+      "title": "Printing quota",
+      "brief": "Read the number of pages printed by three students. Each page costs $0.20. Print the total cost as a number. Write the calculation and output statements.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Typical print job",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "One student prints zero",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
       "path": "python/D4/iteration/D4-PY-01/task.json",
       "id": "D4-PY-01",
       "type": "python",
@@ -87,14 +135,14 @@
       ]
     },
     {
-      "path": "python/D4/list-processing/D4-PY-04/task.json",
-      "id": "D4-PY-04",
+      "path": "python/D4/iteration/D4-PY-12/task.json",
+      "id": "D4-PY-12",
       "type": "python",
       "topic": "D4",
-      "skill": "list-processing",
+      "skill": "iteration",
       "level": "Developing",
-      "title": "Highest mark",
-      "brief": "Traverse the supplied list and print its highest mark. Do not change the values in the list.",
+      "title": "Seat labels",
+      "brief": "Read n, then print seat labels A1 to An, one per line.",
       "starter": "starter.py",
       "practiceType": "construct",
       "tests": [
@@ -102,6 +150,59 @@
           "label": "Public test 1",
           "input": "01.in",
           "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/iteration/D4-PY-13/task.json",
+      "id": "D4-PY-13",
+      "type": "python",
+      "topic": "D4",
+      "skill": "iteration",
+      "level": "Developing",
+      "title": "Morning attendance",
+      "brief": "The program should count Present responses. Modify its loop so it processes every response, not only the first one.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/iteration/D4-PY-14/task.json",
+      "id": "D4-PY-14",
+      "type": "python",
+      "topic": "D4",
+      "skill": "iteration",
+      "level": "Challenge",
+      "title": "Locker audit",
+      "brief": "Read n locker codes. Print how many start with X. Write the loop and decision.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
         }
       ]
     },
@@ -121,6 +222,88 @@
           "label": "Public test 1",
           "input": "01.in",
           "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/selection/D4-PY-10/task.json",
+      "id": "D4-PY-10",
+      "type": "python",
+      "topic": "D4",
+      "skill": "selection",
+      "level": "Developing",
+      "title": "Library borrowing rule",
+      "brief": "Read a student's age and number of overdue books. Print Eligible only when the student is at least 12 and has no overdue books; otherwise print Ask librarian.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Eligible student",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Overdue book",
+          "input": "02.in",
+          "output": "02.out"
+        },
+        {
+          "label": "Age boundary",
+          "input": "03.in",
+          "output": "03.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/selection/D4-PY-11/task.json",
+      "id": "D4-PY-11",
+      "type": "python",
+      "topic": "D4",
+      "skill": "selection",
+      "level": "Developing",
+      "title": "Ticket price correction",
+      "brief": "A museum ticket is $30 for children under 12 and $50 otherwise. Modify the supplied condition so every age is charged correctly.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Child boundary",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Adult boundary",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/selection/D4-PY-18/task.json",
+      "id": "D4-PY-18",
+      "type": "python",
+      "topic": "D4",
+      "skill": "selection",
+      "level": "Challenge",
+      "title": "Sports-day entry",
+      "brief": "Read an age and whether a consent form is Y. Print Enter only if the student is from 12 to 18 inclusive and has consent; otherwise print Check office.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Eligible boundary",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Missing consent",
+          "input": "02.in",
+          "output": "02.out"
+        },
+        {
+          "label": "Too young",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -149,10 +332,365 @@
       ]
     },
     {
-      "path": "python/EC1/subprogram/EC1-PY-01/task.json",
+      "path": "python/D4/validation/D4-PY-15/task.json",
+      "id": "D4-PY-15",
+      "type": "python",
+      "topic": "D4",
+      "skill": "validation",
+      "level": "Foundation",
+      "title": "Valid room number",
+      "brief": "Complete the condition so a room number from 101 to 499 inclusive is Valid; otherwise print Invalid.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/validation/D4-PY-16/task.json",
+      "id": "D4-PY-16",
+      "type": "python",
+      "topic": "D4",
+      "skill": "validation",
+      "level": "Developing",
+      "title": "Booking size",
+      "brief": "Read a group size. Print Accept only for 1 to 6 people inclusive; otherwise print Re-enter.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D4/validation/D4-PY-17/task.json",
+      "id": "D4-PY-17",
+      "type": "python",
+      "topic": "D4",
+      "skill": "validation",
+      "level": "Challenge",
+      "title": "Member code check",
+      "brief": "Read a code. Print Valid only when it has exactly 5 characters and starts with M; otherwise print Invalid.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/list-processing/D5-PY-01/task.json",
+      "id": "D5-PY-01",
+      "type": "python",
+      "topic": "D5",
+      "skill": "list-processing",
+      "level": "Developing",
+      "title": "Highest mark",
+      "brief": "Traverse the supplied list and print its highest mark. Do not change the values in the list.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/list-processing/D5-PY-02/task.json",
+      "id": "D5-PY-02",
+      "type": "python",
+      "topic": "D5",
+      "skill": "list-processing",
+      "level": "Foundation",
+      "title": "Highest inventory",
+      "brief": "Complete the loop to find the highest item count in the supplied list.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/list-processing/D5-PY-03/task.json",
+      "id": "D5-PY-03",
+      "type": "python",
+      "topic": "D5",
+      "skill": "list-processing",
+      "level": "Developing",
+      "title": "Remove cancelled booking",
+      "brief": "Read n booking IDs, then a cancelled ID. Modify the program so it prints every ID except the cancelled one, in original order.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/list-processing/D5-PY-04/task.json",
+      "id": "D5-PY-04",
+      "type": "python",
+      "topic": "D5",
+      "skill": "list-processing",
+      "level": "Challenge",
+      "title": "First low-stock item",
+      "brief": "Read n stock quantities. Print the first index whose quantity is below 5, or -1 if none is below 5.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/string-processing/D5-PY-05/task.json",
+      "id": "D5-PY-05",
+      "type": "python",
+      "topic": "D5",
+      "skill": "string-processing",
+      "level": "Foundation",
+      "title": "Initials",
+      "brief": "Complete the expression so the program prints the first character of a supplied name.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/string-processing/D5-PY-06/task.json",
+      "id": "D5-PY-06",
+      "type": "python",
+      "topic": "D5",
+      "skill": "string-processing",
+      "level": "Developing",
+      "title": "Timetable code",
+      "brief": "Read a six-character timetable code. Print its first three characters, then a hyphen, then its last three characters.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/string-processing/D5-PY-07/task.json",
+      "id": "D5-PY-07",
+      "type": "python",
+      "topic": "D5",
+      "skill": "string-processing",
+      "level": "Developing",
+      "title": "Mask an ID",
+      "brief": "A student ID has six characters. Modify the output so only its final two characters are shown after four asterisks.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/D5/string-processing/D5-PY-08/task.json",
+      "id": "D5-PY-08",
+      "type": "python",
+      "topic": "D5",
+      "skill": "string-processing",
+      "level": "Challenge",
+      "title": "Count service codes",
+      "brief": "Read n short service codes. Print how many end in X.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC1/two-d-array/EC1-PY-01/task.json",
       "id": "EC1-PY-01",
       "type": "python",
       "topic": "EC1",
+      "skill": "two-d-array",
+      "level": "Foundation",
+      "title": "Grid element",
+      "brief": "Complete the expression to print the value in row 1, column 2 of the supplied grid (indexes start at 0).",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC1/two-d-array/EC1-PY-02/task.json",
+      "id": "EC1-PY-02",
+      "type": "python",
+      "topic": "EC1",
+      "skill": "two-d-array",
+      "level": "Developing",
+      "title": "Update a seat",
+      "brief": "Read a row, column and new seat value. Store the new value in the 2 by 3 seating grid and print it.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC1/two-d-array/EC1-PY-03/task.json",
+      "id": "EC1-PY-03",
+      "type": "python",
+      "topic": "EC1",
+      "skill": "two-d-array",
+      "level": "Developing",
+      "title": "Swap grid lookup",
+      "brief": "A grid stores [row][column]. Modify the supplied lookup so it prints the requested element, not the swapped coordinates.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC1/two-d-array/EC1-PY-04/task.json",
+      "id": "EC1-PY-04",
+      "type": "python",
+      "topic": "EC1",
+      "skill": "two-d-array",
+      "level": "Challenge",
+      "title": "Row total",
+      "brief": "Read a row number for the supplied score grid. Print the total of that row. Write the processing code.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC4/subprogram/EC4-PY-01/task.json",
+      "id": "EC4-PY-01",
+      "type": "python",
+      "topic": "EC4",
       "skill": "subprogram",
       "level": "Challenge",
       "title": "Reusable pass counter",
@@ -164,6 +702,83 @@
           "label": "Public test 1",
           "input": "01.in",
           "output": "01.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC4/subprogram/EC4-PY-02/task.json",
+      "id": "EC4-PY-02",
+      "type": "python",
+      "topic": "EC4",
+      "skill": "subprogram",
+      "level": "Foundation",
+      "title": "Double a value",
+      "brief": "Complete doubleValue so it returns twice its argument. The call and print are provided.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC4/subprogram/EC4-PY-03/task.json",
+      "id": "EC4-PY-03",
+      "type": "python",
+      "topic": "EC4",
+      "skill": "subprogram",
+      "level": "Developing",
+      "title": "Correct service fee",
+      "brief": "Modify calculateFee so it returns the price plus the $5 service fee, rather than replacing the price.",
+      "starter": "starter.py",
+      "practiceType": "modify",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC4/subprogram/EC4-PY-04/task.json",
+      "id": "EC4-PY-04",
+      "type": "python",
+      "topic": "EC4",
+      "skill": "subprogram",
+      "level": "Challenge",
+      "title": "Reusable eligibility rule",
+      "brief": "Write isEligible(age, paid). It returns True only when age is at least 12 and paid is Y. The driver prints Eligible or Not eligible.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
