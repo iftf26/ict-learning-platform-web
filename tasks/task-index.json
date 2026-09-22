@@ -687,6 +687,54 @@
       ]
     },
     {
+      "path": "python/EC3/advanced-control/EC3-PY-01/task.json",
+      "id": "EC3-PY-01",
+      "type": "python",
+      "topic": "EC3",
+      "skill": "advanced-control",
+      "level": "Developing",
+      "title": "Class quiz count",
+      "brief": "Read 2 rows of 3 quiz scores. Use nested loops to print how many scores are at least 50.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC3/advanced-control/EC3-PY-02/task.json",
+      "id": "EC3-PY-02",
+      "type": "python",
+      "topic": "EC3",
+      "skill": "advanced-control",
+      "level": "Challenge",
+      "title": "Best adjusted class",
+      "brief": "Read 2 rows of 3 scores. For each row, ignore its lowest score and print the index of the row with the greater adjusted total.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
       "path": "python/EC4/subprogram/EC4-PY-01/task.json",
       "id": "EC4-PY-01",
       "type": "python",
@@ -779,6 +827,150 @@
           "label": "Public test 3",
           "input": "03.in",
           "output": "03.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC5/circular-queue/EC5-PY-04/task.json",
+      "id": "EC5-PY-04",
+      "type": "python",
+      "topic": "EC5",
+      "skill": "circular-queue",
+      "level": "Challenge",
+      "title": "Circular queue wrap",
+      "brief": "A size-4 circular queue has front 2, rear 3 and items C, D. Read one new item, enqueue it by wrapping rear where needed, then print rear and the new stored item.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC5/queue/EC5-PY-03/task.json",
+      "id": "EC5-PY-03",
+      "type": "python",
+      "topic": "EC5",
+      "skill": "queue",
+      "level": "Developing",
+      "title": "Queue enqueue",
+      "brief": "A linear array queue starts empty. Read two names, enqueue both using rear, then print the item at front. Do not use append.",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC5/stack/EC5-PY-01/task.json",
+      "id": "EC5-PY-01",
+      "type": "python",
+      "topic": "EC5",
+      "skill": "stack",
+      "level": "Foundation",
+      "title": "Push onto an array stack",
+      "brief": "Complete the PUSH operation. stack has room for five items and top stores the index of its current top item.",
+      "starter": "starter.py",
+      "practiceType": "complete",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC5/stack/EC5-PY-02/task.json",
+      "id": "EC5-PY-02",
+      "type": "python",
+      "topic": "EC5",
+      "skill": "stack",
+      "level": "Challenge",
+      "title": "Stack command sequence",
+      "brief": "Read three commands, each PUSH x or POP. Use stack and top explicitly. Print the final top item, or EMPTY when no item remains.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC6/binary-search/EC6-PY-02/task.json",
+      "id": "EC6-PY-02",
+      "type": "python",
+      "topic": "EC6",
+      "skill": "binary-search",
+      "level": "Developing",
+      "title": "Binary search index",
+      "brief": "Read a target for the sorted list. Implement binary search and print its index, or -1 if absent. Do not use index().",
+      "starter": "starter.py",
+      "practiceType": "construct",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
+        }
+      ]
+    },
+    {
+      "path": "python/EC6/binary-search/EC6-PY-03/task.json",
+      "id": "EC6-PY-03",
+      "type": "python",
+      "topic": "EC6",
+      "skill": "binary-search",
+      "level": "Challenge",
+      "title": "First suitable code",
+      "brief": "The sorted codes may contain duplicates. Modify binary search so it prints the first index containing target, or -1 when absent.",
+      "starter": "starter.py",
+      "practiceType": "dse",
+      "tests": [
+        {
+          "label": "Public test 1",
+          "input": "01.in",
+          "output": "01.out"
+        },
+        {
+          "label": "Public test 2",
+          "input": "02.in",
+          "output": "02.out"
         }
       ]
     },
