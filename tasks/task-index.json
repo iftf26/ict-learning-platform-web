@@ -694,7 +694,7 @@
       "skill": "advanced-control",
       "level": "Developing",
       "title": "Class quiz count",
-      "brief": "Read 2 rows of 3 quiz scores. Use nested loops to print how many scores are at least 50.",
+      "brief": "Read 2 rows of 3 quiz scores. Print how many scores are at least 50.",
       "starter": "starter.py",
       "practiceType": "construct",
       "tests": [
@@ -707,6 +707,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -718,7 +723,7 @@
       "skill": "advanced-control",
       "level": "Challenge",
       "title": "Best adjusted class",
-      "brief": "Read 2 rows of 3 scores. For each row, ignore its lowest score and print the index of the row with the greater adjusted total.",
+      "brief": "Read 2 rows of 3 scores. For each row, ignore its lowest score and print the row index with the greater adjusted total. If totals tie, print 0.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -731,6 +736,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -910,7 +920,7 @@
       "skill": "stack",
       "level": "Challenge",
       "title": "Stack command sequence",
-      "brief": "Read three commands, each PUSH x or POP. Use stack and top explicitly. Print the final top item, or EMPTY when no item remains.",
+      "brief": "Read three commands, each PUSH x or POP. Use stack and top explicitly. Ignore POP when the stack is empty. Print the final top item, or EMPTY when no item remains.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -923,6 +933,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -934,7 +949,7 @@
       "skill": "binary-search",
       "level": "Developing",
       "title": "Binary search index",
-      "brief": "Read a target for the sorted list. Implement binary search and print its index, or -1 if absent. Do not use index().",
+      "brief": "Read a target for the sorted list. Implement binary search with low, high and middle, then print its index or -1. Do not use index().",
       "starter": "starter.py",
       "practiceType": "construct",
       "tests": [
@@ -947,6 +962,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -971,6 +991,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
