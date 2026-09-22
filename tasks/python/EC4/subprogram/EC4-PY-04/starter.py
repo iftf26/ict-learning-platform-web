@@ -1,9 +1,14 @@
-def isEligible(age, paid):
+def calculateTotal(mark1, mark2):
+    pass
+
+def isEligible(age, total):
     pass
 
 age = int(input())
-paid = input()
-if isEligible(age, paid):
+mark1 = int(input())
+mark2 = int(input())
+total = calculateTotal(mark1, mark2)
+if isEligible(age, total):
     print("Eligible")
 else:
     print("Not eligible")

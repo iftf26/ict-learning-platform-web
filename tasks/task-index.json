@@ -189,8 +189,8 @@
       "topic": "D4",
       "skill": "iteration",
       "level": "Challenge",
-      "title": "Locker audit",
-      "brief": "Read n locker codes. Print how many start with X. Write the loop and decision.",
+      "title": "Reading alert audit",
+      "brief": "Read whole-number sensor readings until -1. Ignore readings outside 0\u2013100. Print the number of valid readings below 20 or above 80, then the highest valid reading. Print NONE if there is no valid reading.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -203,6 +203,16 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
+        },
+        {
+          "label": "Public test 4",
+          "input": "04.in",
+          "output": "04.out"
         }
       ]
     },
@@ -285,25 +295,30 @@
       "topic": "D4",
       "skill": "selection",
       "level": "Challenge",
-      "title": "Sports-day entry",
-      "brief": "Read an age and whether a consent form is Y. Print Enter only if the student is from 12 to 18 inclusive and has consent; otherwise print Check office.",
+      "title": "Booking decision",
+      "brief": "Read membership type S or G, booking day SAT or SUN, group size, and payment Y or N. Print ACCEPT when payment is Y, size is 1\u20136, and either the member is S or the day is SUN. Print WAIT for a paid valid G member booking on SAT. Otherwise print REJECT.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
         {
-          "label": "Eligible boundary",
+          "label": "Public test 1",
           "input": "01.in",
           "output": "01.out"
         },
         {
-          "label": "Missing consent",
+          "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
         },
         {
-          "label": "Too young",
+          "label": "Public test 3",
           "input": "03.in",
           "output": "03.out"
+        },
+        {
+          "label": "Public test 4",
+          "input": "04.in",
+          "output": "04.out"
         }
       ]
     },
@@ -578,8 +593,8 @@
       "topic": "D5",
       "skill": "string-processing",
       "level": "Challenge",
-      "title": "Count service codes",
-      "brief": "Read n short service codes. Print how many end in X.",
+      "title": "Service-code summary",
+      "brief": "Read n service codes. A valid code has exactly four characters, starts with S, and ends with a digit. Print how many valid codes have middle two characters XX, then print a new code made from the first valid code as S- followed by its final digit. Print NONE on the second line when no valid code exists.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -592,6 +607,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -669,8 +689,8 @@
       "topic": "EC1",
       "skill": "two-d-array",
       "level": "Challenge",
-      "title": "Row total",
-      "brief": "Read a row number for the supplied score grid. Print the total of that row. Write the processing code.",
+      "title": "Best column result",
+      "brief": "Read a column index for the supplied 3 by 3 score grid. Process that column and print the row index with the highest score. If scores tie, print the smaller row index.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -683,6 +703,11 @@
           "label": "Public test 2",
           "input": "02.in",
           "output": "02.out"
+        },
+        {
+          "label": "Public test 3",
+          "input": "03.in",
+          "output": "03.out"
         }
       ]
     },
@@ -818,8 +843,8 @@
       "topic": "EC4",
       "skill": "subprogram",
       "level": "Challenge",
-      "title": "Reusable eligibility rule",
-      "brief": "Write isEligible(age, paid). It returns True only when age is at least 12 and paid is Y. The driver prints Eligible or Not eligible.",
+      "title": "Reusable award decision",
+      "brief": "Complete calculateTotal(mark1, mark2) and isEligible(age, total). The supplied driver must not be changed. A student is Eligible only when age is at least 12 and total is at least 120; otherwise print Not eligible.",
       "starter": "starter.py",
       "practiceType": "dse",
       "tests": [
@@ -837,6 +862,11 @@
           "label": "Public test 3",
           "input": "03.in",
           "output": "03.out"
+        },
+        {
+          "label": "Public test 4",
+          "input": "04.in",
+          "output": "04.out"
         }
       ]
     },

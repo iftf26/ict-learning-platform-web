@@ -1,2 +1,4 @@
-age = int(input())
-consent = input()
+member = input()
+day = input()
+people = int(input())
+paid = input()

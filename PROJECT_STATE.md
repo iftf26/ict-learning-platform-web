@@ -30,7 +30,7 @@ Last verified Studio commit: pending completion verification of the Phase 1 task
 
 ## Next content phase
 
-Phase 1 is complete for teacher review: it adds/revises source-aligned data-only Python tasks for Core D input/output, selection, iteration, validation, 1-D list processing, and string processing, plus Elective C 2-D arrays and subprograms. Each family has a Complete → Construct → Modify → DSE Challenge progression. The prior EC1 subprogram task is now correctly classified as `EC4-PY-01`; the deeper list-processing task is now `D5-PY-01`.
+Phase 1 has completed content QA and difficulty calibration for teacher review. It retains its accessible Complete → Construct → Modify → DSE Challenge pathway, while five upper-end tasks now require multi-case selection, sentinel/state processing, string validation/transformation, comparative 2-D processing, or cooperating subprograms. The prior EC1 subprogram task is correctly classified as `EC4-PY-01`; the deeper list-processing task is `D5-PY-01`.
 
 Phase 2 now has a deliberately small, reviewed pilot: EC3 advanced control (2 tasks), EC5 array-based stack (2), EC5 queue/circular queue (2), and EC6 binary search (2). The next priority is human review of this pilot before a broader Phase 2 bank covering scope, parameters and stubs; linked lists; sorting; merging; text files; and suitable real-life/event-driven applications. Do not reopen Studio infrastructure without a real defect.
 

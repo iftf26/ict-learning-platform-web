@@ -1,1 +1,1 @@
-n = int(input())
+reading = int(input())
