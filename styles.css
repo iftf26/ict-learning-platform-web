@@ -8389,20 +8389,6 @@ body:has(.study-studio) {
   color: var(--studio-ink);
   font: inherit;
 }
-.spoken-prompt {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: start;
-  border: 1px solid #e5bd68;
-  border-radius: 16px;
-  padding: 16px;
-  background: linear-gradient(135deg, #fff9e7, #fffdf6);
-}
-.spoken-prompt > span { color: #ad7114; font-size: 1.7rem; line-height: 1; }
-.spoken-prompt strong { color: #6a4607; }
-.spoken-prompt p { margin: 4px 0 7px; color: #49350f; }
-.spoken-prompt small { color: #765f33; }
 .studio-code-list {
   margin: 12px 0 0;
   padding: 0;

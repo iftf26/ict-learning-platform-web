@@ -1,6 +1,5 @@
 /**
- * Core learning studios: objective interactions plus spoken reflection prompts.
- * The site checks only deterministic choices; students explain their reasoning aloud.
+ * Core learning studios: objective interactions with deterministic feedback.
  */
 (function (global) {
   function escapeHtml(value) {
@@ -36,18 +35,6 @@
     `;
   }
 
-  function pausePrompt(prompt) {
-    return `
-      <aside class="spoken-prompt" aria-label="Talk prompt">
-        <span aria-hidden="true">◌</span>
-        <div>
-          <strong>停一停，講畀老師／同學聽</strong>
-          <p>${escapeHtml(prompt)}</p>
-          <small>這裡不用輸入答案；請用你剛才看到的證據說明。</small>
-        </div>
-      </aside>
-    `;
-  }
 
   function stageTabs(lab, stage) {
     lab.querySelectorAll('[data-core-stage]').forEach((panel) => {
@@ -167,7 +154,6 @@
           <div data-protocol-trap-feedback></div>
         </section>
         <section data-core-stage="4" hidden>
-          ${pausePrompt('Choose one journey you just saw. Describe the action first, then the protocol role, then what evidence ruled out the tempting wrong answer.')}
           <button type="button" class="secondary-btn" data-protocol-new>Try a different protocol set</button>
         </section>
       </div>
@@ -305,7 +291,6 @@
           <div class="lab-actions"><button type="button" class="secondary-btn" data-formula-new>Load another formula case</button></div>
         </section>
         <section data-core-stage="4" hidden>
-          ${pausePrompt(item.prompt)}
           <button type="button" class="secondary-btn" data-formula-new>Try another formula case</button>
         </section>
       </div>
@@ -433,7 +418,6 @@
           <div data-program-repair-feedback></div>
         </section>
         <section data-core-stage="4" hidden>
-          ${pausePrompt(`Explain which test exposed the fault, the first line that caused it, and why the repaired line changes the outcome. Use this case: ${item.title}.`)}
           <button type="button" class="secondary-btn" data-program-new>Load another code case</button>
         </section>
       </div>
@@ -563,7 +547,6 @@
           <div data-sql-detective-feedback></div>
         </section>
         <section data-core-stage="3" hidden>
-          ${pausePrompt('Read the data question aloud. Then state which clause chooses columns, which clause chooses rows, and which clause only changes the display order.')}
           <button type="button" class="secondary-btn" data-sql-new>Load another SQL question</button>
         </section>
       </div>

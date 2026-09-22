@@ -1,5 +1,4 @@
 def isEligible(age, paid):
-    # Write the function.
     pass
 
 age = int(input())

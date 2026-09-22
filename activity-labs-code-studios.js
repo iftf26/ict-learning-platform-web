@@ -28,6 +28,36 @@
     return (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n');
   });
 
+  function indentCode(value, start, end, outdent = false) {
+    if (!outdent && start === end) {
+      return { value: value.slice(0, start) + '    ' + value.slice(end), start: start + 4, end: end + 4 };
+    }
+    const lineStart = value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
+    const effectiveEnd = end > start && value[end - 1] === '\n' ? end - 1 : end;
+    const nextBreak = value.indexOf('\n', effectiveEnd);
+    const blockEnd = nextBreak === -1 ? value.length : nextBreak;
+    const lines = value.slice(lineStart, blockEnd).split('\n');
+    const removed = outdent ? lines.map(line => (line.match(/^ {1,4}/) || [''])[0].length) : lines.map(() => -4);
+    const block = lines.map((line, index) => outdent ? line.slice(removed[index]) : `    ${line}`).join('\n');
+    const startOffset = lineStart === start ? 0 : (outdent ? -removed[0] : 4);
+    return { value: value.slice(0, lineStart) + block + value.slice(blockEnd), start: Math.max(lineStart, start + startOffset), end: Math.max(lineStart, end + removed.reduce((sum, amount) => sum - amount, 0)) };
+  }
+
+  function bindPythonIndentation(textarea) {
+    let escapeTab = false;
+    textarea.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { escapeTab = true; return; }
+      if (event.key !== 'Tab') return;
+      if (escapeTab) { escapeTab = false; return; }
+      event.preventDefault();
+      const result = indentCode(textarea.value, textarea.selectionStart, textarea.selectionEnd, event.shiftKey);
+      textarea.value = result.value;
+      textarea.setSelectionRange(result.start, result.end);
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  }
+  global.StudioEditorUtils = { indentCode };
+
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
     return String(value ?? '')
@@ -410,7 +440,6 @@
         <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run</button><button type="button" class="secondary-btn" data-python-check disabled>Check solution</button></div>
         <div data-python-feedback></div>
         ${evidencePanel(profile)}
-        <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>指出哪一個測試值揭示了你的程式正確或錯誤，然後說明你改了哪一行。</p><small>網站只檢查可重現的輸出；解釋請用剛才的執行證據說出來。</small></div></aside>
       </div>
     `;
     return options.standalone ? content : shell(activity, content);
@@ -424,6 +453,7 @@
     const checkButton = lab.querySelector('[data-python-check]');
     const output = lab.querySelector('[data-python-output]');
     const code = lab.querySelector('[data-python-code]');
+    bindPythonIndentation(code);
     const taskSelector = lab.querySelector('[data-python-task]');
     const testSelector = lab.querySelector('[data-python-test]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
@@ -687,7 +717,6 @@
         <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run</button><button type="button" class="secondary-btn" data-sql-check disabled>Check solution</button></div>
         <div data-sql-feedback></div>
         ${evidencePanel(profile)}
-        <aside class="spoken-prompt"><span aria-hidden="true">◌</span><div><strong>停一停，講畀老師／同學聽</strong><p>講出 WHERE 如何限制了記錄，或說明你為何先 SELECT 再相信 UPDATE／INSERT 已經正確。</p><small>系統可檢查資料狀態，但不會代替你判斷題目的語意和風險。</small></div></aside>
       </div>
     `;
     return options.standalone ? content : shell(activity, content);
