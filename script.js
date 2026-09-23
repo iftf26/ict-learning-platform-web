@@ -1400,25 +1400,25 @@ let topicContent = {
 const arcadeData = {
   twosComplement: {
     group: 'Core A / A3 Data representation',
-    title: 'Two’s Complement Bit Game',
+    title: 'Two’s Complement Lab',
     description: 'Convert positive and negative denary values, interpret binary as unsigned/signed, trace invert + add 1 and detect overflow using range and sign-bit rules.',
     total: 7
   },
   spreadsheetLab: {
     group: 'Core A / A5 Spreadsheet and Data Analysis',
-    title: 'A5 Formula Mission Room',
+    title: 'A5 Formula Lab',
     description: 'Practise HKDSE spreadsheet formula writing, formula copying, absolute/mixed references, sorting/filtering, what-if analysis and pivot-style summaries.',
     total: 7
   },
   sqlPlayground: {
     group: 'Elective A Databases',
-    title: 'SQL Query Result Predictor',
+    title: 'SQL Result Lab',
     description: 'Predict SQL result tables, explain excluded records, assemble controlled SQL tokens and connect database design ideas using keys and relationships.',
     total: 8
   },
   securitySimulator: {
     group: 'Core C / Network security',
-    title: 'Network Security Simulator',
+    title: 'Network Security Lab',
     description: 'Classify threats, match controls, configure firewall rules and explain public Wi-Fi risks using HKDSE network security terms.',
     total: 6
   }
@@ -7077,9 +7077,9 @@ function missArcadeMission(feedbackId, message) {
 
 function updateArcadeScoreboard() {
   const total = arcadeData[currentArcadeKey]?.total || 0;
-  arcadeXp.textContent = `XP ${arcadeScore.xp}`;
-  arcadeStreak.textContent = `Streak ${arcadeScore.streak}`;
-  arcadeDone.textContent = `${arcadeScore.completed}/${total} done`;
+  if (arcadeXp) arcadeXp.hidden = true;
+  if (arcadeStreak) arcadeStreak.hidden = true;
+  arcadeDone.textContent = `${arcadeScore.completed}/${total} tasks`;
 }
 
 function toBits8(value) {

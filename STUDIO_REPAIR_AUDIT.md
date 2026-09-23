@@ -1,5 +1,7 @@
 # Studio repair audit (2026-09-22)
 
+> Completed repair record. Current architecture and task counts are in `PROJECT_STATE.md`. Task format is in `STUDIO_TASKS.md`. Do not treat this file as the current specification.
+
 ## CSS evidence and classification
 
 The published `main` stylesheet at `0d3eb395` was corrupted during upload: it begins with a truncation warning and loses 4,277 lines after `button.mistake-card`. The local refactor commit `af7e9b0` has the complete 9,061-line stylesheet. Relative to the behavioural reference `0d1701e`, the local file added only ten Teacher Builder rules; it did not remove legacy topic blocks. The repair publishes that complete local content plus a small deduplication of the two teacher-tool surfaces. It does not replace the stylesheet wholesale from the old commit.
