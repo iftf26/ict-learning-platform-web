@@ -5428,39 +5428,55 @@ function makeActivityZones(title) {
   return ['Use first', 'Process / connect', 'Output / explain'];
 }
 
+function strandNavCode(groupName) {
+  const name = String(groupName || '');
+  if (name.startsWith('Elective A')) return 'EA';
+  if (name.startsWith('Elective C')) return 'EC';
+  const core = name.match(/^Core ([A-E])/);
+  return core ? core[1] : '';
+}
+
+function chapterNavCode(topic) {
+  const match = String(topic || '').match(/^(EA|EC|[A-E])\d+(?:\.\d+)?/);
+  return match ? match[0] : '';
+}
+
 function renderChapterSidebar() {
   const nav = document.querySelector('.module-nav');
   if (!nav) return;
   nav.innerHTML = `
     <div class="nav-title">HKDSE ICT</div>
-    <button class="nav-item nav-root active" data-page="dashboard">
-      <span class="nav-emoji">⌂</span>
-      Home
-    </button>
-    ${chapterStructure.map((group, groupIndex) => {
+    <div class="nav-places">
+      <button class="nav-item nav-root active" data-page="dashboard">
+        <span class="nav-emoji">⌂</span>
+        <span class="nav-item-en">Home</span>
+      </button>
+    </div>
+    <p class="nav-section-label">Chapters</p>
+    ${chapterStructure.map(group => {
       const strand = typeof getStrandStudyMeta === 'function'
         ? getStrandStudyMeta(group.group)
         : { icon: group.icon, titleEn: group.group, titleZh: '', kicker: group.group };
+      const strandEn = strand.navEn || strand.titleEn || group.group;
+      const strandLabel = [strandNavCode(group.group), strandEn, strand.titleZh].filter(Boolean).join(' · ');
       return `
-      <section class="curriculum-group ${groupIndex === 0 ? 'is-open' : ''}">
-        <button class="curriculum-heading" type="button" aria-expanded="${groupIndex === 0 ? 'true' : 'false'}" aria-controls="${group.id}">
-          <span class="nav-emoji nav-strand">${escapeHtml(strand.icon || group.icon)}</span>
+      <section class="curriculum-group">
+        <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="${group.id}" title="${escapeHtml(strandLabel)}">
+          <span class="nav-emoji nav-strand">${escapeHtml(strandNavCode(group.group) || strand.icon || group.icon)}</span>
           <span>
-            <strong>${escapeHtml(strand.navEn || strand.titleEn || group.group)}</strong>
-            ${strand.titleZh ? `<small class="nav-item-zh" lang="zh-Hant">${escapeHtml(strand.titleZh)}</small>` : ''}
+            <strong>${escapeHtml(strandEn)}</strong>
           </span>
         </button>
         <div class="topic-list" id="${group.id}">
           ${group.chapters.map(([topic]) => {
             const titleEn = typeof displayChapterTitle === 'function' ? displayChapterTitle(topic, topic) : stripChapterCodeSafe(topic);
             const titleZh = typeof displayChapterTitleZh === 'function' ? displayChapterTitleZh(topic) : '';
+            const code = chapterNavCode(topic);
+            const label = [code, titleEn, titleZh].filter(Boolean).join(' · ');
             return `
-            <button class="nav-item nav-chapter" data-topic="${escapeHtml(topic)}" data-group="${escapeHtml(group.group)}">
-              <span class="nav-item-copy">
-                <span class="nav-item-en">${escapeHtml(titleEn)}</span>
-                ${titleZh ? `<span class="nav-item-zh" lang="zh-Hant">${escapeHtml(titleZh)}</span>` : ''}
-              </span>
-              <span class="nav-topic-badge is-guide">Guide only</span>
+            <button class="nav-item nav-chapter" data-topic="${escapeHtml(topic)}" data-group="${escapeHtml(group.group)}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
+              <span class="nav-code">${escapeHtml(code)}</span>
+              <span class="nav-item-en">${escapeHtml(titleEn)}</span>
             </button>`;
           }).join('')}
         </div>
@@ -5495,9 +5511,19 @@ function updateTopicLabBadges() {
       badge.className = 'nav-topic-badge';
       button.appendChild(badge);
     }
-    badge.textContent = hasLab ? 'Lab' : 'Guide only';
+    badge.hidden = !hasLab;
+    badge.textContent = '';
     badge.classList.toggle('is-lab', hasLab);
     badge.classList.toggle('is-guide', !hasLab);
+    badge.title = hasLab ? 'Lab' : '';
+    badge.setAttribute('aria-label', hasLab ? 'Lab' : '');
+    if (hasLab && button.dataset.topic) {
+      const titleEn = typeof displayChapterTitle === 'function' ? displayChapterTitle(button.dataset.topic, button.dataset.topic) : stripChapterCodeSafe(button.dataset.topic);
+      const titleZh = typeof displayChapterTitleZh === 'function' ? displayChapterTitleZh(button.dataset.topic) : '';
+      const label = [chapterNavCode(button.dataset.topic), titleEn, titleZh, 'Lab'].filter(Boolean).join(' · ');
+      button.title = label;
+      button.setAttribute('aria-label', label);
+    }
   });
 }
 
@@ -13318,11 +13344,22 @@ function renderTopicSteps(items) {
   topicSteps.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
 }
 
+function closeOtherNavGroups(group) {
+  const nav = group?.parentElement;
+  if (!nav) return;
+  nav.querySelectorAll('.curriculum-group.is-open').forEach(other => {
+    if (other === group) return;
+    other.classList.remove('is-open');
+    other.querySelector('.curriculum-heading')?.setAttribute('aria-expanded', 'false');
+  });
+}
+
 function openNavGroupFor(item) {
   const group = item?.closest('.curriculum-group');
   if (!group) return;
   const heading = group.querySelector('.curriculum-heading');
   if (!heading) return;
+  closeOtherNavGroups(group);
   group.classList.add('is-open');
   heading.setAttribute('aria-expanded', 'true');
 }
@@ -13331,6 +13368,7 @@ function toggleNavGroup(button) {
   const group = button.closest('.curriculum-group');
   if (!group) return;
   const expanded = button.getAttribute('aria-expanded') === 'true';
+  if (!expanded) closeOtherNavGroups(group);
   button.setAttribute('aria-expanded', String(!expanded));
   group.classList.toggle('is-open', !expanded);
 }
