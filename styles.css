@@ -219,13 +219,43 @@ h1, h2, h3, p { margin-top: 0; }
   line-height: 1.3;
   opacity: 0.8;
 }
+.nav-places { display: grid; gap: 2px; }
+.nav-section-label {
+  margin: 14px 8px 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .nav-emoji.nav-strand {
-  min-width: 42px;
-  height: auto;
-  min-height: 24px;
-  padding: 4px 5px;
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   font-size: 0.62rem;
   letter-spacing: 0;
+}
+.nav-code {
+  flex: 0 0 auto;
+  min-width: 2.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.nav-chapter .nav-item-en,
+.nav-demo .nav-item-en {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.curriculum-heading strong {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nav-root {
   color: var(--text);
@@ -6882,7 +6912,10 @@ body:has(.study-studio) {
 }
 .study-studio .brand-block h1 { color: #fff; }
 .study-studio .brand-block p { color: #9db0c8; }
-.study-studio .nav-title { color: #8ea0b8; }
+.study-studio .nav-title,
+.study-studio .nav-section-label { color: #8ea0b8; }
+.study-studio .nav-code { color: #9db0c8; }
+.study-studio .nav-topic-badge.is-lab { background: #3dbe7a; }
 .study-studio .curriculum-heading { color: #f4f7fb; }
 .study-studio .curriculum-heading:hover { background: rgba(255,255,255,0.06); }
 .study-studio .curriculum-heading small { color: #9db0c8; }
@@ -8167,15 +8200,20 @@ body:has(.study-studio) {
   border-color: #d5e0ef;
   color: #5b6b7c;
 }
+.nav-topic-badge.is-guide { display: none; }
 .nav-topic-badge.is-lab {
-  background: #e8f7ef;
-  border-color: #b7e0c7;
-  color: #0f7a45;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #1f9d57;
 }
 .nav-item.nav-chapter {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 .prediction-binding,
 .prediction-binding.is-live,

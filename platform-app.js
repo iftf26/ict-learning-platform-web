@@ -602,24 +602,25 @@
         </button>
       `);
     }
-    nav.insertAdjacentHTML('beforeend', DEMO_GROUPS.map((group, index) => `
+    nav.insertAdjacentHTML('beforeend', `
+      <p class="nav-section-label">Trace demos</p>
+      ${DEMO_GROUPS.map((group, index) => `
       <section class="curriculum-group">
-        <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="${group.id}">
+        <button class="curriculum-heading" type="button" aria-expanded="false" aria-controls="${group.id}" title="${escapeHtml(group.labelEn)} · ${escapeHtml(group.labelZh)}">
           <span class="nav-emoji nav-strand">${index === 0 ? 'D' : 'C'}</span>
           <span>
             <strong>${escapeHtml(group.labelEn)}</strong>
-            <small class="nav-item-zh" lang="zh-Hant">${escapeHtml(group.labelZh)}</small>
           </span>
         </button>
         <div class="topic-list" id="${group.id}">
           ${group.keys.map(key => {
             const demo = demos[key];
             if (!demo) return '';
-            return `<button class="nav-item nav-demo" type="button" data-demo="${key}"><span class="nav-item-copy"><span class="nav-item-en">${escapeHtml(demo.title)}</span></span></button>`;
+            return `<button class="nav-item nav-demo" type="button" data-demo="${key}" title="${escapeHtml(demo.title)}"><span class="nav-item-en">${escapeHtml(demo.title)}</span></button>`;
           }).join('')}
         </div>
       </section>
-    `).join(''));
+    `).join('')}`);
   }
 
   function bindPlatformNav() {
