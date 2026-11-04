@@ -59,7 +59,7 @@ SQL uses `starter.sql`, `seed.sql`, and a declarative checker. The checker may h
 1. Create the folder under `tasks/python/<topic>/<skill>/<task-id>/`.
 2. Add `task.json`, `starter.py`, and matching numbered `.in`/`.out` files.
 3. Run `python3 scripts/generate_task_index.py`. It validates required fields, duplicate IDs and asset paths, missing files, malformed JSON, path traversal, unsupported types, checker shape, and test references, then regenerates `tasks/task-index.json` only if valid.
-4. Open the local Studio, choose the task, run it, and use Check Solution.
+4. Open the local Studio, choose the task, run a visible sample, then use Submit.
 5. Commit the task folder and generated index. The GitHub Action rejects a stale or invalid index.
 
 For SQL, add `starter.sql`, `seed.sql`, and the checker fields instead of `.in`/`.out` files.
