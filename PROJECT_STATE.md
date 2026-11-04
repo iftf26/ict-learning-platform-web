@@ -9,6 +9,7 @@ Last verified Studio commit: pending completion verification of the Phase 1 task
 - Trace Lab, Code Studio, SQL Studio, and DSE Practice use the unified Studio shell and retain their deep links.
 - Public Studio tasks are file-backed under `tasks/`; generated `tasks/task-index.json` supplies immutable selector metadata and a selected task is hydrated and cached in the browser session.
 - Python execution runs in an isolated Pyodide worker with a fresh submission namespace for every run. `input()` prompts are terminal echo and are not scored as stdout. Tasks without `compare` keep legacy trimmed comparison; `exact` and `numeric` are explicit. SQL Studio uses SQL.js with a fresh deterministic seed for every run.
+- Code Studio and SQL Studio edit in Monaco (the VS Code editor, loaded from the jsDelivr CDN). If that script fails, the page keeps the plain text area. Drafts still live in this browser only.
 - `python3 scripts/generate_task_index.py` validates/regenerates the task catalog; `node scripts/validate_checkpoint_bank.mjs` validates DSE Practice additions.
 
 ## Current Studio task-bank status

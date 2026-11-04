@@ -53,6 +53,7 @@
   function bindPythonIndentation(textarea) {
     let escapeTab = false;
     textarea.addEventListener('keydown', event => {
+      if (textarea.classList.contains('is-replaced')) return;
       if (event.key === 'Escape') { escapeTab = true; return; }
       if (event.key !== 'Tab') return;
       if (escapeTab) { escapeTab = false; return; }
@@ -63,7 +64,127 @@
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     });
   }
-  global.StudioEditorUtils = { indentCode };
+
+  const MONACO_VS = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs';
+  let monacoPromise;
+  let monacoThemeReady = false;
+
+  function loadMonaco() {
+    if (global.monaco?.editor) return Promise.resolve(global.monaco);
+    if (monacoPromise) return monacoPromise;
+    global.MonacoEnvironment = {
+      getWorkerUrl() {
+        const source = `self.MonacoEnvironment={baseUrl:'${MONACO_VS}/'};importScripts('${MONACO_VS}/base/worker/workerMain.js');`;
+        return `data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`;
+      }
+    };
+    monacoPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `${MONACO_VS}/loader.js`;
+      script.onload = () => {
+        global.require.config({ paths: { vs: MONACO_VS } });
+        global.require(['vs/editor/editor.main'], () => resolve(global.monaco));
+      };
+      script.onerror = () => {
+        monacoPromise = null;
+        script.remove();
+        reject(new Error('Could not load the code editor.'));
+      };
+      document.head.appendChild(script);
+    });
+    return monacoPromise;
+  }
+
+  function mountMonaco(textarea, language) {
+    const host = document.createElement('div');
+    host.className = 'studio-monaco';
+    host.setAttribute('data-editor-language', language);
+    textarea.insertAdjacentElement('afterend', host);
+    const valueProperty = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+    const disabledProperty = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'disabled');
+    let editor = null;
+    let mute = false;
+    Object.defineProperty(textarea, 'value', {
+      configurable: true,
+      get() { return editor ? editor.getValue() : valueProperty.get.call(textarea); },
+      set(next) {
+        const text = String(next ?? '');
+        valueProperty.set.call(textarea, text);
+        if (editor && editor.getValue() !== text) {
+          mute = true;
+          editor.setValue(text);
+          mute = false;
+        }
+      }
+    });
+    Object.defineProperty(textarea, 'disabled', {
+      configurable: true,
+      get() { return disabledProperty.get.call(textarea); },
+      set(flag) {
+        disabledProperty.set.call(textarea, flag);
+        editor?.updateOptions({ readOnly: Boolean(flag) });
+      }
+    });
+    loadMonaco().then(monaco => {
+      if (!host.isConnected) return;
+      if (!monacoThemeReady) {
+        monaco.editor.defineTheme('ict-kata', {
+          base: 'vs-dark',
+          inherit: true,
+          rules: [],
+          colors: {
+            'editor.background': '#102033',
+            'editor.foreground': '#eaf4ff',
+            'editorLineNumber.foreground': '#7f9bbd',
+            'editor.lineHighlightBackground': '#17304d',
+            'editorCursor.foreground': '#ffffff'
+          }
+        });
+        monacoThemeReady = true;
+      }
+      editor = monaco.editor.create(host, {
+        value: valueProperty.get.call(textarea),
+        language,
+        theme: 'ict-kata',
+        fontSize: 15,
+        fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", monospace',
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        tabSize: language === 'python' ? 4 : 2,
+        insertSpaces: true,
+        detectIndentation: false,
+        wordWrap: 'on',
+        padding: { top: 12, bottom: 12 },
+        renderLineHighlight: 'line',
+        overviewRulerLanes: 0,
+        hideCursorInOverviewRuler: true,
+        scrollbar: { verticalScrollbarSize: 8, horizontalScrollbarSize: 8 },
+        readOnly: textarea.disabled,
+        ariaLabel: textarea.getAttribute('aria-label') || 'Code editor',
+        fixedOverflowWidgets: true,
+        quickSuggestions: true,
+        suggestOnTriggerCharacters: true
+      });
+      textarea.classList.add('is-replaced');
+      editor.onDidChangeModelContent(() => {
+        if (mute) return;
+        valueProperty.set.call(textarea, editor.getValue());
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        textarea.dispatchEvent(new CustomEvent('studio-run', { bubbles: true }));
+      });
+    }).catch(() => {
+      host.remove();
+    });
+    return () => {
+      editor?.getModel()?.dispose();
+      editor?.dispose();
+      editor = null;
+    };
+  }
+  global.StudioEditorUtils = { indentCode, loadMonaco };
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -477,7 +598,7 @@
               <span>你的程式</span>
               <span data-python-task-label>${task.id}</span>
               <span class="kata-ide-spacer"></span>
-              <button type="button" class="ghost-btn" data-python-run disabled>執行</button>
+              <button type="button" class="ghost-btn" data-python-run disabled title="執行（Ctrl+Enter）">執行</button>
               <button type="button" class="primary-btn" data-python-check disabled>提交</button>
             </div>
             <section class="editor-panel"><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
@@ -502,6 +623,7 @@
     const output = lab.querySelector('[data-python-output]');
     const code = lab.querySelector('[data-python-code]');
     bindPythonIndentation(code);
+    const releaseEditor = mountMonaco(code, 'python');
     const taskSelector = lab.querySelector('[data-python-task]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
     const evidenceOpen = lab.querySelector('[data-evidence-open]');
@@ -617,6 +739,7 @@
     });
 
     showTask(selectedTaskMetadata());
+    lab.addEventListener('studio-run', () => { if (!runButton.disabled) runButton.click(); });
     retryButton.addEventListener('click', () => runner.retry());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
     lab.querySelector('[data-python-custom-input]')?.addEventListener('input', (event) => { event.target.dataset.dirty = 'true'; });
@@ -785,6 +908,7 @@
     const dispose = () => {
       if (disposed) return;
       disposed = true;
+      releaseEditor();
       runner.dispose();
       global.removeEventListener('pagehide', dispose);
     };
@@ -847,9 +971,8 @@
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry SQL</button></div></div>
         <div class="task-toolbar">${categoryMenu('sql')}<label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button></article>
-        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
+        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span><span class="kata-ide-spacer"></span><button type="button" class="ghost-btn" data-sql-run disabled title="執行（Ctrl+Enter）">執行</button><button type="button" class="primary-btn" data-sql-check disabled>檢查</button></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code data-sql-schema>Loading practice schema…</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run</button><button type="button" class="secondary-btn" data-sql-check disabled>Check solution</button></div>
         <div data-sql-feedback></div>
         ${evidencePanel(profile)}
       </div>
@@ -862,6 +985,7 @@
     if (!lab) return;
     const status = lab.querySelector('[data-sql-status]');
     const code = lab.querySelector('[data-sql-code]');
+    const releaseEditor = mountMonaco(code, 'sql');
     const output = lab.querySelector('[data-sql-output]');
     const runButton = lab.querySelector('[data-sql-run]');
     const checkButton = lab.querySelector('[data-sql-check]');
@@ -971,6 +1095,7 @@
     retryButton.addEventListener('click', prepareSql);
     showTask(selectedTaskMetadata());
     prepareSql();
+    lab.addEventListener('studio-run', () => { if (!runButton.disabled) runButton.click(); });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     const visibleSqlTasks = () => tasksInCategory('sql', lab.querySelector('[data-sql-category]')?.value || '');
     lab.querySelector('[data-sql-category]')?.addEventListener('change', () => {
@@ -1050,6 +1175,7 @@
     const dispose = () => {
       if (disposed) return;
       disposed = true;
+      releaseEditor();
       db?.close();
       db = null;
       global.removeEventListener('pagehide', dispose);
