@@ -106,7 +106,7 @@
     if (!result?.ok && !result?.stdout && !result?.terminal) return `Error:\n${result?.error || 'Python stopped.'}`;
     const parts = [];
     if (result.terminal) parts.push(`Terminal echo (not scored)\n${result.terminal}`);
-    parts.push(`stdout\n${result.stdout ? result.stdout : '(no stdout)'}`);
+    parts.push(result.stdout ? result.stdout : '(no stdout)');
     if (result.stderr) parts.push(`stderr\n${result.stderr}`);
     if (!result.ok) parts.push(`Error:\n${result.error || 'Python stopped.'}`);
     return parts.join('\n\n');
@@ -461,21 +461,32 @@
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
           <button type="button" class="ghost-btn" data-python-download>下載程式</button>
         </div>
-        <article class="studio-brief kata-problem" data-python-brief>
-          <p class="eyebrow">題目</p>
-          <h4 data-python-title>${escapeHtml(task.title)}</h4>
-          <small data-python-task-state>Loading this task’s starter code and tests…</small>
-          <button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button>
-          <section><h5>1. 題目背景</h5><div data-python-statement></div></section>
-          <section><h5>2. Sample tests</h5><p class="kata-note">每個示例有自己的 Run，只檢查這一組輸入和輸出。</p><div data-python-samples></div></section>
-        </article>
-        <div class="execution-grid">
-          <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
-          <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><label class="studio-custom-input">Custom stdin for Run<textarea data-python-custom-input rows="4" spellcheck="false" aria-label="Custom standard input for Run"></textarea></label><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
+        <div class="kata-workspace">
+          <article class="kata-read" data-python-brief>
+            <header class="kata-read-head">
+              <p class="eyebrow">Instructions</p>
+              <h4 data-python-title>${escapeHtml(task.title)}</h4>
+              <p class="kata-status" data-python-task-state>Loading this task…</p>
+              <button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button>
+            </header>
+            <section class="kata-block"><h5>題目背景</h5><div data-python-statement></div></section>
+            <section class="kata-block"><h5>可見示例</h5><div data-python-samples></div></section>
+          </article>
+          <section class="kata-ide">
+            <div class="kata-ide-bar">
+              <span>你的程式</span>
+              <span data-python-task-label>${task.id}</span>
+              <span class="kata-ide-spacer"></span>
+              <button type="button" class="ghost-btn" data-python-run disabled>執行</button>
+              <button type="button" class="primary-btn" data-python-check disabled>提交</button>
+            </div>
+            <section class="editor-panel"><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
+            <details class="kata-custom"><summary>自訂輸入</summary><textarea data-python-custom-input rows="4" spellcheck="false" aria-label="Custom standard input for Run" placeholder="只影響「執行」。提交會改用題目自己的輸入。"></textarea></details>
+            <section class="console-panel"><div class="editor-heading"><span>輸出</span><span>stdout</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
+            <div data-python-submit-report></div>
+            <div data-python-feedback hidden></div>
+          </section>
         </div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run custom input</button><button type="button" class="secondary-btn" data-python-check disabled>Submit</button></div>
-        <div data-python-feedback></div>
-        <div data-python-submit-report></div>
         ${evidencePanel(profile)}
       </div>
     `;
@@ -519,13 +530,12 @@
       const samples = sampleList(task);
       const host = lab.querySelector('[data-python-samples]');
       if (!host) return;
-      const countNote = samples.length < 4 ? `<p class="kata-note">這題現有 ${samples.length} 個可見示例。</p>` : '';
-      host.innerHTML = countNote + samples.map((sample, index) => `
+      host.innerHTML = samples.map((sample, index) => `
         <article class="kata-sample">
-          <header><strong>${escapeHtml(sample.label)}</strong><button type="button" class="secondary-btn" data-sample-run="${index}">Run</button></header>
+          <header><strong>${escapeHtml(sample.label)}</strong><button type="button" class="secondary-btn" data-sample-run="${index}">執行</button></header>
           <div class="kata-io">
-            <section><h6>Input</h6><pre>${escapeHtml(global.StudioTaskUtils.caseInputText(sample) || '(no input)')}</pre></section>
-            <section><h6>Expected output</h6><pre>${escapeHtml(sample.output || '(no output)')}</pre></section>
+            <section><h6>輸入</h6><pre>${escapeHtml(global.StudioTaskUtils.caseInputText(sample) || '（沒有輸入）')}</pre></section>
+            <section><h6>預期輸出</h6><pre>${escapeHtml(sample.output || '（沒有輸出）')}</pre></section>
           </div>
           ${sample.explanation ? `<p>${escapeHtml(sample.explanation)}</p>` : ''}
           <div data-sample-result="${index}"></div>
@@ -570,7 +580,7 @@
         lab.querySelector('[data-python-statement]').innerHTML = `${meta ? `<p class="kata-note">${escapeHtml(meta)}</p>` : ''}${global.StudioTaskUtils.renderStatementHtml(statement)}${after}`;
         renderSamples(task);
         const submitCount = fullCaseList(task).length;
-        lab.querySelector('[data-python-task-state]').textContent = `可見示例 ${sampleList(task).length} 個。Submit 會檢查 ${submitCount} 個測試。`;
+        lab.querySelector('[data-python-task-state]').textContent = `可見示例 ${sampleList(task).length} 個。提交會檢查 ${submitCount} 個測試。`;
         output.textContent = runtimeReady ? 'Starter code loaded. Use a sample Run, or Submit every test.' : 'Starter code loaded. Python is still preparing.';
         updateRunAvailability();
       } catch (error) {
@@ -646,9 +656,16 @@
       const verdict = outputVerdict(task, result.stdout, testOutput(sample));
       const passed = result.ok && verdict.pass;
       output.textContent = formatPythonRun(result);
+      const difference = global.StudioTaskUtils.caseFailureText({
+        visible: true,
+        ok: result.ok,
+        error: result.error,
+        stdout: result.stdout,
+        expected: testOutput(sample)
+      });
       resultHost.innerHTML = passed
-        ? '<p class="kata-pass">正確。這一組輸出相符。</p>'
-        : `<p class="kata-fail">錯誤。${escapeHtml(result.error || verdict.reason || 'output does not match')}</p><div class="kata-io"><section><h6>Expected</h6><pre>${escapeHtml(testOutput(sample) || '(no output)')}</pre></section><section><h6>Actual</h6><pre>${escapeHtml(result.stdout || '(no stdout)')}</pre></section></div>`;
+        ? '<p class="kata-pass">正確</p>'
+        : `<p class="kata-fail">錯誤。${escapeHtml(difference)}</p>`;
       updateRunAvailability();
     });
     const visiblePythonTasks = () => tasksInCategory('python', lab.querySelector('[data-python-category]')?.value || '');
@@ -696,9 +713,7 @@
       lastRun = { ...result, code: submittedCode, task, runCount };
       output.textContent = formatPythonRun(result);
       updateRunAvailability();
-      lab.querySelector('[data-python-feedback]').innerHTML = result.ok
-        ? feedback('info', 'Custom run recorded.', 'This run is not a sample check.', 'Use a sample Run or Submit to compare output.')
-        : feedback('bad', 'Python stopped with an error.', result.error || 'Read the line named in the message, then repair one thing at a time.', 'Run again after the smallest sensible repair.');
+      lab.querySelector('[data-python-feedback]').innerHTML = '';
     });
     checkButton.addEventListener('click', async () => {
       if (!runtimeReady) return;
@@ -722,14 +737,35 @@
       const correct = results.every(item => item.passed);
       const passedCount = results.filter(item => item.passed).length;
       checkedRun = correct ? { code: checkedCode, task, results, runCount } : null;
-      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? `Submit：${passedCount} / ${results.length} 正確。` : `Submit：${passedCount} / ${results.length} 正確。`, '每一個測試都已執行。', '這是瀏覽器內的形成性檢查，不是中央 Accepted。');
-      lab.querySelector('[data-python-submit-report]').innerHTML = `<ol class="kata-submit-report">${results.map((item, index) => {
+      lab.querySelector('[data-python-feedback]').innerHTML = '';
+      const failureText = item => global.StudioTaskUtils.caseFailureText({
+        visible: item.visible,
+        ok: item.result.ok,
+        error: item.result.error,
+        stdout: item.result.stdout,
+        expected: testOutput(item.test)
+      });
+      const firstFailure = results.find(item => !item.passed);
+      const shownRun = (firstFailure || results[0])?.result;
+      if (shownRun) output.textContent = formatPythonRun(shownRun);
+      const summary = firstFailure
+        ? failureText(firstFailure)
+        : '全部測試都已執行。這是瀏覽器內的形成性檢查。';
+      results.forEach((item, index) => {
+        if (!item.visible) return;
+        const host = lab.querySelector(`[data-sample-result="${index}"]`);
+        if (!host) return;
+        host.innerHTML = item.passed
+          ? '<p class="kata-pass">正確</p>'
+          : `<p class="kata-fail">錯誤。${escapeHtml(failureText(item))}</p>`;
+      });
+      const report = lab.querySelector('[data-python-submit-report]');
+      report.innerHTML = `<section class="kata-result ${correct ? 'is-pass' : 'is-fail'}"><header><strong>${passedCount} / ${results.length}</strong><span>提交結果</span></header><p>${escapeHtml(summary)}</p><ol>${results.map((item, index) => {
         const name = item.test.label || `Test ${index + 1}`;
-        const failure = item.passed ? '' : (item.visible
-          ? `<p>${escapeHtml(item.result.error || item.reason || 'output does not match')}</p><div class="kata-io"><section><h6>Expected</h6><pre>${escapeHtml(testOutput(item.test) || '(no output)')}</pre></section><section><h6>Actual</h6><pre>${escapeHtml(item.result.stdout || '(no stdout)')}</pre></section></div>`
-          : `<p>${escapeHtml(item.result.ok ? 'output does not match' : (item.result.error || 'error'))}</p>`);
-        return `<li class="${item.passed ? 'is-pass' : 'is-fail'}"><strong>${item.passed ? '正確' : '錯誤'}</strong> ${escapeHtml(name)}${failure}</li>`;
-      }).join('')}</ol>`;
+        const detail = item.passed ? '' : `<small>${escapeHtml(failureText(item))}</small>`;
+        return `<li class="${item.passed ? 'is-pass' : 'is-fail'}"><strong>${item.passed ? '正確' : '錯誤'}</strong> ${escapeHtml(name)}${detail}</li>`;
+      }).join('')}</ol></section>`;
+      report.scrollIntoView({ block: 'nearest' });
       evidenceButton.disabled = !correct;
       evidenceOpen.disabled = !correct;
       updateRunAvailability();
