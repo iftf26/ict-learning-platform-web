@@ -7,7 +7,7 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../studio-task-utils.js', import.meta.url), 'utf8');
 const context = { window: {} };
 vm.runInNewContext(source, context, { filename: 'studio-task-utils.js' });
-const { compareOutputs, studentPackFiles, teacherPackFiles, categoryLabel, taskCategories, visibleSamples, submitCases, renderStatementHtml } = context.window.StudioTaskUtils;
+const { compareOutputs, studentPackFiles, teacherPackFiles, categoryLabel, taskCategories, visibleSamples, submitCases, renderStatementHtml, outputDifference, caseFailureText } = context.window.StudioTaskUtils;
 
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'legacy' }).pass, true);
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'exact' }).pass, false);
@@ -63,4 +63,8 @@ assert.equal(submitted[0].label, 'Sample 1');
 assert.match(renderStatementHtml(imported.statement), /<h5>Background<\/h5>/);
 assert.match(renderStatementHtml(imported.statement), /<strong>every<\/strong>/);
 assert.doesNotMatch(renderStatementHtml('<script>alert(1)</script>'), /<script>/);
+assert.equal(outputDifference('False\n', 'Pass\n', ''), '程式印出「False」，這一組要求「Pass」。');
+assert.equal(caseFailureText({ visible: true, ok: true, stdout: 'False\n', expected: 'Pass\n' }), '程式印出「False」，這一組要求「Pass」。');
+assert.equal(caseFailureText({ visible: false, ok: true, stdout: 'False\n', expected: 'Secret\n' }), '輸出不相符');
+assert.equal(caseFailureText({ visible: false, ok: false, error: 'NameError: x' }), 'NameError: x');
 console.log('Studio output compare and pack boundary checks passed.');

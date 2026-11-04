@@ -172,6 +172,21 @@
     return cases;
   }
 
+  function outputDifference(actual, expected, error) {
+    if (error) return String(error);
+    const shown = value => {
+      const text = String(value ?? '').replace(/\s+$/g, '');
+      return text === '' ? '（沒有輸出）' : text;
+    };
+    return `程式印出「${shown(actual)}」，這一組要求「${shown(expected)}」。`;
+  }
+
+  function caseFailureText(item) {
+    if (!item?.ok) return String(item?.error || '執行錯誤');
+    if (!item.visible) return '輸出不相符';
+    return outputDifference(item.stdout, item.expected, '');
+  }
+
   function renderStatementHtml(source) {
     const text = String(source || '').replace(/\r\n/g, '\n').trim();
     if (!text) return '<p>這題未有題目背景。</p>';
@@ -215,6 +230,8 @@
     submitCases,
     caseInputText,
     caseOutputText,
-    renderStatementHtml
+    renderStatementHtml,
+    outputDifference,
+    caseFailureText
   };
 })(typeof window !== 'undefined' ? window : globalThis);
