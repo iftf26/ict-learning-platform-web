@@ -295,9 +295,14 @@
                 <label>Skill<input data-builder-skill placeholder="selection"></label>
                 <label>Level<select data-builder-level><option>Foundation</option><option>Developing</option><option>Challenge</option></select></label>
                 <label>Practice type<select data-builder-practice><option value="complete">Complete</option><option value="construct">Construct</option><option value="modify">Modify</option><option value="dse">DSE Challenge</option></select></label>
+                <label>Purpose<select data-builder-purpose><option value="">Not set</option><option>X</option><option>Y</option><option>Z</option></select></label>
+                <label>Stars<select data-builder-stars><option value="">Not set</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+                <label>Compare<select data-builder-compare><option value="legacy">Legacy trim</option><option value="exact">Exact</option><option value="numeric">Numeric tolerance</option></select></label>
+                <label>Tolerance<input data-builder-tolerance inputmode="decimal" placeholder="0.000001"></label>
                 <label>Title<input data-builder-title></label>
               </div>
               <label>Brief<textarea data-builder-brief rows="3"></textarea></label>
+              <label>Statement (Markdown)<textarea data-builder-statement rows="6" spellcheck="false"></textarea></label>
               <label>Starter code<textarea data-builder-starter rows="8" spellcheck="false"></textarea></label>
               <section class="teacher-test-list" aria-label="Public test cases">
                 <div class="teacher-test-list-heading"><strong>Public test cases</strong><button type="button" class="text-btn" data-builder-add-test>+ Add test case</button></div>
@@ -305,7 +310,17 @@
                 <div data-builder-tests></div>
               </section>
               <label>Test solution code <small>Teacher-only. It validates your tests and is never previewed or exported.</small><textarea data-builder-solution rows="8" spellcheck="false"></textarea></label>
-              <div class="teacher-task-pack-actions"><button type="button" class="ghost-btn" data-builder-preview>Preview task</button><button type="button" class="secondary-btn" data-builder-run disabled>Run all tests</button><button type="button" class="secondary-btn" data-builder-export>Export task ZIP</button></div>
+              <div class="teacher-task-pack-actions"><button type="button" class="ghost-btn" data-builder-preview>Preview task</button><button type="button" class="secondary-btn" data-builder-run disabled>Run all tests</button><button type="button" class="secondary-btn" data-builder-export-student>Export student ZIP</button><button type="button" class="secondary-btn" data-builder-export-teacher>Export teacher ZIP</button></div>
+              <section class="teacher-import" aria-label="Import task ZIP">
+                <strong>Import ZIP</strong>
+                <p>Preview a site task ZIP or an HKOI handover pack before anything is added. Private models and hidden tests stay in the teacher pack.</p>
+                <input data-builder-zip type="file" accept=".zip,application/zip">
+                <div class="teacher-drop" data-builder-drop tabindex="0">Drop a ZIP here, or use the file button above.</div>
+                <label>Numeric tolerance for a blocked checker<input data-builder-import-tolerance inputmode="decimal" placeholder="Leave blank to keep checker tasks blocked"></label>
+                <pre data-builder-import-report class="teacher-import-report"></pre>
+                <button type="button" class="secondary-btn" data-builder-apply disabled>Apply preview</button>
+                <button type="button" class="secondary-btn" data-builder-validate-import disabled>Validate applied model</button>
+              </section>
               <p data-builder-feedback class="teacher-task-pack-feedback" aria-live="polite"></p>
             </details>
             <details class="teacher-task-pack">
@@ -649,9 +664,10 @@
   <script src="activity-labs-pass2.js"></script>
   <script src="activity-labs-core-studios.js?v=20260923-2"></script>
   <script src="studio-task-bank.js?v=20260922-2"></script>
-  <script src="studio-task-utils.js?v=20260922-1"></script>
-  <script src="activity-labs-code-studios.js?v=20260922-3"></script>
-  <script src="platform-app.js?v=20260923-1"></script>
+  <script src="studio-task-utils.js?v=20261105-io1"></script>
+  <script src="studio-hkoi-adapter.js?v=20261105-io1"></script>
+  <script src="activity-labs-code-studios.js?v=20261105-io1"></script>
+  <script src="platform-app.js?v=20261105-io1"></script>
   <script src="study-tools.js?v=20260923-2"></script>
 </body>
 </html>

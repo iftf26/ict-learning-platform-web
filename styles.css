@@ -9054,6 +9054,12 @@ body:has(.study-studio) {
 .teacher-task-pack-feedback[data-state="success"] { color: #20734c !important; }
 .teacher-task-pack-feedback[data-state="error"] { color: #a13939 !important; }
 .teacher-task-pack-feedback[data-state="info"] { color: #356a98 !important; }
+.teacher-import { display: grid; gap: 8px; margin-top: 12px; }
+.teacher-drop { border: 1px dashed var(--line, #9bb); border-radius: 10px; padding: 12px; }
+.teacher-drop:focus { outline: 2px solid var(--accent, #245); outline-offset: 2px; }
+.teacher-import-report { white-space: pre-wrap; max-height: 220px; overflow: auto; }
+.studio-statement pre { white-space: pre-wrap; max-height: 240px; overflow: auto; }
+.studio-custom-input { display: grid; gap: 4px; margin-bottom: 8px; }
 .teacher-task-builder { margin-bottom: 13px; }
 .teacher-builder-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 11px; }
 .teacher-task-builder label { display: grid; gap: 4px; margin: 0 11px 9px; color: #285b84; font-size: 0.74rem; font-weight: 800; }

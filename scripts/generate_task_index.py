@@ -33,7 +33,11 @@ def catalog_entry(task, rel, kind):
         fields += ["practiceType", "tests"]
     else:
         fields += ["seed", "checker"]
-    return {"path": rel, **{field: task.get(field) for field in fields}}
+    entry = {"path": rel, **{field: task.get(field) for field in fields}}
+    for field in ("purpose", "stars", "alias", "compare", "statementFile", "afterFile"):
+        if task.get(field) not in (None, "", [], {}):
+            entry[field] = task.get(field)
+    return entry
 
 for kind in ("python", "sql"):
     for metadata_path in sorted((TASKS / kind).glob("**/task.json")):
@@ -71,6 +75,20 @@ for kind in ("python", "sql"):
             if checker.get("type") not in ("result", "database") or not isinstance(checker.get("columns"), list) or not isinstance(checker.get("rows"), list):
                 errors.append(f"{rel}: checker needs a supported type, columns and rows")
             if checker.get("type") == "database": require_text(checker.get("query"), "checker.query", rel)
+        if task.get("purpose") not in (None, "", "X", "Y", "Z"):
+            errors.append(f"{rel}: purpose must be X, Y or Z")
+        if "stars" in task and task.get("stars") not in (1, 2, 3, 4, 5):
+            errors.append(f"{rel}: stars must be an integer from 1 to 5")
+        if "compare" in task:
+            compare = task.get("compare")
+            if not isinstance(compare, dict) or compare.get("mode") not in ("legacy", "exact", "numeric"):
+                errors.append(f"{rel}: compare.mode must be legacy, exact or numeric")
+            if isinstance(compare, dict) and compare.get("mode") == "numeric" and not isinstance(compare.get("tolerance"), (int, float)):
+                errors.append(f"{rel}: numeric compare needs a tolerance")
+        if task.get("statementFile"):
+            referenced_file(metadata_path.parent, task.get("statementFile"), rel, "statementFile", referenced_paths)
+        if task.get("afterFile"):
+            referenced_file(metadata_path.parent, task.get("afterFile"), rel, "afterFile", referenced_paths)
         referenced_file(metadata_path.parent, task.get("starter"), rel, "starter", referenced_paths)
         if kind == "sql": referenced_file(metadata_path.parent, task.get("seed"), rel, "seed", referenced_paths)
         task_id = task.get("id")
