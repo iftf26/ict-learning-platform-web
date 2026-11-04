@@ -4,6 +4,7 @@
   "skill": "input-output",
   "level": "Developing",
   "practiceType": "construct",
+  "category": "elementary",
   "title": "Five-mark average",
   "brief": "Read five whole-number marks, one line at a time. Store them in a list and print their average as a number.",
   "type": "python",

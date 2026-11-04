@@ -11,7 +11,7 @@ Public catalog on this review: 42 Python tasks and 6 SQL tasks.
 | Prompt stays out of scored stdout | `python-runner-worker.mjs` | `python3 scripts/test_python_io_contract.py` | Not re-run inside Pyodide in this pass |
 | `print(end=...)`, blank stdin, EOF | same worker | same Python test | Output cap is 100000 characters |
 | Legacy / exact / numeric compare | `studio-task-utils.js` | `node scripts/test_studio_compare.mjs` | Old tasks omit `compare` and stay on legacy trim |
-| Purpose, stars, practice type stay separate | task schema and Teacher Builder | generator rejects a bad `purpose` or `stars` | X/Y/Z does not set difficulty or practice type |
+| Student categories | `category` on each task, Code Studio and SQL Studio filter | generator requires intro, elementary, advanced or applied | Not inferred from X/Y/Z. The first assignment follows practice type or SQL level and can be edited per task |
 | ZIP preview, duplicates, missing pairs, path escape, C++ checker block | `studio-hkoi-adapter.js`, Teacher Builder | `node scripts/test_hkoi_adapter.mjs` | Fixture only. Real XICT/YICT packages were not accepted |
 | Model validation across every staged case | Teacher Builder “Validate applied model” | Requires the browser Python runtime | A single sample is not treated as completion |
 | Student pack whitelist | `studentPackFiles` | compare test checks solution and private files are absent | CSS hiding is not the boundary |

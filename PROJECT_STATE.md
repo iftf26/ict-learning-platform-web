@@ -15,6 +15,7 @@ Last verified Studio commit: pending completion verification of the Phase 1 task
 
 - Public Python tasks: 42
 - Public SQL tasks: 6
+- Student-facing categories are 入門, 初階, 進階練習 and 現實應用題. They are stored as `category` and are not inferred from X, Y or Z.
 
 ## Confirmed design decisions
 

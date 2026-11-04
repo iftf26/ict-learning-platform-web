@@ -34,7 +34,7 @@ def catalog_entry(task, rel, kind):
     else:
         fields += ["seed", "checker"]
     entry = {"path": rel, **{field: task.get(field) for field in fields}}
-    for field in ("purpose", "stars", "alias", "compare", "statementFile", "afterFile"):
+    for field in ("category", "purpose", "stars", "alias", "compare", "statementFile", "afterFile"):
         if task.get(field) not in (None, "", [], {}):
             entry[field] = task.get(field)
     return entry
@@ -75,6 +75,8 @@ for kind in ("python", "sql"):
             if checker.get("type") not in ("result", "database") or not isinstance(checker.get("columns"), list) or not isinstance(checker.get("rows"), list):
                 errors.append(f"{rel}: checker needs a supported type, columns and rows")
             if checker.get("type") == "database": require_text(checker.get("query"), "checker.query", rel)
+        if task.get("category") not in {"intro", "elementary", "advanced", "applied"}:
+            errors.append(f"{rel}: category must be intro, elementary, advanced or applied")
         if task.get("purpose") not in (None, "", "X", "Y", "Z"):
             errors.append(f"{rel}: purpose must be X, Y or Z")
         if "stars" in task and task.get("stars") not in (1, 2, 3, 4, 5):

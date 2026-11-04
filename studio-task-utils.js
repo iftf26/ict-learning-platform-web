@@ -1,5 +1,16 @@
 /* Small task-format helpers shared by Studio and its focused regression tests. */
 (function (global) {
+  const taskCategories = [
+    { id: 'intro', label: '入門' },
+    { id: 'elementary', label: '初階' },
+    { id: 'advanced', label: '進階練習' },
+    { id: 'applied', label: '現實應用題' }
+  ];
+
+  function categoryLabel(id) {
+    return taskCategories.find(item => item.id === id)?.label || '';
+  }
+
   function inputLinesFromText(value) {
     const text = String(value ?? '').replace(/\r\n?/g, '\n');
     if (text === '') return [];
@@ -77,6 +88,7 @@
       skill: task.skill,
       level: task.level,
       practiceType: task.practiceType,
+      category: task.category,
       title: task.title,
       brief: task.brief,
       starter: 'starter.py',
@@ -128,6 +140,8 @@
   }
 
   global.StudioTaskUtils = {
+    taskCategories,
+    categoryLabel,
     inputLinesFromText,
     unifyNewlines,
     compareSpec,

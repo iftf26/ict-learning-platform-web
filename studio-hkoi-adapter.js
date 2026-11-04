@@ -230,7 +230,7 @@
       solution: task.modelText,
       compare,
       alias: [task.id],
-      practiceTypeNote: 'practiceType is not inferred from X, Y or Z. The preview default is construct until a teacher sets it.',
+      practiceTypeNote: 'Choose 入門、初階、進階練習 or 現實應用題 in the builder. X, Y and Z do not set the category.',
       blocked,
       unsupportedChecker: task.unsupportedChecker
     };

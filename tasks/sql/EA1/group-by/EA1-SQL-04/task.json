@@ -3,6 +3,7 @@
   "topic": "EA1",
   "skill": "group-by",
   "level": "Developing",
+  "category": "elementary",
   "title": "Class average",
   "brief": "Display each Class and its average Mark. Name the calculated field AverageMark and order classes alphabetically.",
   "checker": {

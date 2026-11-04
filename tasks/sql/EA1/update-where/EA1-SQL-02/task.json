@@ -3,6 +3,7 @@
   "topic": "EA1",
   "skill": "update-where",
   "level": "Developing",
+  "category": "elementary",
   "title": "Update one record safely",
   "brief": "Correct Wong Mei (S003) to 74. Use a WHERE condition so that no other student is changed. Then SELECT S003 to show the changed record.",
   "checker": {

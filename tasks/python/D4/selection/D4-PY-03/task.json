@@ -4,6 +4,7 @@
   "skill": "selection",
   "level": "Foundation",
   "practiceType": "complete",
+  "category": "intro",
   "title": "Boundary result",
   "brief": "Set result to \"Pass\" when mark is 50 or above; otherwise set it to \"Retry\". Print result for the boundary value supplied.",
   "type": "python",

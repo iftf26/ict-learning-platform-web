@@ -15,6 +15,7 @@
     }
     if (kind === 'python') {
       if (!['complete', 'construct', 'modify', 'dse'].includes(task?.practiceType)) errors.push(`${label}: choose a practice type.`);
+      if (!['intro', 'elementary', 'advanced', 'applied'].includes(task?.category)) errors.push(`${label}: choose 入門、初階、進階練習 or 現實應用題.`);
       if (!Array.isArray(task?.tests) || !task.tests.length) errors.push(`${label}: add at least one test.`);
       else task.tests.forEach((test, index) => {
         if (!Array.isArray(test?.input) || !test.input.every(value => typeof value === 'string')) errors.push(`${label}, test ${index + 1}: input must be text lines.`);

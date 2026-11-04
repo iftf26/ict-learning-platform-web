@@ -7,13 +7,16 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../studio-task-utils.js', import.meta.url), 'utf8');
 const context = { window: {} };
 vm.runInNewContext(source, context, { filename: 'studio-task-utils.js' });
-const { compareOutputs, studentPackFiles, teacherPackFiles } = context.window.StudioTaskUtils;
+const { compareOutputs, studentPackFiles, teacherPackFiles, categoryLabel, taskCategories } = context.window.StudioTaskUtils;
 
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'legacy' }).pass, true);
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'exact' }).pass, false);
 assert.equal(compareOutputs('hi\n', 'hi\n', { mode: 'exact' }).pass, true);
 assert.equal(compareOutputs('hi\r\n', 'hi\n', { mode: 'exact' }).pass, true);
 assert.equal(compareOutputs('Name: Ada\nAda\n', 'Ada\n', { mode: 'exact' }).pass, false);
+assert.equal(taskCategories.map(item => item.label).join('|'), '入門|初階|進階練習|現實應用題');
+assert.equal(categoryLabel('applied'), '現實應用題');
+assert.equal(categoryLabel('X'), '');
 
 const numeric = compareOutputs('2\n1.500001\n', '2\n1.5\n', { mode: 'numeric', tolerance: 0.0001 });
 assert.equal(numeric.pass, true);

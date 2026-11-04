@@ -3,6 +3,7 @@
   "topic": "EA1",
   "skill": "insert",
   "level": "Developing",
+  "category": "elementary",
   "title": "Insert then check",
   "brief": "Add S006, Ng Mei, 5B, 82 to Student. Then use SELECT to show the new record.",
   "checker": {

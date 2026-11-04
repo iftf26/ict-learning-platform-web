@@ -4,6 +4,7 @@
   "skill": "input-output",
   "level": "Foundation",
   "practiceType": "complete",
+  "category": "intro",
   "title": "Text-to-number total",
   "brief": "priceText and quantityText are strings. Convert both values so that the program prints the numerical total.",
   "type": "python",

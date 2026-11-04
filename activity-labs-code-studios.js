@@ -27,6 +27,13 @@
     if (text === '') return [];
     return (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n');
   });
+  const categoryLabel = id => global.StudioTaskUtils?.categoryLabel?.(id) || '';
+  const taskMenuLabel = item => [categoryLabel(item.category), item.topic, item.title, `(${item.id})`].filter(Boolean).join(' · ');
+  const tasksInCategory = (kind, category) => studioTasks(kind).filter(item => !category || item.category === category);
+  const categoryMenu = name => {
+    const options = (global.StudioTaskUtils?.taskCategories || []).map(item => `<option value="${item.id}">${escapeHtml(item.label)}</option>`).join('');
+    return `<label>分類<select data-${name}-category><option value="">全部</option>${options}</select></label>`;
+  };
 
   function indentCode(value, start, end, outdent = false) {
     if (!outdent && start === end) {
@@ -448,7 +455,8 @@
           <div class="runtime-status-stack"><span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span><button type="button" class="text-btn" data-python-retry hidden>Retry Python</button></div>
         </div>
         <div class="task-toolbar">
-          <label>Task<select data-python-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.practiceType || item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label>
+          ${categoryMenu('python')}
+          <label>Task<select data-python-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label>
           <label>Test input<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
@@ -549,7 +557,7 @@
         const brief = lab.querySelector('[data-python-brief]');
         const statement = task.statement ? `<details class="studio-statement"><summary>Full statement</summary><pre>${escapeHtml(task.statement)}</pre></details>` : '';
         const after = task.support?.afterSamples ? `<details class="studio-statement"><summary>After samples</summary><pre>${escapeHtml(task.support.afterSamples)}</pre></details>` : '';
-        const meta = [task.purpose ? `Purpose ${task.purpose}` : '', task.stars ? `${task.stars} star` : '', task.practiceType || ''].filter(Boolean).join(' · ');
+        const meta = [categoryLabel(task.category), task.practiceType || '', task.stars ? `${task.stars} star` : ''].filter(Boolean).join(' · ');
         brief.insertAdjacentHTML('beforeend', `${meta ? `<small>${escapeHtml(meta)}</small>` : ''}${statement}${after}`);
         lab.querySelector('[data-python-task-state]').textContent = 'Task files ready. Check solution uses public tests only.';
         output.textContent = runtimeReady ? 'Starter code loaded. Trace it before running.' : 'Starter code loaded. Python is still preparing.';
@@ -609,9 +617,18 @@
     });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     testSelector.addEventListener('change', updateTestPreview);
+    const visiblePythonTasks = () => tasksInCategory('python', lab.querySelector('[data-python-category]')?.value || '');
+    lab.querySelector('[data-python-category]')?.addEventListener('change', () => {
+      const visible = visiblePythonTasks();
+      const current = taskSelector.value;
+      taskSelector.innerHTML = visible.map(item => `<option value="${item.id}">${escapeHtml(taskMenuLabel(item))}</option>`).join('');
+      const chosen = visible.find(item => item.id === current) || visible[0];
+      if (chosen && chosen.id !== current) showTask(chosen);
+      else if (chosen) taskSelector.value = chosen.id;
+    });
     lab.querySelector('[data-python-random]').addEventListener('click', () => {
-      const options = studioTasks('python').filter((item) => item.id !== selectedTaskMetadata().id);
-      showTask(randomItem(options));
+      const options = visiblePythonTasks().filter((item) => item.id !== selectedTaskMetadata().id);
+      if (options.length) showTask(randomItem(options));
     });
     lab.querySelector('[data-python-reset]').addEventListener('click', () => {
       const task = selectedTask();
@@ -754,7 +771,7 @@
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry SQL</button></div></div>
-        <div class="task-toolbar"><label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
+        <div class="task-toolbar">${categoryMenu('sql')}<label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button></article>
         <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code data-sql-schema>Loading practice schema…</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
@@ -881,7 +898,18 @@
     showTask(selectedTaskMetadata());
     prepareSql();
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
-    lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(studioTasks('sql').filter(task => task.id !== selectedTaskMetadata().id))));
+    const visibleSqlTasks = () => tasksInCategory('sql', lab.querySelector('[data-sql-category]')?.value || '');
+    lab.querySelector('[data-sql-category]')?.addEventListener('change', () => {
+      const visible = visibleSqlTasks();
+      const current = taskSelector.value;
+      taskSelector.innerHTML = visible.map(item => `<option value="${item.id}">${escapeHtml(taskMenuLabel(item))}</option>`).join('');
+      const chosen = visible.find(item => item.id === current) || visible[0];
+      if (chosen && chosen.id !== current) showTask(chosen);
+    });
+    lab.querySelector('[data-sql-random]').addEventListener('click', () => {
+      const options = visibleSqlTasks().filter(task => task.id !== selectedTaskMetadata().id);
+      if (options.length) showTask(randomItem(options));
+    });
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
       if (!SQL || !taskReady) return;
       const task = selectedTask();

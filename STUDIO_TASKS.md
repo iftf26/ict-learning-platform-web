@@ -46,7 +46,9 @@ scripts/generate_task_index.py
 { "compare": { "mode": "numeric", "tolerance": 0.000001 } }
 ```
 
-`exact` compares stdout after newline conversion and does not trim. `numeric` compares numbers within `tolerance` and compares other tokens exactly. `input()` prompt text is terminal echo, not stdout. Optional `purpose` is `X`, `Y` or `Z`; optional `stars` is 1–5. Neither field sets `practiceType`. Optional `statementFile` and `afterFile` name Markdown files in the task folder.
+`exact` compares stdout after newline conversion and does not trim. `numeric` compares numbers within `tolerance` and compares other tokens exactly. `input()` prompt text is terminal echo, not stdout. Optional `stars` is 1–5. Optional `statementFile` and `afterFile` name Markdown files in the task folder.
+
+`category` is the student-facing group: `intro` 入門, `elementary` 初階, `advanced` 進階練習, or `applied` 現實應用題. It is chosen directly. It is not derived from an X, Y or Z label, from `level`, or from `practiceType`. The current public tasks use this starting assignment: Python `complete` → 入門, `construct` → 初階, `modify` → 進階練習, `dse` → 現實應用題; SQL `Foundation` → 入門, `Developing` → 初階, `Challenge` → 進階練習. Change a task’s `category` when that assignment does not fit.
 
 ## SQL task format
 

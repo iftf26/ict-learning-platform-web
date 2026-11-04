@@ -357,7 +357,7 @@
     document.querySelector('[data-task-pack-template]')?.addEventListener('click', () => {
       input.value = JSON.stringify({
         python: [{
-          id: 'D4-PY-CUSTOM-01', topic: 'D4', skill: 'input-output', practiceType: 'construct', level: 'Foundation', title: 'Custom two-number total',
+          id: 'D4-PY-CUSTOM-01', topic: 'D4', skill: 'input-output', practiceType: 'construct', category: 'elementary', level: 'Foundation', title: 'Custom two-number total',
           brief: 'Read two whole numbers and print their total.',
           starter: 'first = int(input())\\nsecond = int(input())\\n\\n# Calculate the total.\\n\\nprint(total)',
           tests: [{ label: 'Public test', input: ['8', '9'], output: '17' }]
@@ -448,7 +448,7 @@
         skill: field('skill').value.trim(),
         level: field('level').value,
         practiceType: field('practice').value,
-        purpose: field('purpose').value,
+        category: field('category').value,
         stars: field('stars').value ? Number(field('stars').value) : '',
         title: field('title').value.trim(),
         brief: field('brief').value.trim(),
@@ -459,6 +459,7 @@
       };
       if (compareMode === 'numeric' && !Number.isFinite(task.compare.tolerance)) throw new Error('Numeric compare needs a tolerance.');
       ['id', 'topic', 'skill', 'title', 'brief', 'starter'].forEach(key => { if (!task[key]) throw new Error(`${key} is required.`); });
+      if (!task.category) throw new Error('選擇題目分類。');
       if (!tests.length) throw new Error('Add at least one test.');
       return task;
     };
@@ -588,7 +589,9 @@
       try {
         if (!pendingImport?.tasks?.length) throw new Error('Preview a ZIP before applying it.');
         const tolerance = field('import-tolerance').value;
-        const tasks = pendingImport.tasks.map(task => global.HkoiTaskAdapter.toPreviewTask(task, { numericTolerance: tolerance }));
+        const category = field('category').value;
+        if (!category) throw new Error('先選擇題目分類，再套用預覽。分類不會按 X、Y、Z 自動填上。');
+        const tasks = pendingImport.tasks.map(task => ({ ...global.HkoiTaskAdapter.toPreviewTask(task, { numericTolerance: tolerance }), category }));
         const blocked = tasks.filter(task => task.blocked);
         if (blocked.length) throw new Error(`${blocked.map(task => task.id).join(', ')} still has an unsupported checker. Set a numeric tolerance or remove that checker before applying.`);
         await global.ActivityLabs.loadTaskCatalog();
