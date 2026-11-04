@@ -9060,6 +9060,18 @@ body:has(.study-studio) {
 .teacher-import-report { white-space: pre-wrap; max-height: 220px; overflow: auto; }
 .studio-statement pre { white-space: pre-wrap; max-height: 240px; overflow: auto; }
 .studio-custom-input { display: grid; gap: 4px; margin-bottom: 8px; }
+.kata-problem h5 { margin: 14px 0 6px; }
+.kata-note { color: #5a6e85; }
+.kata-sample { border: 1px solid var(--line, #d5deea); border-radius: 12px; padding: 10px; margin: 8px 0; }
+.kata-sample header { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.kata-io { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kata-io pre, .kata-problem pre { white-space: pre-wrap; max-height: 180px; overflow: auto; }
+.kata-pass { color: #20734c; font-weight: 700; }
+.kata-fail { color: #a13939; font-weight: 700; }
+.kata-submit-report { max-height: 360px; overflow: auto; margin: 8px 0 0; padding-left: 1.2rem; }
+.kata-submit-report .is-pass strong { color: #20734c; }
+.kata-submit-report .is-fail strong { color: #a13939; }
+@media (max-width: 720px) { .kata-io { grid-template-columns: 1fr; } }
 .teacher-task-builder { margin-bottom: 13px; }
 .teacher-builder-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 11px; }
 .teacher-task-builder label { display: grid; gap: 4px; margin: 0 11px 9px; color: #285b84; font-size: 0.74rem; font-weight: 800; }

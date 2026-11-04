@@ -38,7 +38,7 @@ scripts/generate_task_index.py
 }
 ```
 
-`.in` contains stdin lines. `.out` contains expected stdout. Check Solution runs every public test independently; passing one test is not completion. A task with no `compare` field keeps the legacy rule: compare after converting newlines and trimming the whole stdout. Set `compare` explicitly when a new task needs a stricter rule.
+`.in` contains stdin lines. `.out` contains expected stdout. Code Studio shows the statement, then up to six visible samples. Each sample has its own Run and shows expected output against actual output. Submit runs every case for that task, including staged private cases from an imported preview, and lists each one as 正確 or 錯誤. Passing one sample is not completion. A task with no `compare` field keeps the legacy rule: compare after converting newlines and trimming the whole stdout. Set `compare` explicitly when a new task needs a stricter rule.
 
 ```json
 { "compare": { "mode": "legacy" } }

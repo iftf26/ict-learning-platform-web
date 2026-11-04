@@ -7,7 +7,7 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../studio-task-utils.js', import.meta.url), 'utf8');
 const context = { window: {} };
 vm.runInNewContext(source, context, { filename: 'studio-task-utils.js' });
-const { compareOutputs, studentPackFiles, teacherPackFiles, categoryLabel, taskCategories } = context.window.StudioTaskUtils;
+const { compareOutputs, studentPackFiles, teacherPackFiles, categoryLabel, taskCategories, visibleSamples, submitCases, renderStatementHtml } = context.window.StudioTaskUtils;
 
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'legacy' }).pass, true);
 assert.equal(compareOutputs('  hi \n', 'hi', { mode: 'exact' }).pass, false);
@@ -46,4 +46,21 @@ assert.deepEqual(student.includes('teacher-notes.md'), false);
 const teacher = teacherPackFiles(task, { completed: true }).map(file => file.name);
 assert.equal(teacher.includes('solution.py'), true);
 assert.equal(teacher.includes('private-01.in'), true);
+const imported = {
+  tests: [
+    { label: 'Sample 1', input: ['1'], output: '1\n' },
+    { label: 'Sample 2', input: ['2'], output: '4\n' }
+  ],
+  statement: '# Background\n\nSquare **every** digit.'
+};
+const hidden = Array.from({ length: 30 }, (_, index) => ({ label: `Private ${index + 1}`, input: [String(index)], output: `${index}\n`, private: true }));
+assert.equal(visibleSamples(imported).length, 2);
+assert.equal(visibleSamples({ tests: hidden }).length, 6);
+const submitted = submitCases(imported, hidden);
+assert.equal(submitted.length, 31);
+assert.equal(submitted.filter(item => item.visible).length, 2);
+assert.equal(submitted[0].label, 'Sample 1');
+assert.match(renderStatementHtml(imported.statement), /<h5>Background<\/h5>/);
+assert.match(renderStatementHtml(imported.statement), /<strong>every<\/strong>/);
+assert.doesNotMatch(renderStatementHtml('<script>alert(1)</script>'), /<script>/);
 console.log('Studio output compare and pack boundary checks passed.');
