@@ -126,6 +126,68 @@
     return files;
   }
 
+  function caseInputText(test) {
+    const value = test?.inputLines ?? test?.input ?? [];
+    return Array.isArray(value) ? value.join('\n') : String(value ?? '');
+  }
+
+  function caseOutputText(test) {
+    return String(test?.expectedOutput ?? test?.output ?? '');
+  }
+
+  function caseKey(test) {
+    return `${caseInputText(test)}\0${caseOutputText(test)}`;
+  }
+
+  function visibleSamples(task) {
+    const source = Array.isArray(task?.samples) && task.samples.length ? task.samples : (task?.tests || []);
+    return source.slice(0, 6).map((test, index) => ({
+      label: test.label || `Sample ${index + 1}`,
+      input: test.inputLines ?? test.input ?? [],
+      output: caseOutputText(test),
+      explanation: test.explanation || '',
+      visible: true
+    }));
+  }
+
+  function submitCases(task, privateCases) {
+    const seen = new Set();
+    const cases = [];
+    const add = (test, visible) => {
+      const key = caseKey(test);
+      if (seen.has(key)) return;
+      seen.add(key);
+      cases.push({
+        label: test.label || `Test ${cases.length + 1}`,
+        input: test.inputLines ?? test.input ?? [],
+        output: caseOutputText(test),
+        explanation: test.explanation || '',
+        visible: Boolean(visible),
+        private: Boolean(test.private) || !visible
+      });
+    };
+    visibleSamples(task).forEach(test => add(test, true));
+    (task?.tests || []).forEach(test => add(test, false));
+    (privateCases || task?.privateTests || []).forEach(test => add(test, false));
+    return cases;
+  }
+
+  function renderStatementHtml(source) {
+    const text = String(source || '').replace(/\r\n/g, '\n').trim();
+    if (!text) return '<p>這題未有題目背景。</p>';
+    const escape = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    return text.split(/\n{2,}/).map(block => {
+      if (block.startsWith('```')) {
+        const code = block.replace(/^```[^\n]*\n?/, '').replace(/\n?```$/, '');
+        return `<pre>${escape(code)}</pre>`;
+      }
+      const heading = block.match(/^(#{1,3}) (.+)$/);
+      if (heading && !block.includes('\n')) return `<h5>${escape(heading[2])}</h5>`;
+      const lines = block.split('\n').map(line => escape(line).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>'));
+      return `<p>${lines.join('<br>')}</p>`;
+    }).join('');
+  }
+
   function teacherPackFiles(task, validation) {
     const files = studentPackFiles(task);
     if (task.solution) files.push({ name: 'solution.py', text: String(task.solution) });
@@ -148,6 +210,11 @@
     compareOutputs,
     studentTaskMetadata,
     studentPackFiles,
-    teacherPackFiles
+    teacherPackFiles,
+    visibleSamples,
+    submitCases,
+    caseInputText,
+    caseOutputText,
+    renderStatementHtml
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -457,18 +457,25 @@
         <div class="task-toolbar">
           ${categoryMenu('python')}
           <label>Task<select data-python-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label>
-          <label>Test input<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
           <button type="button" class="ghost-btn" data-python-download>下載程式</button>
         </div>
-        <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-task-state>Loading this task’s starter code and public tests…</small><button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button><small data-python-test-preview></small></article>
+        <article class="studio-brief kata-problem" data-python-brief>
+          <p class="eyebrow">題目</p>
+          <h4 data-python-title>${escapeHtml(task.title)}</h4>
+          <small data-python-task-state>Loading this task’s starter code and tests…</small>
+          <button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button>
+          <section><h5>1. 題目背景</h5><div data-python-statement></div></section>
+          <section><h5>2. Sample tests</h5><p class="kata-note">每個示例有自己的 Run，只檢查這一組輸入和輸出。</p><div data-python-samples></div></section>
+        </article>
         <div class="execution-grid">
           <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
           <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><label class="studio-custom-input">Custom stdin for Run<textarea data-python-custom-input rows="4" spellcheck="false" aria-label="Custom standard input for Run"></textarea></label><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
         </div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run</button><button type="button" class="secondary-btn" data-python-check disabled>Check solution</button></div>
+        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run custom input</button><button type="button" class="secondary-btn" data-python-check disabled>Submit</button></div>
         <div data-python-feedback></div>
+        <div data-python-submit-report></div>
         ${evidencePanel(profile)}
       </div>
     `;
@@ -485,7 +492,6 @@
     const code = lab.querySelector('[data-python-code]');
     bindPythonIndentation(code);
     const taskSelector = lab.querySelector('[data-python-task]');
-    const testSelector = lab.querySelector('[data-python-test]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
     const evidenceOpen = lab.querySelector('[data-evidence-open]');
     const retryButton = lab.querySelector('[data-python-retry]');
@@ -500,26 +506,32 @@
 
     const selectedTaskMetadata = () => studioTasks('python').find(item => item.id === taskSelector.value) || studioTasks('python')[0];
     const selectedTask = () => currentTask?.id === taskSelector.value ? currentTask : null;
-    const testsFor = (task) => task.tests?.length ? task.tests : [{ label: 'Public test', input: [], output: task.expected || '' }];
-    const selectedTest = () => {
-      const task = selectedTask();
-      return task ? (testsFor(task)[Number(testSelector.value) || 0] || testsFor(task)[0]) : null;
-    };
+    const stagedPrivateTests = task => global.StudioTaskBankAPI?.getPrivate?.(task.id)?.privateTests || [];
+    const sampleList = task => global.StudioTaskUtils.visibleSamples(task);
+    const fullCaseList = task => global.StudioTaskUtils.submitCases(task, stagedPrivateTests(task));
     const updateRunAvailability = () => {
-      runButton.disabled = !runtimeReady || !taskReady;
-      checkButton.disabled = true;
+      const ready = runtimeReady && taskReady;
+      runButton.disabled = !ready;
+      checkButton.disabled = !ready;
+      lab.querySelectorAll('[data-sample-run]').forEach(button => { button.disabled = !ready; });
     };
-    const updateTestPreview = () => {
-      const test = selectedTest();
-      if (!test) return;
-      const inputText = testInput(test).length ? `input: ${testInput(test).join(' | ')}` : 'input: no input lines';
-      lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Test'} · ${inputText}`;
-      const customInput = lab.querySelector('[data-python-custom-input]');
-      if (customInput && customInput.dataset.dirty !== 'true') customInput.value = testInput(test).join('\n');
-      checkedRun = null;
-      checkButton.disabled = true;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+    const renderSamples = task => {
+      const samples = sampleList(task);
+      const host = lab.querySelector('[data-python-samples]');
+      if (!host) return;
+      const countNote = samples.length < 4 ? `<p class="kata-note">這題現有 ${samples.length} 個可見示例。</p>` : '';
+      host.innerHTML = countNote + samples.map((sample, index) => `
+        <article class="kata-sample">
+          <header><strong>${escapeHtml(sample.label)}</strong><button type="button" class="secondary-btn" data-sample-run="${index}">Run</button></header>
+          <div class="kata-io">
+            <section><h6>Input</h6><pre>${escapeHtml(global.StudioTaskUtils.caseInputText(sample) || '(no input)')}</pre></section>
+            <section><h6>Expected output</h6><pre>${escapeHtml(sample.output || '(no output)')}</pre></section>
+          </div>
+          ${sample.explanation ? `<p>${escapeHtml(sample.explanation)}</p>` : ''}
+          <div data-sample-result="${index}"></div>
+        </article>
+      `).join('');
+      updateRunAvailability();
     };
     const showTask = async (metadata) => {
       const request = ++taskLoadToken;
@@ -527,14 +539,14 @@
       currentTask = null;
       taskSelector.value = metadata.id;
       lab.dataset.taskId = metadata.id;
-      testSelector.innerHTML = '';
-      testSelector.disabled = true;
       code.disabled = true;
       code.value = 'Loading selected task…';
-      lab.querySelector('[data-python-task-state]').textContent = 'Loading this task’s starter code and public tests…';
+      lab.querySelector('[data-python-title]').textContent = metadata.title;
+      lab.querySelector('[data-python-task-state]').textContent = 'Loading this task’s starter code and tests…';
       lab.querySelector('[data-python-task-retry]').hidden = true;
-      lab.querySelector('[data-python-brief]').innerHTML = `<p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(metadata.title)}</h4><p>${escapeHtml(metadata.brief)}</p><small data-python-task-state>Loading this task’s starter code and public tests…</small><button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button><small data-python-test-preview></small>`;
-      lab.querySelector('[data-python-task-retry]').addEventListener('click', () => showTask(metadata));
+      lab.querySelector('[data-python-statement]').innerHTML = '<p>Loading the statement…</p>';
+      lab.querySelector('[data-python-samples]').innerHTML = '';
+      lab.querySelector('[data-python-submit-report]').innerHTML = '';
       lab.querySelector('[data-python-task-label]').textContent = metadata.id;
       output.textContent = 'Loading selected task files…';
       const customInput = lab.querySelector('[data-python-custom-input]');
@@ -549,19 +561,17 @@
         if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
         currentTask = task;
         taskReady = true;
-        testSelector.innerHTML = testsFor(task).map((test, index) => `<option value="${index}">${escapeHtml(test.label || `Public test ${index + 1}`)}</option>`).join('');
-        testSelector.disabled = false;
         code.disabled = false;
         code.value = readDraft('python', task);
         rememberTask('python', task.id);
-        const brief = lab.querySelector('[data-python-brief]');
-        const statement = task.statement ? `<details class="studio-statement"><summary>Full statement</summary><pre>${escapeHtml(task.statement)}</pre></details>` : '';
-        const after = task.support?.afterSamples ? `<details class="studio-statement"><summary>After samples</summary><pre>${escapeHtml(task.support.afterSamples)}</pre></details>` : '';
         const meta = [categoryLabel(task.category), task.practiceType || '', task.stars ? `${task.stars} star` : ''].filter(Boolean).join(' · ');
-        brief.insertAdjacentHTML('beforeend', `${meta ? `<small>${escapeHtml(meta)}</small>` : ''}${statement}${after}`);
-        lab.querySelector('[data-python-task-state]').textContent = 'Task files ready. Check solution uses public tests only.';
-        output.textContent = runtimeReady ? 'Starter code loaded. Trace it before running.' : 'Starter code loaded. Python is still preparing.';
-        updateTestPreview();
+        const statement = task.statement || task.brief || '';
+        const after = task.support?.afterSamples ? `<h5>After samples</h5>${global.StudioTaskUtils.renderStatementHtml(task.support.afterSamples)}` : '';
+        lab.querySelector('[data-python-statement]').innerHTML = `${meta ? `<p class="kata-note">${escapeHtml(meta)}</p>` : ''}${global.StudioTaskUtils.renderStatementHtml(statement)}${after}`;
+        renderSamples(task);
+        const submitCount = fullCaseList(task).length;
+        lab.querySelector('[data-python-task-state]').textContent = `可見示例 ${sampleList(task).length} 個。Submit 會檢查 ${submitCount} 個測試。`;
+        output.textContent = runtimeReady ? 'Starter code loaded. Use a sample Run, or Submit every test.' : 'Starter code loaded. Python is still preparing.';
         updateRunAvailability();
       } catch (error) {
         if (disposed || request !== taskLoadToken || taskSelector.value !== metadata.id) return;
@@ -584,8 +594,8 @@
         status.classList.remove('is-error');
         status.textContent = 'Python ready · runs locally';
         status.classList.add('is-ready');
-        runButton.disabled = !taskReady;
-        if (taskReady) output.textContent = 'Python is ready. Run the starter code or write your own solution.';
+        updateRunAvailability();
+        if (taskReady) output.textContent = 'Python is ready. Use a sample Run, or Submit every test.';
       } else if (state.status === 'error') {
         runtimeReady = false;
         runButton.disabled = true;
@@ -616,7 +626,31 @@
       evidenceOpen.disabled = true;
     });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
-    testSelector.addEventListener('change', updateTestPreview);
+    lab.querySelector('[data-python-task-retry]')?.addEventListener('click', () => showTask(selectedTaskMetadata()));
+    lab.querySelector('[data-python-samples]')?.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-sample-run]');
+      if (!button || !runtimeReady || !taskReady) return;
+      const task = selectedTask();
+      const sample = sampleList(task)[Number(button.dataset.sampleRun)];
+      if (!task || !sample) return;
+      const submittedCode = code.value;
+      const resultHost = lab.querySelector(`[data-sample-result="${button.dataset.sampleRun}"]`);
+      button.disabled = true;
+      output.textContent = `Running ${sample.label}…`;
+      const result = await runner.run(submittedCode, testInput(sample));
+      if (disposed || taskSelector.value !== task.id || code.value !== submittedCode) {
+        updateRunAvailability();
+        return;
+      }
+      runCount += 1;
+      const verdict = outputVerdict(task, result.stdout, testOutput(sample));
+      const passed = result.ok && verdict.pass;
+      output.textContent = formatPythonRun(result);
+      resultHost.innerHTML = passed
+        ? '<p class="kata-pass">正確。這一組輸出相符。</p>'
+        : `<p class="kata-fail">錯誤。${escapeHtml(result.error || verdict.reason || 'output does not match')}</p><div class="kata-io"><section><h6>Expected</h6><pre>${escapeHtml(testOutput(sample) || '(no output)')}</pre></section><section><h6>Actual</h6><pre>${escapeHtml(result.stdout || '(no stdout)')}</pre></section></div>`;
+      updateRunAvailability();
+    });
     const visiblePythonTasks = () => tasksInCategory('python', lab.querySelector('[data-python-category]')?.value || '');
     lab.querySelector('[data-python-category]')?.addEventListener('change', () => {
       const visible = visiblePythonTasks();
@@ -639,7 +673,7 @@
       output.textContent = 'Starter code restored. Trace it before running.';
       lastRun = null;
       checkedRun = null;
-      updateTestPreview();
+      lab.querySelector('[data-python-submit-report]').innerHTML = '';
     });
     runButton.addEventListener('click', async () => {
       if (!runtimeReady || !taskReady) return;
@@ -648,24 +682,22 @@
       evidenceButton.disabled = true;
       evidenceOpen.disabled = true;
       output.textContent = 'Running Python…';
-      const test = selectedTest();
       const submittedCode = code.value;
       const task = selectedTask();
-      if (!test || !task) return;
+      if (!task) return;
       const customInput = lab.querySelector('[data-python-custom-input]');
-      const runInputs = customInput ? (global.StudioTaskUtils?.inputLinesFromText(customInput.value) || []) : testInput(test);
+      const runInputs = global.StudioTaskUtils?.inputLinesFromText(customInput?.value || '') || [];
       const result = await runner.run(submittedCode, runInputs);
       if (disposed || taskSelector.value !== task.id || code.value !== submittedCode) {
         if (!disposed) { runButton.disabled = !runtimeReady; checkButton.disabled = !runtimeReady; }
         return;
       }
       runCount += 1;
-      lastRun = { ...result, code: submittedCode, task, test, runCount };
+      lastRun = { ...result, code: submittedCode, task, runCount };
       output.textContent = formatPythonRun(result);
-      runButton.disabled = false;
-      checkButton.disabled = false;
+      updateRunAvailability();
       lab.querySelector('[data-python-feedback]').innerHTML = result.ok
-        ? feedback('info', 'Run recorded.', 'A clean run is not yet proof that the output is correct.', 'Use “Check solution” to run every required test.')
+        ? feedback('info', 'Custom run recorded.', 'This run is not a sample check.', 'Use a sample Run or Submit to compare output.')
         : feedback('bad', 'Python stopped with an error.', result.error || 'Read the line named in the message, then repair one thing at a time.', 'Run again after the smallest sensible repair.');
     });
     checkButton.addEventListener('click', async () => {
@@ -675,26 +707,32 @@
       const checkedCode = code.value;
       runButton.disabled = true;
       checkButton.disabled = true;
+      const cases = fullCaseList(task);
       const results = [];
-      for (const test of testsFor(task)) {
+      for (const test of cases) {
         const result = await runner.run(checkedCode, testInput(test));
         if (disposed || taskSelector.value !== task.id || code.value !== checkedCode) {
-          if (!disposed) { runButton.disabled = !runtimeReady; checkButton.disabled = !runtimeReady; }
+          if (!disposed) updateRunAvailability();
           return;
         }
         const verdict = outputVerdict(task, result.stdout, testOutput(test));
-        results.push({ test, result, passed: result.ok && verdict.pass, reason: verdict.reason || '' });
+        results.push({ test, result, passed: result.ok && verdict.pass, reason: verdict.reason || '', visible: test.visible });
       }
       runCount += results.length;
       const correct = results.every(item => item.passed);
+      const passedCount = results.filter(item => item.passed).length;
       checkedRun = correct ? { code: checkedCode, task, results, runCount } : null;
-      const report = results.map((item, index) => `${item.passed ? '✓' : '✗'} ${item.test.label || `Test ${index + 1}`}`).join('  •  ');
-      const detail = results.filter(item => !item.passed).map(item => item.reason || item.result.error || 'wrong output').filter(Boolean)[0] || '';
-      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? 'All public tests passed in this browser.' : `${results.filter(item => item.passed).length} / ${results.length} public tests passed.`, `${report}${detail ? ` ${detail}` : ''}`, correct ? 'This is formative checking, not a central Accepted result.' : 'Fix the code, then check the public tests again.');
+      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? `Submit：${passedCount} / ${results.length} 正確。` : `Submit：${passedCount} / ${results.length} 正確。`, '每一個測試都已執行。', '這是瀏覽器內的形成性檢查，不是中央 Accepted。');
+      lab.querySelector('[data-python-submit-report]').innerHTML = `<ol class="kata-submit-report">${results.map((item, index) => {
+        const name = item.test.label || `Test ${index + 1}`;
+        const failure = item.passed ? '' : (item.visible
+          ? `<p>${escapeHtml(item.result.error || item.reason || 'output does not match')}</p><div class="kata-io"><section><h6>Expected</h6><pre>${escapeHtml(testOutput(item.test) || '(no output)')}</pre></section><section><h6>Actual</h6><pre>${escapeHtml(item.result.stdout || '(no stdout)')}</pre></section></div>`
+          : `<p>${escapeHtml(item.result.ok ? 'output does not match' : (item.result.error || 'error'))}</p>`);
+        return `<li class="${item.passed ? 'is-pass' : 'is-fail'}"><strong>${item.passed ? '正確' : '錯誤'}</strong> ${escapeHtml(name)}${failure}</li>`;
+      }).join('')}</ol>`;
       evidenceButton.disabled = !correct;
       evidenceOpen.disabled = !correct;
-      runButton.disabled = false;
-      checkButton.disabled = false;
+      updateRunAvailability();
     });
     evidenceOpen.addEventListener('click', () => { lab.querySelector('[data-evidence-panel]').hidden = false; });
     evidenceButton.addEventListener('click', () => {
