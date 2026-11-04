@@ -357,7 +357,7 @@
     document.querySelector('[data-task-pack-template]')?.addEventListener('click', () => {
       input.value = JSON.stringify({
         python: [{
-          id: 'D4-PY-CUSTOM-01', topic: 'D4', skill: 'input-output', practiceType: 'construct', level: 'Foundation', title: 'Custom two-number total',
+          id: 'D4-PY-CUSTOM-01', topic: 'D4', skill: 'input-output', practiceType: 'construct', category: 'elementary', level: 'Foundation', title: 'Custom two-number total',
           brief: 'Read two whole numbers and print their total.',
           starter: 'first = int(input())\\nsecond = int(input())\\n\\n# Calculate the total.\\n\\nprint(total)',
           tests: [{ label: 'Public test', input: ['8', '9'], output: '17' }]
@@ -421,10 +421,12 @@
         <label>Label<input type="text" data-builder-test-label maxlength="80"></label>
         <label>Input<textarea data-builder-test-input rows="4" spellcheck="false"></textarea></label>
         <label>Expected output<textarea data-builder-test-output rows="4" spellcheck="false"></textarea></label>
+        <label>Explanation<textarea data-builder-test-explanation rows="2"></textarea></label>
       `;
       card.querySelector('[data-builder-test-label]').value = test.label || '';
       card.querySelector('[data-builder-test-input]').value = Array.isArray(test.input) ? test.input.join('\n') : (test.input || '');
       card.querySelector('[data-builder-test-output]').value = test.output || '';
+      card.querySelector('[data-builder-test-explanation]').value = test.explanation || '';
       card.querySelector('[data-builder-remove-test]').addEventListener('click', () => {
         card.remove();
         refreshTestLabels();
@@ -436,10 +438,28 @@
       const tests = [...testList.querySelectorAll('[data-builder-test-card]')].map((card, index) => ({
         label: card.querySelector('[data-builder-test-label]').value.trim() || `Public test ${index + 1}`,
         input: inputLines(card.querySelector('[data-builder-test-input]').value),
-        output: normaliseText(card.querySelector('[data-builder-test-output]').value)
+        output: normaliseText(card.querySelector('[data-builder-test-output]').value),
+        explanation: card.querySelector('[data-builder-test-explanation]').value.trim()
       }));
-      const task = { id: field('id').value.trim(), topic: field('topic').value.trim(), skill: field('skill').value.trim(), level: field('level').value, practiceType: field('practice').value, title: field('title').value.trim(), brief: field('brief').value.trim(), starter: field('starter').value, tests };
+      const compareMode = field('compare').value;
+      const task = {
+        id: field('id').value.trim(),
+        topic: field('topic').value.trim(),
+        skill: field('skill').value.trim(),
+        level: field('level').value,
+        practiceType: field('practice').value,
+        category: field('category').value,
+        stars: field('stars').value ? Number(field('stars').value) : '',
+        title: field('title').value.trim(),
+        brief: field('brief').value.trim(),
+        statement: field('statement').value,
+        starter: field('starter').value,
+        compare: compareMode === 'numeric' ? { mode: 'numeric', tolerance: Number(field('tolerance').value) } : { mode: compareMode },
+        tests
+      };
+      if (compareMode === 'numeric' && !Number.isFinite(task.compare.tolerance)) throw new Error('Numeric compare needs a tolerance.');
       ['id', 'topic', 'skill', 'title', 'brief', 'starter'].forEach(key => { if (!task[key]) throw new Error(`${key} is required.`); });
+      if (!task.category) throw new Error('選擇題目分類。');
       if (!tests.length) throw new Error('Add at least one test.');
       return task;
     };
@@ -467,34 +487,142 @@
         if (!solution.trim()) throw new Error('Enter teacher-only solution code before running all tests.');
         if (!global.ActivityLabs?.runPythonTaskTests) throw new Error('Python execution engine is not ready.');
         feedback('Running all tests…', 'info');
-        const results = await global.ActivityLabs.runPythonTaskTests(task, solution);
-        const report = results.map(result => `${result.passed ? '✓' : '✗'} ${result.label}${result.passed ? '' : ` (${result.result.error || 'wrong output'})`}`).join(' · ');
-        feedback(`${results.filter(item => item.passed).length} / ${results.length} tests passed. ${report}`, results.every(item => item.passed) ? 'success' : 'error');
+        const validation = await global.ActivityLabs.runPythonTaskTests({ ...task, solution }, solution, { includePrivate: true });
+        const results = validation.results || [];
+        const passed = results.filter(item => item.passed).length;
+        const report = results.map(result => `${result.passed ? '✓' : '✗'} ${result.label}${result.passed ? '' : ` (${result.reason || 'wrong output'})`}`).join(' · ');
+        builder._validation = validation.complete ? { completed: true, passed, total: results.length, at: new Date().toISOString(), compare: task.compare } : { completed: false };
+        feedback(validation.complete && passed === results.length ? `Validation complete for this browser copy: ${passed} / ${results.length}. ${report}` : `${passed} / ${results.length} tests passed. Validation is complete only when every case has run. ${report}`, passed === results.length ? 'success' : 'error');
       } catch (error) { feedback(error.message, 'error'); }
     });
-    field('export').addEventListener('click', async () => {
+    const downloadZip = async (files, filename) => {
+      const JSZip = await loadZipLibrary();
+      const zip = new JSZip();
+      const folder = zip.folder(filename.replace(/\.zip$/, ''));
+      files.forEach(file => folder.file(file.name, file.text));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    };
+    field('export-student').addEventListener('click', async () => {
       try {
         const task = readTask();
-        const folder = `${task.topic}/${task.skill}/${task.id}`;
-        const metadata = { ...task, type: 'python', starter: 'starter.py', tests: task.tests.map((test, index) => ({ label: test.label, input: `${String(index + 1).padStart(2, '0')}.in`, output: `${String(index + 1).padStart(2, '0')}.out` })) };
-        feedback('Preparing repository-ready ZIP…', 'info');
-        const JSZip = await loadZipLibrary();
-        const zip = new JSZip();
-        const taskFolder = zip.folder(task.id);
-        taskFolder.file('task.json', JSON.stringify(metadata, null, 2));
-        taskFolder.file('starter.py', task.starter);
-        task.tests.forEach((test, index) => {
-          const stem = String(index + 1).padStart(2, '0');
-          taskFolder.file(`${stem}.in`, test.input.join('\n'));
-          taskFolder.file(`${stem}.out`, test.output);
-        });
-        const blob = await zip.generateAsync({ type: 'blob' });
-        const link = document.createElement('a');
-        link.download = `${task.id}.zip`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-        feedback(`Downloaded ${task.id}.zip. Extract it into tasks/python/${folder}/, then run python3 scripts/generate_task_index.py. Teacher solution code is not included.`, 'success');
+        const files = global.StudioTaskUtils.studentPackFiles(task);
+        if (files.some(file => /solution|private-|teacher-notes|validation/.test(file.name))) throw new Error('Student pack contained a private file.');
+        await downloadZip(files, `${task.id}-student.zip`);
+        feedback(`Downloaded ${task.id}-student.zip. It has the statement, starter and public tests only. Extract it under tasks/python/${task.topic}/${task.skill}/${task.id}/ and run python3 scripts/generate_task_index.py.`, 'success');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+    field('export-teacher').addEventListener('click', async () => {
+      try {
+        const task = { ...readTask(), solution: field('solution').value };
+        const files = global.StudioTaskUtils.teacherPackFiles(task, builder._validation || null);
+        await downloadZip(files, `${task.id}-teacher.zip`);
+        feedback(`Downloaded ${task.id}-teacher.zip. Keep this copy private. Do not put it in public tasks/.`, 'success');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+    let pendingImport = null;
+    const reportImport = (report) => {
+      const lines = [
+        `Kind: ${report.kind}`,
+        `Tasks: ${report.summary?.tasks ?? 0}`,
+        `Public sample pairs: ${report.summary?.samplePairs ?? 0}`,
+        `Private test pairs: ${report.summary?.privatePairs ?? 0}`,
+        `Blocked: ${report.summary?.blocked ?? 0}`
+      ];
+      (report.tasks || []).forEach(task => {
+        lines.push(`${task.id}: samples ${task.samples.length}, private ${task.privateTests.length}${task.unsupportedChecker ? `, unsupported ${task.unsupportedChecker}` : ''}${task.blocked ? ', blocked' : ''}`);
+      });
+      report.errors.forEach(error => lines.push(`Error: ${error}`));
+      report.warnings.forEach(warning => lines.push(`Warning: ${warning}`));
+      field('import-report').textContent = lines.join('\n');
+    };
+    const inspectZip = async (file) => {
+      pendingImport = null;
+      field('apply').disabled = true;
+      if (!file) return;
+      if (file.size > 2000000) {
+        feedback('ZIP is larger than 2 MB.', 'error');
+        return;
+      }
+      const buffer = await file.arrayBuffer();
+      const JSZip = await loadZipLibrary();
+      const zip = await JSZip.loadAsync(buffer);
+      const entries = [];
+      let total = 0;
+      const names = Object.keys(zip.files);
+      if (names.length > 800) throw new Error('ZIP has too many entries.');
+      for (const name of names) {
+        const item = zip.files[name];
+        if (item.dir) continue;
+        const bytes = await item.async('uint8array');
+        total += bytes.length;
+        if (total > 2000000) throw new Error('Unzipped files exceed 2 MB.');
+        entries.push({ name, bytes });
+      }
+      const report = global.HkoiTaskAdapter.analyseEntries(entries);
+      pendingImport = report.ok ? report : null;
+      reportImport(report);
+      field('apply').disabled = !report.ok || !report.tasks.length;
+      feedback(report.ok ? 'Preview ready. Apply only after you accept the report.' : 'Import stopped. Nothing was added.', report.ok ? 'info' : 'error');
+    };
+    field('zip').addEventListener('change', async (event) => {
+      try { await inspectZip(event.target.files?.[0]); }
+      catch (error) { pendingImport = null; field('apply').disabled = true; feedback(error.message, 'error'); }
+    });
+    const drop = field('drop');
+    drop.addEventListener('dragover', (event) => { event.preventDefault(); drop.dataset.active = 'true'; });
+    drop.addEventListener('dragleave', () => { drop.dataset.active = ''; });
+    drop.addEventListener('drop', async (event) => {
+      event.preventDefault();
+      drop.dataset.active = '';
+      try { await inspectZip(event.dataTransfer?.files?.[0]); }
+      catch (error) { pendingImport = null; field('apply').disabled = true; feedback(error.message, 'error'); }
+    });
+    drop.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); field('zip').click(); }
+    });
+    field('apply').addEventListener('click', async () => {
+      try {
+        if (!pendingImport?.tasks?.length) throw new Error('Preview a ZIP before applying it.');
+        const tolerance = field('import-tolerance').value;
+        const category = field('category').value;
+        if (!category) throw new Error('先選擇題目分類，再套用預覽。分類不會按 X、Y、Z 自動填上。');
+        const tasks = pendingImport.tasks.map(task => ({ ...global.HkoiTaskAdapter.toPreviewTask(task, { numericTolerance: tolerance }), category }));
+        const blocked = tasks.filter(task => task.blocked);
+        if (blocked.length) throw new Error(`${blocked.map(task => task.id).join(', ')} still has an unsupported checker. Set a numeric tolerance or remove that checker before applying.`);
+        await global.ActivityLabs.loadTaskCatalog();
+        tasks.forEach(task => global.StudioTaskBankAPI.stagePrivate(task.id, { solution: task.solution || '', privateTests: task.privateTests || [], compare: task.compare }));
+        const result = global.StudioTaskBankAPI?.mergeLocalPack({ python: tasks, sql: [] });
+        if (!result?.ok) throw new Error(result?.errors?.join(' ') || 'Preview was not applied.');
+        pendingImport = null;
+        field('apply').disabled = true;
+        refreshStudioWorkspace(result.firstTaskId);
+        field('validate-import').disabled = false;
+        feedback(`Applied ${result.python} preview task(s). Applying the same ID again replaces the preview. Public tasks were not changed.`, 'success');
+      } catch (error) { feedback(error.message, 'error'); }
+    });
+    field('validate-import').addEventListener('click', async () => {
+      try {
+        const tasks = global.StudioTaskBankAPI.getPreview('python');
+        if (!tasks.length) throw new Error('Apply a preview before validating a model.');
+        if (!global.ActivityLabs?.runPythonTaskTests) throw new Error('Python execution engine is not ready.');
+        const lines = [];
+        for (const task of tasks) {
+          const staged = global.StudioTaskBankAPI.getPrivate(task.id);
+          if (!staged?.solution?.trim()) {
+            lines.push(`${task.id}: no private model is staged.`);
+            continue;
+          }
+          const validation = await global.ActivityLabs.runPythonTaskTests({ ...task, privateTests: staged.privateTests || [], compare: staged.compare || task.compare }, staged.solution, { includePrivate: true });
+          const results = validation.results || [];
+          const passed = results.filter(item => item.passed).length;
+          lines.push(`${task.id}: ${validation.complete && passed === results.length ? 'validation complete' : 'validation incomplete'} ${passed}/${results.length}`);
+        }
+        feedback(lines.join(' '), lines.every(line => line.includes('validation complete')) ? 'success' : 'error');
       } catch (error) { feedback(error.message, 'error'); }
     });
   }

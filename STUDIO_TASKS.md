@@ -38,7 +38,17 @@ scripts/generate_task_index.py
 }
 ```
 
-`.in` contains stdin lines. `.out` contains expected stdout. Check Solution runs every test independently; passing one test is not completion.
+`.in` contains stdin lines. `.out` contains expected stdout. Check Solution runs every public test independently; passing one test is not completion. A task with no `compare` field keeps the legacy rule: compare after converting newlines and trimming the whole stdout. Set `compare` explicitly when a new task needs a stricter rule.
+
+```json
+{ "compare": { "mode": "legacy" } }
+{ "compare": { "mode": "exact" } }
+{ "compare": { "mode": "numeric", "tolerance": 0.000001 } }
+```
+
+`exact` compares stdout after newline conversion and does not trim. `numeric` compares numbers within `tolerance` and compares other tokens exactly. `input()` prompt text is terminal echo, not stdout. Optional `stars` is 1–5. Optional `statementFile` and `afterFile` name Markdown files in the task folder.
+
+`category` is the student-facing group: `intro` 入門, `elementary` 初階, `advanced` 進階練習, or `applied` 現實應用題. It is chosen directly. It is not derived from an X, Y or Z label, from `level`, or from `practiceType`. The current public tasks use this starting assignment: Python `complete` → 入門, `construct` → 初階, `modify` → 進階練習, `dse` → 現實應用題; SQL `Foundation` → 入門, `Developing` → 初階, `Challenge` → 進階練習. Change a task’s `category` when that assignment does not fit.
 
 ## SQL task format
 
@@ -60,7 +70,9 @@ Open `#view=studio&workspace=code&teacher=1` to reveal the lightweight Teacher T
 
 **Preview task** adds only the public task fields to browser memory and opens the real Code Studio with the temporary task. It disappears after refresh, cannot use a public ID, and does not modify repository files. The older JSON task-pack interface remains under **Advanced · Import JSON task pack** for specialist local preview use.
 
-**Export task ZIP** downloads `TASK-ID.zip`, containing `TASK-ID/task.json`, `starter.py`, `01.in`, `01.out`, and so on. Extract that folder into `tasks/python/<topic>/<skill>/`; the included `TASK-ID/` folder then becomes the final `tasks/python/<topic>/<skill>/<task-id>/` path. Run the generator afterwards. ZIP import is deliberately deferred; it is not needed for normal authoring and a teacher solution would not be recoverable from an export.
+**Export student ZIP** downloads the statement, starter and public tests. Extract that folder into `tasks/python/<topic>/<skill>/`, then run `python3 scripts/generate_task_index.py`. **Export teacher ZIP** adds the private solution, private tests and the last validation report. Do not put the teacher ZIP in `tasks/`.
+
+**Import ZIP** reads a site task ZIP or an HKOI handover pack, then shows task counts, sample pairs, private pairs, missing pairs, duplicate paths, encoding warnings and unsupported checkers. Apply adds a browser preview only after that report. The same ID replaces the previous preview. A `checker.cpp` task stays blocked until a numeric tolerance is entered; the browser does not run C++ checkers. Real XICT05–14 and YICT03–07 packages are not in this repository. Fixture coverage is `node scripts/test_hkoi_adapter.mjs`.
 
 ## Python practice progression
 
@@ -74,6 +86,6 @@ Local work: run `python3 scripts/generate_task_index.py`; it validates and rewri
 
 - The task index is explicit because GitHub Pages cannot enumerate repository folders safely in the browser. It is generated catalog data, not a second authoring source.
 - Public `.out` files are discoverable. This is formative practice, not secure summative assessment.
-- Importing an exported ZIP is deferred; ZIP export is repository-ready.
+- ZIP import applies to browser preview only. It does not publish tasks or execute C++ checkers.
 - The old JSON local-pack import API remains for temporary previews. Legacy SQL packs may omit `seedSql` and then use the first public SQL task's seed; explicit task seeds are preferred. Public content is never copied into this compatibility module.
 - Invalid indexed tasks are skipped with a developer-console warning; valid tasks continue loading.

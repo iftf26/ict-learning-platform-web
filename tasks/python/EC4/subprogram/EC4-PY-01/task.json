@@ -4,6 +4,7 @@
   "skill": "subprogram",
   "level": "Challenge",
   "practiceType": "construct",
+  "category": "elementary",
   "title": "Reusable pass counter",
   "brief": "Complete countPassed so that it returns the number of marks that are at least 50. Do not print inside the function; the final print is provided.",
   "type": "python",

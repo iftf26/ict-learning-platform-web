@@ -3,6 +3,7 @@
   "topic": "EA1",
   "skill": "select-where",
   "level": "Foundation",
+  "category": "intro",
   "title": "Filter passing students",
   "brief": "Display StudentID, Name and Mark for 5A students who pass (50 or above), with the highest mark first.",
   "checker": {

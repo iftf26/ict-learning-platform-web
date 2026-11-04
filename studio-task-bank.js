@@ -3,6 +3,7 @@
  */
 (function (global) {
   const preview = { python: [], sql: [] };
+  const privateAssets = new Map();
   let publicIds = new Set();
   let publicCounts = { python: 0, sql: 0 };
   const isText = value => typeof value === 'string' && Boolean(value.trim());
@@ -14,6 +15,7 @@
     }
     if (kind === 'python') {
       if (!['complete', 'construct', 'modify', 'dse'].includes(task?.practiceType)) errors.push(`${label}: choose a practice type.`);
+      if (!['intro', 'elementary', 'advanced', 'applied'].includes(task?.category)) errors.push(`${label}: choose 入門、初階、進階練習 or 現實應用題.`);
       if (!Array.isArray(task?.tests) || !task.tests.length) errors.push(`${label}: add at least one test.`);
       else task.tests.forEach((test, index) => {
         if (!Array.isArray(test?.input) || !test.input.every(value => typeof value === 'string')) errors.push(`${label}, test ${index + 1}: input must be text lines.`);
@@ -53,12 +55,45 @@
     return { ok: true, python: preview.python.length, sql: preview.sql.length, firstTaskId: preview.python[0]?.id || preview.sql[0]?.id || '' };
   }
 
+  function mergeLocalPack(pack) {
+    const errors = [];
+    if (!pack || typeof pack !== 'object') errors.push('Choose a task pack.');
+    if (errors.length) return { ok: false, errors };
+    const next = { python: [...preview.python], sql: [...preview.sql] };
+    for (const kind of ['python', 'sql']) {
+      (pack[kind] || []).forEach((task, index) => {
+        const label = `${kind} task ${index + 1}`;
+        errors.push(...validateTask(task, kind, label));
+        if (publicIds.has(task?.id)) errors.push(`${label}: ${task.id} is already a public task.`);
+      });
+    }
+    if (errors.length) return { ok: false, errors };
+    for (const kind of ['python', 'sql']) {
+      (pack[kind] || []).forEach(task => {
+        const clean = { ...task, type: kind };
+        delete clean.solution;
+        delete clean.privateTests;
+        delete clean.modelText;
+        const position = next[kind].findIndex(item => item.id === clean.id);
+        if (position >= 0) next[kind][position] = clean;
+        else next[kind].push(clean);
+      });
+    }
+    preview.python = next.python;
+    preview.sql = next.sql;
+    return { ok: true, python: preview.python.length, sql: preview.sql.length, firstTaskId: pack.python?.[0]?.id || pack.sql?.[0]?.id || '' };
+  }
+
   global.StudioTaskBankAPI = {
     importLocalPack,
+    mergeLocalPack,
+    stagePrivate(id, asset) { privateAssets.set(id, asset); },
+    getPrivate(id) { return privateAssets.get(id) || null; },
     clearLocalPack() {
       const removed = preview.python.length + preview.sql.length;
       preview.python = [];
       preview.sql = [];
+      privateAssets.clear();
       return { removed };
     },
     setPublicCatalog(catalog) {

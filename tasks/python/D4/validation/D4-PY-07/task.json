@@ -4,6 +4,7 @@
   "skill": "validation",
   "level": "Developing",
   "practiceType": "modify",
+  "category": "advanced",
   "title": "Valid score gate",
   "brief": "Read one whole-number score. Print \"Accept\" only if it is from 0 to 100 inclusive; otherwise print \"Retry\".",
   "type": "python",

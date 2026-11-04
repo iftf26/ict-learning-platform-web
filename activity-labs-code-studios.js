@@ -27,6 +27,13 @@
     if (text === '') return [];
     return (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n');
   });
+  const categoryLabel = id => global.StudioTaskUtils?.categoryLabel?.(id) || '';
+  const taskMenuLabel = item => [categoryLabel(item.category), item.topic, item.title, `(${item.id})`].filter(Boolean).join(' · ');
+  const tasksInCategory = (kind, category) => studioTasks(kind).filter(item => !category || item.category === category);
+  const categoryMenu = name => {
+    const options = (global.StudioTaskUtils?.taskCategories || []).map(item => `<option value="${item.id}">${escapeHtml(item.label)}</option>`).join('');
+    return `<label>分類<select data-${name}-category><option value="">全部</option>${options}</select></label>`;
+  };
 
   function indentCode(value, start, end, outdent = false) {
     if (!outdent && start === end) {
@@ -89,6 +96,22 @@
     return String(value || '').trim().replace(/\r\n/g, '\n');
   }
 
+  function outputVerdict(task, actual, expected) {
+    const utils = global.StudioTaskUtils;
+    if (utils?.compareOutputs) return utils.compareOutputs(actual, expected, utils.compareSpec(task));
+    return { pass: normaliseOutput(actual) === normaliseOutput(expected), mode: 'legacy' };
+  }
+
+  function formatPythonRun(result) {
+    if (!result?.ok && !result?.stdout && !result?.terminal) return `Error:\n${result?.error || 'Python stopped.'}`;
+    const parts = [];
+    if (result.terminal) parts.push(`Terminal echo (not scored)\n${result.terminal}`);
+    parts.push(`stdout\n${result.stdout ? result.stdout : '(no stdout)'}`);
+    if (result.stderr) parts.push(`stderr\n${result.stderr}`);
+    if (!result.ok) parts.push(`Error:\n${result.error || 'Python stopped.'}`);
+    return parts.join('\n\n');
+  }
+
   function taskUrl(path) {
     return new URL(`tasks/${path.replace(/^tasks\//, '')}`, document.baseURI).href;
   }
@@ -141,10 +164,15 @@
           return {
             label: test.label || `Public test ${index + 1}`,
             inputLines: inputLinesFromText(input),
-            expectedOutput: normaliseOutput(output)
+            expectedOutput: output.replace(/\r\n/g, '\n'),
+            explanation: test.explanation || ''
           };
         }));
-        return { ...task, starterText, tests };
+        let statement = task.statement || '';
+        if (!statement && task.statementFile) statement = await fetchText(`${folder}${task.statementFile}`);
+        let afterSamples = task.support?.afterSamples || '';
+        if (!afterSamples && task.afterFile) afterSamples = await fetchText(`${folder}${task.afterFile}`);
+        return { ...task, starterText, tests, statement, support: { ...(task.support || {}), afterSamples } };
       }
       const [starterText, seedSql] = await Promise.all([
         fetchText(`${folder}${task.starter}`),
@@ -361,7 +389,7 @@
     const boot = () => {
       if (disposed) return;
       worker?.terminate();
-      worker = new Worker('python-runner-worker.mjs?v=20260922-1', { type: 'module' });
+      worker = new Worker('python-runner-worker.mjs?v=20261105-io1', { type: 'module' });
       worker.addEventListener('message', (event) => {
         const data = event.data || {};
         if (data.type === 'status') {
@@ -427,15 +455,17 @@
           <div class="runtime-status-stack"><span class="runtime-pill" data-python-status aria-live="polite">Preparing Python…</span><button type="button" class="text-btn" data-python-retry hidden>Retry Python</button></div>
         </div>
         <div class="task-toolbar">
-          <label>Task<select data-python-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.practiceType || item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label>
+          ${categoryMenu('python')}
+          <label>Task<select data-python-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label>
           <label>Test input<select data-python-test></select></label>
           <button type="button" class="ghost-btn" data-python-random>換一題</button>
           <button type="button" class="ghost-btn" data-python-reset>重設題目</button>
+          <button type="button" class="ghost-btn" data-python-download>下載程式</button>
         </div>
         <article class="studio-brief" data-python-brief><p class="eyebrow">DSE-style coding brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-python-task-state>Loading this task’s starter code and public tests…</small><button type="button" class="text-btn" data-python-task-retry hidden>Retry task files</button><small data-python-test-preview></small></article>
         <div class="execution-grid">
           <section class="editor-panel"><div class="editor-heading"><span>main.py</span><span data-python-task-label>${task.id}</span></div><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
-          <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
+          <section class="console-panel"><div class="editor-heading"><span>Output</span><span>Python</span></div><label class="studio-custom-input">Custom stdin for Run<textarea data-python-custom-input rows="4" spellcheck="false" aria-label="Custom standard input for Run"></textarea></label><pre class="studio-console" data-python-output aria-live="polite">Python is loading in the background…</pre></section>
         </div>
         <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-python-run disabled>Run</button><button type="button" class="secondary-btn" data-python-check disabled>Check solution</button></div>
         <div data-python-feedback></div>
@@ -484,6 +514,8 @@
       if (!test) return;
       const inputText = testInput(test).length ? `input: ${testInput(test).join(' | ')}` : 'input: no input lines';
       lab.querySelector('[data-python-test-preview]').textContent = `${test.label || 'Test'} · ${inputText}`;
+      const customInput = lab.querySelector('[data-python-custom-input]');
+      if (customInput && customInput.dataset.dirty !== 'true') customInput.value = testInput(test).join('\n');
       checkedRun = null;
       checkButton.disabled = true;
       evidenceButton.disabled = true;
@@ -505,6 +537,8 @@
       lab.querySelector('[data-python-task-retry]').addEventListener('click', () => showTask(metadata));
       lab.querySelector('[data-python-task-label]').textContent = metadata.id;
       output.textContent = 'Loading selected task files…';
+      const customInput = lab.querySelector('[data-python-custom-input]');
+      if (customInput) { customInput.value = ''; customInput.dataset.dirty = ''; }
       checkedRun = null;
       lastRun = null;
       evidenceButton.disabled = true;
@@ -520,7 +554,12 @@
         code.disabled = false;
         code.value = readDraft('python', task);
         rememberTask('python', task.id);
-        lab.querySelector('[data-python-task-state]').textContent = 'Task files ready.';
+        const brief = lab.querySelector('[data-python-brief]');
+        const statement = task.statement ? `<details class="studio-statement"><summary>Full statement</summary><pre>${escapeHtml(task.statement)}</pre></details>` : '';
+        const after = task.support?.afterSamples ? `<details class="studio-statement"><summary>After samples</summary><pre>${escapeHtml(task.support.afterSamples)}</pre></details>` : '';
+        const meta = [categoryLabel(task.category), task.practiceType || '', task.stars ? `${task.stars} star` : ''].filter(Boolean).join(' · ');
+        brief.insertAdjacentHTML('beforeend', `${meta ? `<small>${escapeHtml(meta)}</small>` : ''}${statement}${after}`);
+        lab.querySelector('[data-python-task-state]').textContent = 'Task files ready. Check solution uses public tests only.';
         output.textContent = runtimeReady ? 'Starter code loaded. Trace it before running.' : 'Starter code loaded. Python is still preparing.';
         updateTestPreview();
         updateRunAvailability();
@@ -560,6 +599,15 @@
     showTask(selectedTaskMetadata());
     retryButton.addEventListener('click', () => runner.retry());
     lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
+    lab.querySelector('[data-python-custom-input]')?.addEventListener('input', (event) => { event.target.dataset.dirty = 'true'; });
+    lab.querySelector('[data-python-download]')?.addEventListener('click', () => {
+      const blob = new Blob([code.value], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.download = `${taskSelector.value || 'main'}.py`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    });
     code.addEventListener('input', () => {
       if (!selectedTask()) return;
       saveDraft('python', selectedTask().id, code.value);
@@ -569,9 +617,18 @@
     });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     testSelector.addEventListener('change', updateTestPreview);
+    const visiblePythonTasks = () => tasksInCategory('python', lab.querySelector('[data-python-category]')?.value || '');
+    lab.querySelector('[data-python-category]')?.addEventListener('change', () => {
+      const visible = visiblePythonTasks();
+      const current = taskSelector.value;
+      taskSelector.innerHTML = visible.map(item => `<option value="${item.id}">${escapeHtml(taskMenuLabel(item))}</option>`).join('');
+      const chosen = visible.find(item => item.id === current) || visible[0];
+      if (chosen && chosen.id !== current) showTask(chosen);
+      else if (chosen) taskSelector.value = chosen.id;
+    });
     lab.querySelector('[data-python-random]').addEventListener('click', () => {
-      const options = studioTasks('python').filter((item) => item.id !== selectedTaskMetadata().id);
-      showTask(randomItem(options));
+      const options = visiblePythonTasks().filter((item) => item.id !== selectedTaskMetadata().id);
+      if (options.length) showTask(randomItem(options));
     });
     lab.querySelector('[data-python-reset]').addEventListener('click', () => {
       const task = selectedTask();
@@ -595,14 +652,16 @@
       const submittedCode = code.value;
       const task = selectedTask();
       if (!test || !task) return;
-      const result = await runner.run(submittedCode, testInput(test));
+      const customInput = lab.querySelector('[data-python-custom-input]');
+      const runInputs = customInput ? (global.StudioTaskUtils?.inputLinesFromText(customInput.value) || []) : testInput(test);
+      const result = await runner.run(submittedCode, runInputs);
       if (disposed || taskSelector.value !== task.id || code.value !== submittedCode) {
         if (!disposed) { runButton.disabled = !runtimeReady; checkButton.disabled = !runtimeReady; }
         return;
       }
       runCount += 1;
       lastRun = { ...result, code: submittedCode, task, test, runCount };
-      output.textContent = result.ok ? (result.stdout || '(Program completed with no printed output.)') : `Error:\n${result.error}`;
+      output.textContent = formatPythonRun(result);
       runButton.disabled = false;
       checkButton.disabled = false;
       lab.querySelector('[data-python-feedback]').innerHTML = result.ok
@@ -623,13 +682,15 @@
           if (!disposed) { runButton.disabled = !runtimeReady; checkButton.disabled = !runtimeReady; }
           return;
         }
-        results.push({ test, result, passed: result.ok && normaliseOutput(result.stdout) === normaliseOutput(testOutput(test)) });
+        const verdict = outputVerdict(task, result.stdout, testOutput(test));
+        results.push({ test, result, passed: result.ok && verdict.pass, reason: verdict.reason || '' });
       }
       runCount += results.length;
       const correct = results.every(item => item.passed);
       checkedRun = correct ? { code: checkedCode, task, results, runCount } : null;
       const report = results.map((item, index) => `${item.passed ? '✓' : '✗'} ${item.test.label || `Test ${index + 1}`}`).join('  •  ');
-      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? 'All required tests passed.' : `${results.filter(item => item.passed).length} / ${results.length} tests passed.`, report, correct ? 'You can export evidence for this completed task.' : 'Fix the code, then check all required tests again.');
+      const detail = results.filter(item => !item.passed).map(item => item.reason || item.result.error || 'wrong output').filter(Boolean)[0] || '';
+      lab.querySelector('[data-python-feedback]').innerHTML = feedback(correct ? 'good' : 'bad', correct ? 'All public tests passed in this browser.' : `${results.filter(item => item.passed).length} / ${results.length} public tests passed.`, `${report}${detail ? ` ${detail}` : ''}`, correct ? 'This is formative checking, not a central Accepted result.' : 'Fix the code, then check the public tests again.');
       evidenceButton.disabled = !correct;
       evidenceOpen.disabled = !correct;
       runButton.disabled = false;
@@ -710,7 +771,7 @@
     const content = `
       <div class="lab-shell execution-studio sql-studio" data-sql-studio data-task-id="${task.id}">
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry SQL</button></div></div>
-        <div class="task-toolbar"><label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(item.topic)} · ${escapeHtml(item.skill || '')} · ${escapeHtml(item.level)} · ${escapeHtml(item.title)} (${item.id})</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
+        <div class="task-toolbar">${categoryMenu('sql')}<label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button></article>
         <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code data-sql-schema>Loading practice schema…</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
@@ -837,7 +898,18 @@
     showTask(selectedTaskMetadata());
     prepareSql();
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
-    lab.querySelector('[data-sql-random]').addEventListener('click', () => showTask(randomItem(studioTasks('sql').filter(task => task.id !== selectedTaskMetadata().id))));
+    const visibleSqlTasks = () => tasksInCategory('sql', lab.querySelector('[data-sql-category]')?.value || '');
+    lab.querySelector('[data-sql-category]')?.addEventListener('change', () => {
+      const visible = visibleSqlTasks();
+      const current = taskSelector.value;
+      taskSelector.innerHTML = visible.map(item => `<option value="${item.id}">${escapeHtml(taskMenuLabel(item))}</option>`).join('');
+      const chosen = visible.find(item => item.id === current) || visible[0];
+      if (chosen && chosen.id !== current) showTask(chosen);
+    });
+    lab.querySelector('[data-sql-random]').addEventListener('click', () => {
+      const options = visibleSqlTasks().filter(task => task.id !== selectedTaskMetadata().id);
+      if (options.length) showTask(randomItem(options));
+    });
     lab.querySelector('[data-sql-reset]').addEventListener('click', () => {
       if (!SQL || !taskReady) return;
       const task = selectedTask();
@@ -936,15 +1008,17 @@
     return ready;
   }
 
-  async function runPythonTaskTests(task, solutionCode = taskStarter(task)) {
+  async function runPythonTaskTests(task, solutionCode = taskStarter(task), options = {}) {
     const runner = createPythonRunner(() => {});
+    const cases = options.includePrivate ? [...(task.tests || []), ...(task.privateTests || [])] : (task.tests || []);
     try {
       const results = [];
-      for (const test of task.tests || []) {
+      for (const test of cases) {
         const result = await runner.run(solutionCode, testInput(test));
-        results.push({ label: test.label, passed: result.ok && normaliseOutput(result.stdout) === normaliseOutput(testOutput(test)), result });
+        const verdict = outputVerdict(task, result.stdout, testOutput(test));
+        results.push({ label: test.label, passed: result.ok && verdict.pass, reason: verdict.reason || result.error || '', result, private: Boolean(test.private) });
       }
-      return results;
+      return { complete: true, results };
     } finally {
       runner.dispose();
     }

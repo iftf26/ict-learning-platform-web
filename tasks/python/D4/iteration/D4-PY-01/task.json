@@ -4,6 +4,7 @@
   "skill": "iteration",
   "level": "Foundation",
   "practiceType": "complete",
+  "category": "intro",
   "title": "Pass counter",
   "brief": "The list below stores five test marks. Write a loop to count how many marks are at least 50, then print the final count.",
   "type": "python",

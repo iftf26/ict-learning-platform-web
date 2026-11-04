@@ -3,6 +3,7 @@
   "topic": "EA1",
   "skill": "delete-where",
   "level": "Challenge",
+  "category": "advanced",
   "title": "Delete only the retry record",
   "brief": "Delete only Chan Tai Man (S001), then SELECT StudentID in ascending order to prove that every other record remains.",
   "checker": {

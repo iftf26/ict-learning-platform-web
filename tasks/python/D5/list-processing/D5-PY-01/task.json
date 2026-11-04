@@ -4,6 +4,7 @@
   "skill": "list-processing",
   "level": "Developing",
   "practiceType": "construct",
+  "category": "elementary",
   "title": "Highest mark",
   "brief": "Traverse the supplied list and print its highest mark. Do not change the values in the list.",
   "type": "python",

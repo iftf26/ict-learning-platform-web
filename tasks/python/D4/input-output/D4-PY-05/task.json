@@ -4,6 +4,7 @@
   "skill": "input-output",
   "level": "Developing",
   "practiceType": "construct",
+  "category": "elementary",
   "title": "Two-mark total",
   "brief": "Read two whole-number marks, one line at a time. Convert them to integers and print their total. Use input() exactly as a DSE-style input/output task would require.",
   "type": "python",

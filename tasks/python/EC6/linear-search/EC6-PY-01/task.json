@@ -4,6 +4,7 @@
   "skill": "linear-search",
   "level": "Challenge",
   "practiceType": "dse",
+  "category": "applied",
   "title": "First matching index",
   "brief": "Traverse marks from left to right and print the first index at which target appears. You may assume target appears once.",
   "type": "python",

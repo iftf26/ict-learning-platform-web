@@ -1,6 +1,6 @@
 # ICT Learning Platform — Current Project State
 
-Last reviewed: 2026-09-22
+Last reviewed: 2026-11-05
 Last verified Studio commit: pending completion verification of the Phase 1 task-bank pass
 
 ## Current architecture
@@ -8,13 +8,14 @@ Last verified Studio commit: pending completion verification of the Phase 1 task
 - Notes remains the concept-learning route; DSE Practice is the shared checkpoint and chapter-practice route.
 - Trace Lab, Code Studio, SQL Studio, and DSE Practice use the unified Studio shell and retain their deep links.
 - Public Studio tasks are file-backed under `tasks/`; generated `tasks/task-index.json` supplies immutable selector metadata and a selected task is hydrated and cached in the browser session.
-- Python execution runs in an isolated Pyodide worker with a fresh submission namespace for every run. SQL Studio uses SQL.js with a fresh deterministic seed for every run.
+- Python execution runs in an isolated Pyodide worker with a fresh submission namespace for every run. `input()` prompts are terminal echo and are not scored as stdout. Tasks without `compare` keep legacy trimmed comparison; `exact` and `numeric` are explicit. SQL Studio uses SQL.js with a fresh deterministic seed for every run.
 - `python3 scripts/generate_task_index.py` validates/regenerates the task catalog; `node scripts/validate_checkpoint_bank.mjs` validates DSE Practice additions.
 
 ## Current Studio task-bank status
 
 - Public Python tasks: 42
 - Public SQL tasks: 6
+- Student-facing categories are 入門, 初階, 進階練習 and 現實應用題. They are stored as `category` and are not inferred from X, Y or Z.
 
 ## Confirmed design decisions
 
@@ -36,7 +37,8 @@ Phase 2 now has a deliberately small, reviewed pilot: EC3 advanced control (2 ta
 
 ## Known issues / deferred work
 
-- Importing an exported Teacher Builder ZIP is deferred; exports intentionally cannot restore a private teacher solution.
+- Teacher ZIP import previews into this browser only. It does not publish into `tasks/`. A C++ checker is blocked here. The real 15-task HKOI handover (XICT05–14, YICT03–07, 222 pairs) has not been accepted through this adapter.
+- Student ZIP export omits the private model and private tests. Teacher ZIP keeps them and must stay out of `tasks/`.
 
 ## Maintenance commands
 
@@ -44,4 +46,7 @@ Phase 2 now has a deliberately small, reviewed pilot: EC3 advanced control (2 ta
 python3 scripts/generate_task_index.py
 node scripts/validate_checkpoint_bank.mjs
 node scripts/test_studio_input_lines.mjs
+node scripts/test_studio_compare.mjs
+node scripts/test_hkoi_adapter.mjs
+python3 scripts/test_python_io_contract.py
 ```

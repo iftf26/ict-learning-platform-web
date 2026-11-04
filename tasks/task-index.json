@@ -17,7 +17,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D4/input-output/D4-PY-05/task.json",
@@ -41,7 +42,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D4/input-output/D4-PY-06/task.json",
@@ -65,7 +67,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D4/input-output/D4-PY-08/task.json",
@@ -89,7 +92,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D4/input-output/D4-PY-09/task.json",
@@ -113,7 +117,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/D4/iteration/D4-PY-01/task.json",
@@ -132,7 +137,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D4/iteration/D4-PY-12/task.json",
@@ -156,7 +162,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D4/iteration/D4-PY-13/task.json",
@@ -180,7 +187,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D4/iteration/D4-PY-14/task.json",
@@ -214,7 +222,8 @@
           "input": "04.in",
           "output": "04.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/D4/selection/D4-PY-03/task.json",
@@ -233,7 +242,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D4/selection/D4-PY-10/task.json",
@@ -262,7 +272,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D4/selection/D4-PY-11/task.json",
@@ -286,7 +297,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D4/selection/D4-PY-18/task.json",
@@ -320,7 +332,8 @@
           "input": "04.in",
           "output": "04.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/D4/validation/D4-PY-07/task.json",
@@ -344,7 +357,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D4/validation/D4-PY-15/task.json",
@@ -368,7 +382,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D4/validation/D4-PY-16/task.json",
@@ -397,7 +412,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D4/validation/D4-PY-17/task.json",
@@ -426,7 +442,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/D5/list-processing/D5-PY-01/task.json",
@@ -445,7 +462,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D5/list-processing/D5-PY-02/task.json",
@@ -464,7 +482,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D5/list-processing/D5-PY-03/task.json",
@@ -488,7 +507,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D5/list-processing/D5-PY-04/task.json",
@@ -512,7 +532,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/D5/string-processing/D5-PY-05/task.json",
@@ -536,7 +557,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/D5/string-processing/D5-PY-06/task.json",
@@ -560,7 +582,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/D5/string-processing/D5-PY-07/task.json",
@@ -584,7 +607,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/D5/string-processing/D5-PY-08/task.json",
@@ -613,7 +637,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC1/two-d-array/EC1-PY-01/task.json",
@@ -632,7 +657,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/EC1/two-d-array/EC1-PY-02/task.json",
@@ -656,7 +682,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/EC1/two-d-array/EC1-PY-03/task.json",
@@ -680,7 +707,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/EC1/two-d-array/EC1-PY-04/task.json",
@@ -709,7 +737,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC3/advanced-control/EC3-PY-01/task.json",
@@ -738,7 +767,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/EC3/advanced-control/EC3-PY-02/task.json",
@@ -767,7 +797,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC4/subprogram/EC4-PY-01/task.json",
@@ -786,7 +817,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/EC4/subprogram/EC4-PY-02/task.json",
@@ -810,7 +842,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/EC4/subprogram/EC4-PY-03/task.json",
@@ -834,7 +867,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "advanced"
     },
     {
       "path": "python/EC4/subprogram/EC4-PY-04/task.json",
@@ -868,7 +902,8 @@
           "input": "04.in",
           "output": "04.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC5/circular-queue/EC5-PY-04/task.json",
@@ -892,7 +927,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC5/queue/EC5-PY-03/task.json",
@@ -916,7 +952,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/EC5/stack/EC5-PY-01/task.json",
@@ -940,7 +977,8 @@
           "input": "02.in",
           "output": "02.out"
         }
-      ]
+      ],
+      "category": "intro"
     },
     {
       "path": "python/EC5/stack/EC5-PY-02/task.json",
@@ -969,7 +1007,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC6/binary-search/EC6-PY-02/task.json",
@@ -998,7 +1037,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "elementary"
     },
     {
       "path": "python/EC6/binary-search/EC6-PY-03/task.json",
@@ -1027,7 +1067,8 @@
           "input": "03.in",
           "output": "03.out"
         }
-      ]
+      ],
+      "category": "applied"
     },
     {
       "path": "python/EC6/linear-search/EC6-PY-01/task.json",
@@ -1046,7 +1087,8 @@
           "input": "01.in",
           "output": "01.out"
         }
-      ]
+      ],
+      "category": "applied"
     }
   ],
   "sql": [
@@ -1071,7 +1113,8 @@
             4
           ]
         ]
-      }
+      },
+      "category": "intro"
     },
     {
       "path": "sql/EA1/delete-where/EA1-SQL-06/task.json",
@@ -1104,7 +1147,8 @@
             "S005"
           ]
         ]
-      }
+      },
+      "category": "advanced"
     },
     {
       "path": "sql/EA1/group-by/EA1-SQL-04/task.json",
@@ -1133,7 +1177,8 @@
             75
           ]
         ]
-      }
+      },
+      "category": "elementary"
     },
     {
       "path": "sql/EA1/insert/EA1-SQL-03/task.json",
@@ -1161,7 +1206,8 @@
             82
           ]
         ]
-      }
+      },
+      "category": "elementary"
     },
     {
       "path": "sql/EA1/select-where/EA1-SQL-01/task.json",
@@ -1198,7 +1244,8 @@
             50
           ]
         ]
-      }
+      },
+      "category": "intro"
     },
     {
       "path": "sql/EA1/update-where/EA1-SQL-02/task.json",
@@ -1240,7 +1287,8 @@
             75
           ]
         ]
-      }
+      },
+      "category": "elementary"
     }
   ]
 }
