@@ -9079,8 +9079,18 @@ body:has(.study-studio) {
 .python-studio .kata-ide-bar .ghost-btn { border-color: #8eb6e2; color: #eaf4ff; }
 .python-studio .kata-ide-bar .primary-btn { background: #2f7de1; }
 .python-studio .kata-ide-bar button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-.python-studio .kata-ide .editor-panel { border: 0; border-radius: 0; }
-.python-studio .kata-ide .code-editor { min-height: 280px; }
+.python-studio .kata-ide .editor-panel { border: 0; border-radius: 0; min-height: 300px; }
+.studio-monaco { flex: 1; min-height: 280px; }
+.code-editor.is-replaced { display: none; }
+.sql-studio .editor-panel { min-height: 360px; }
+.sql-studio .editor-heading { align-items: center; }
+.sql-studio .editor-heading .kata-ide-spacer { flex: 1; }
+.sql-studio .editor-heading .ghost-btn,
+.sql-studio .editor-heading .primary-btn { min-height: 32px; padding: 6px 12px; box-shadow: none; }
+.sql-studio .editor-heading .ghost-btn { border-color: #8eb6e2; color: #eaf4ff; }
+.sql-studio .editor-heading .primary-btn { background: #2f7de1; }
+.sql-studio .editor-heading button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.editor-panel { display: flex; flex-direction: column; }
 .python-studio .kata-custom { padding: 0 12px 12px; color: #d6e8ff; }
 .python-studio .kata-custom summary { cursor: pointer; font-weight: 800; }
 .python-studio .kata-custom textarea { width: 100%; margin-top: 8px; box-sizing: border-box; min-height: 84px; border: 1px solid #34567f; border-radius: 12px; padding: 10px; background: #0b1828; color: #eaf4ff; font: 0.9rem/1.5 ui-monospace, Consolas, monospace; }

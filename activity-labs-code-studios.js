@@ -53,6 +53,7 @@
   function bindPythonIndentation(textarea) {
     let escapeTab = false;
     textarea.addEventListener('keydown', event => {
+      if (textarea.classList.contains('is-replaced')) return;
       if (event.key === 'Escape') { escapeTab = true; return; }
       if (event.key !== 'Tab') return;
       if (escapeTab) { escapeTab = false; return; }
@@ -63,7 +64,127 @@
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     });
   }
-  global.StudioEditorUtils = { indentCode };
+
+  const MONACO_VS = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs';
+  let monacoPromise;
+  let monacoThemeReady = false;
+
+  function loadMonaco() {
+    if (global.monaco?.editor) return Promise.resolve(global.monaco);
+    if (monacoPromise) return monacoPromise;
+    global.MonacoEnvironment = {
+      getWorkerUrl() {
+        const source = `self.MonacoEnvironment={baseUrl:'${MONACO_VS}/'};importScripts('${MONACO_VS}/base/worker/workerMain.js');`;
+        return `data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`;
+      }
+    };
+    monacoPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `${MONACO_VS}/loader.js`;
+      script.onload = () => {
+        global.require.config({ paths: { vs: MONACO_VS } });
+        global.require(['vs/editor/editor.main'], () => resolve(global.monaco));
+      };
+      script.onerror = () => {
+        monacoPromise = null;
+        script.remove();
+        reject(new Error('Could not load the code editor.'));
+      };
+      document.head.appendChild(script);
+    });
+    return monacoPromise;
+  }
+
+  function mountMonaco(textarea, language) {
+    const host = document.createElement('div');
+    host.className = 'studio-monaco';
+    host.setAttribute('data-editor-language', language);
+    textarea.insertAdjacentElement('afterend', host);
+    const valueProperty = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+    const disabledProperty = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'disabled');
+    let editor = null;
+    let mute = false;
+    Object.defineProperty(textarea, 'value', {
+      configurable: true,
+      get() { return editor ? editor.getValue() : valueProperty.get.call(textarea); },
+      set(next) {
+        const text = String(next ?? '');
+        valueProperty.set.call(textarea, text);
+        if (editor && editor.getValue() !== text) {
+          mute = true;
+          editor.setValue(text);
+          mute = false;
+        }
+      }
+    });
+    Object.defineProperty(textarea, 'disabled', {
+      configurable: true,
+      get() { return disabledProperty.get.call(textarea); },
+      set(flag) {
+        disabledProperty.set.call(textarea, flag);
+        editor?.updateOptions({ readOnly: Boolean(flag) });
+      }
+    });
+    loadMonaco().then(monaco => {
+      if (!host.isConnected) return;
+      if (!monacoThemeReady) {
+        monaco.editor.defineTheme('ict-kata', {
+          base: 'vs-dark',
+          inherit: true,
+          rules: [],
+          colors: {
+            'editor.background': '#102033',
+            'editor.foreground': '#eaf4ff',
+            'editorLineNumber.foreground': '#7f9bbd',
+            'editor.lineHighlightBackground': '#17304d',
+            'editorCursor.foreground': '#ffffff'
+          }
+        });
+        monacoThemeReady = true;
+      }
+      editor = monaco.editor.create(host, {
+        value: valueProperty.get.call(textarea),
+        language,
+        theme: 'ict-kata',
+        fontSize: 15,
+        fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", monospace',
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        tabSize: language === 'python' ? 4 : 2,
+        insertSpaces: true,
+        detectIndentation: false,
+        wordWrap: 'on',
+        padding: { top: 12, bottom: 12 },
+        renderLineHighlight: 'line',
+        overviewRulerLanes: 0,
+        hideCursorInOverviewRuler: true,
+        scrollbar: { verticalScrollbarSize: 8, horizontalScrollbarSize: 8 },
+        readOnly: textarea.disabled,
+        ariaLabel: textarea.getAttribute('aria-label') || 'Code editor',
+        fixedOverflowWidgets: true,
+        quickSuggestions: true,
+        suggestOnTriggerCharacters: true
+      });
+      textarea.classList.add('is-replaced');
+      editor.onDidChangeModelContent(() => {
+        if (mute) return;
+        valueProperty.set.call(textarea, editor.getValue());
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        textarea.dispatchEvent(new CustomEvent('studio-run', { bubbles: true }));
+      });
+    }).catch(() => {
+      host.remove();
+    });
+    return () => {
+      editor?.getModel()?.dispose();
+      editor?.dispose();
+      editor = null;
+    };
+  }
+  global.StudioEditorUtils = { indentCode, loadMonaco };
 
   function escapeHtml(value) {
     if (typeof global.escapeHtml === 'function') return global.escapeHtml(value);
@@ -224,7 +345,7 @@
 
   function safeProfile() {
     try {
-      return JSON.parse(sessionStorage.getItem(STUDENT_PROFILE_KEY)) || { name: '', className: '' };
+      return JSON.parse(localStorage.getItem(STUDENT_PROFILE_KEY) || sessionStorage.getItem(STUDENT_PROFILE_KEY)) || { name: '', className: '' };
     } catch (_) {
       return { name: '', className: '' };
     }
@@ -235,8 +356,23 @@
       name: lab.querySelector('[data-evidence-name]')?.value.trim() || '',
       className: lab.querySelector('[data-evidence-class]')?.value.trim() || ''
     };
-    sessionStorage.setItem(STUDENT_PROFILE_KEY, JSON.stringify(profile));
+    localStorage.setItem(STUDENT_PROFILE_KEY, JSON.stringify(profile));
     return profile;
+  }
+
+  function presentEvidence(lab, ready) {
+    const named = Boolean(lab.querySelector('[data-evidence-name]')?.value.trim());
+    const open = lab.querySelector('[data-evidence-open]');
+    const download = lab.querySelector('[data-evidence-download]');
+    const panel = lab.querySelector('[data-evidence-panel]');
+    const hint = lab.querySelector('[data-evidence-hint]');
+    if (open) open.disabled = !ready;
+    if (download) download.disabled = !ready || !named;
+    if (hint) hint.hidden = !ready || named;
+    if (panel) {
+      panel.hidden = !ready;
+      if (ready) panel.scrollIntoView({ block: 'nearest' });
+    }
   }
 
   function sessionValue(key, fallback) {
@@ -289,13 +425,19 @@
     return allLines;
   }
 
-  function makeEvidenceCard(lab, details) {
+  async function makeEvidenceCard(lab, details) {
     const profile = saveProfile(lab);
+    if (!profile.name) return;
+    if (document.fonts?.load) {
+      await document.fonts.load('800 44px "Noto Sans TC"');
+      await document.fonts.load('26px "Noto Sans TC"');
+    }
     const stamp = new Date();
+    const recorded = stamp.toLocaleString('zh-HK', { timeZone: 'Asia/Hong_Kong', hour12: false });
     const canvas = document.createElement('canvas');
     const width = 1600;
     const codeText = String(details.code || '').slice(0, 2600);
-    const outputText = String(details.output || details.error || 'No run output recorded.').slice(0, 1200);
+    const outputText = String(details.output || details.error || '沒有輸出紀錄。').slice(0, 1200);
     const context = canvas.getContext('2d');
     context.font = '26px Menlo, Consolas, monospace';
     const codeLines = wrapCanvasText(context, codeText, 1450).slice(0, 36);
@@ -314,22 +456,22 @@
     ctx.fillRect(56, 56, width - 112, height - 112);
 
     ctx.fillStyle = '#102033';
-    ctx.font = '800 44px system-ui, sans-serif';
-    ctx.fillText('ICT Learning Platform · Homework Evidence', 108, 132);
+    ctx.font = '800 44px "Noto Sans TC", system-ui, sans-serif';
+    ctx.fillText('ICT 學習平台 · 功課記錄卡', 108, 132);
     ctx.fillStyle = '#2860ac';
-    ctx.font = '700 26px system-ui, sans-serif';
+    ctx.font = '700 26px "Noto Sans TC", system-ui, sans-serif';
     ctx.fillText(`${details.studio}  |  ${details.taskId}`, 108, 178);
     ctx.fillStyle = '#43556b';
-    ctx.font = '26px system-ui, sans-serif';
-    ctx.fillText(`Name: ${profile.name || 'Not entered'}     Class: ${profile.className || 'Not entered'}`, 108, 228);
-    ctx.fillText(`Recorded: ${stamp.toLocaleString('en-GB')}     Run: ${details.runCount}`, 108, 268);
+    ctx.font = '26px "Noto Sans TC", system-ui, sans-serif';
+    ctx.fillText(`姓名：${profile.name}     班別：${profile.className || '未填'}`, 108, 228);
+    ctx.fillText(`香港時間：${recorded}     執行次數：${details.runCount}`, 108, 268);
 
     let y = 326;
     const section = (title, lines, fill, maxLines) => {
       ctx.fillStyle = fill;
       ctx.fillRect(104, y, width - 208, 46);
       ctx.fillStyle = '#ffffff';
-      ctx.font = '800 23px system-ui, sans-serif';
+      ctx.font = '800 23px "Noto Sans TC", system-ui, sans-serif';
       ctx.fillText(title, 126, y + 31);
       y += 72;
       ctx.fillStyle = '#102033';
@@ -340,11 +482,11 @@
       });
       y += 20;
     };
-    section('CODE / SQL SUBMISSION', codeLines, '#152c4a', 36);
-    section(details.ok ? 'RESULT · COMPLETED' : 'RESULT · CHECK NEEDED', outputLines, details.ok ? '#178052' : '#ad5f16', 14);
+    section('程式 / SQL', codeLines, '#152c4a', 36);
+    section(details.ok ? '結果 · 已完成' : '結果 · 尚未完成', outputLines, details.ok ? '#178052' : '#ad5f16', 14);
     ctx.fillStyle = '#617289';
-    ctx.font = '20px system-ui, sans-serif';
-    ctx.fillText('This card records the browser session only. Submit it with your required code or explanation if your teacher asks.', 108, height - 94);
+    ctx.font = '20px "Noto Sans TC", system-ui, sans-serif';
+    ctx.fillText('這張卡記錄這次瀏覽器裡的程式和輸出。請下載後，在 Google Classroom 功課自行附上。', 108, height - 94);
 
     const fileStem = `${details.taskId}-${(profile.name || 'student').replace(/[^a-z0-9]+/gi, '-')}-${stamp.toISOString().replace(/[:.]/g, '-')}`;
     const download = () => {
@@ -359,23 +501,24 @@
   function evidencePanel(profile) {
     return `
       <section class="evidence-export" data-evidence-export>
-        <button type="button" class="secondary-btn" data-evidence-open disabled>Export evidence</button>
+        <button type="button" class="secondary-btn" data-evidence-open disabled>填寫記錄卡</button>
       </section>
       <aside class="evidence-panel" data-evidence-panel hidden>
         <div>
-          <p class="eyebrow">功課證據卡</p>
-          <h4>Export completed work as PNG</h4>
-          <p>卡內會記錄姓名、班別、題目、程式／SQL、輸出、時間及執行次數。</p>
+          <p class="eyebrow">功課記錄卡</p>
+          <h4>填姓名，下載圖片</h4>
+          <p>全部測試通過後，填寫姓名即可下載記錄卡。卡內有姓名、班別、題目、程式或 SQL、輸出和香港時間。</p>
+          <p data-evidence-hint>先填姓名，才可以下載。</p>
         </div>
         <div class="evidence-profile">
-          <label>姓名<input type="text" data-evidence-name maxlength="50" value="${escapeHtml(profile.name)}" placeholder="例如 Chan Tai Man"></label>
+          <label>姓名<input type="text" data-evidence-name maxlength="50" value="${escapeHtml(profile.name)}" placeholder="例如 陳大文" required></label>
           <label>班別<input type="text" data-evidence-class maxlength="20" value="${escapeHtml(profile.className)}" placeholder="例如 5A"></label>
         </div>
         <div class="evidence-submit-route">
-          <button type="button" class="secondary-btn" data-evidence-download disabled>Download PNG</button>
-          <a class="text-btn" href="https://classroom.google.com/" target="_blank" rel="noopener">Open Google Classroom ↗</a>
+          <button type="button" class="secondary-btn" data-evidence-download disabled>下載記錄卡</button>
+          <a class="text-btn" href="https://classroom.google.com/" target="_blank" rel="noopener">開啟 Google Classroom ↗</a>
         </div>
-        <small>這是提交輔助紀錄，不是防篡改的身份驗證；老師仍可要求學生說明或交原始碼。</small>
+        <small>下載圖片後，在 Classroom 功課按「新增」或「交還」自行附上。這個網站不會登入 Classroom，也不能代為提交。記錄卡可以證明這次輸出，不能防止改圖。</small>
       </aside>
     `;
   }
@@ -477,7 +620,7 @@
               <span>你的程式</span>
               <span data-python-task-label>${task.id}</span>
               <span class="kata-ide-spacer"></span>
-              <button type="button" class="ghost-btn" data-python-run disabled>執行</button>
+              <button type="button" class="ghost-btn" data-python-run disabled title="執行（Ctrl+Enter）">執行</button>
               <button type="button" class="primary-btn" data-python-check disabled>提交</button>
             </div>
             <section class="editor-panel"><textarea class="code-editor" data-python-code spellcheck="false" aria-label="Python code editor" disabled>Loading selected task…</textarea></section>
@@ -502,6 +645,7 @@
     const output = lab.querySelector('[data-python-output]');
     const code = lab.querySelector('[data-python-code]');
     bindPythonIndentation(code);
+    const releaseEditor = mountMonaco(code, 'python');
     const taskSelector = lab.querySelector('[data-python-task]');
     const evidenceButton = lab.querySelector('[data-evidence-download]');
     const evidenceOpen = lab.querySelector('[data-evidence-open]');
@@ -563,8 +707,7 @@
       if (customInput) { customInput.value = ''; customInput.dataset.dirty = ''; }
       checkedRun = null;
       lastRun = null;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      presentEvidence(lab, false);
       updateRunAvailability();
       try {
         const task = await hydrateTask(metadata);
@@ -617,8 +760,12 @@
     });
 
     showTask(selectedTaskMetadata());
+    lab.addEventListener('studio-run', () => { if (!runButton.disabled) runButton.click(); });
     retryButton.addEventListener('click', () => runner.retry());
-    lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
+    lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('input', () => {
+      saveProfile(lab);
+      presentEvidence(lab, Boolean(checkedRun));
+    }));
     lab.querySelector('[data-python-custom-input]')?.addEventListener('input', (event) => { event.target.dataset.dirty = 'true'; });
     lab.querySelector('[data-python-download]')?.addEventListener('click', () => {
       const blob = new Blob([code.value], { type: 'text/plain' });
@@ -632,8 +779,7 @@
       if (!selectedTask()) return;
       saveDraft('python', selectedTask().id, code.value);
       checkedRun = null;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      presentEvidence(lab, false);
     });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     lab.querySelector('[data-python-task-retry]')?.addEventListener('click', () => showTask(selectedTaskMetadata()));
@@ -691,13 +837,14 @@
       lastRun = null;
       checkedRun = null;
       lab.querySelector('[data-python-submit-report]').innerHTML = '';
+      presentEvidence(lab, false);
     });
     runButton.addEventListener('click', async () => {
       if (!runtimeReady || !taskReady) return;
       runButton.disabled = true;
       checkButton.disabled = true;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      checkedRun = null;
+      presentEvidence(lab, false);
       output.textContent = 'Running Python…';
       const submittedCode = code.value;
       const task = selectedTask();
@@ -766,8 +913,7 @@
         return `<li class="${item.passed ? 'is-pass' : 'is-fail'}"><strong>${item.passed ? '正確' : '錯誤'}</strong> ${escapeHtml(name)}${detail}</li>`;
       }).join('')}</ol></section>`;
       report.scrollIntoView({ block: 'nearest' });
-      evidenceButton.disabled = !correct;
-      evidenceOpen.disabled = !correct;
+      presentEvidence(lab, correct);
       updateRunAvailability();
     });
     evidenceOpen.addEventListener('click', () => { lab.querySelector('[data-evidence-panel]').hidden = false; });
@@ -785,6 +931,7 @@
     const dispose = () => {
       if (disposed) return;
       disposed = true;
+      releaseEditor();
       runner.dispose();
       global.removeEventListener('pagehide', dispose);
     };
@@ -847,9 +994,8 @@
         <div class="studio-banner"><div><p class="eyebrow">Practice database</p><h4>SQL Studio</h4><p>Write and test SQL.</p></div><div class="runtime-status-stack"><span class="runtime-pill" data-sql-status aria-live="polite">Preparing SQL…</span><button type="button" class="text-btn" data-sql-retry hidden>Retry SQL</button></div></div>
         <div class="task-toolbar">${categoryMenu('sql')}<label>Task<select data-sql-task>${tasks.map((item) => `<option value="${item.id}" ${item.id === task.id ? 'selected' : ''}>${escapeHtml(taskMenuLabel(item))}</option>`).join('')}</select></label><button type="button" class="ghost-btn" data-sql-random>換一題</button><button type="button" class="ghost-btn" data-sql-reset>Reset task</button></div>
         <article class="studio-brief" data-sql-brief><p class="eyebrow">DSE-style database brief</p><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.brief)}</p><small data-sql-task-state>Loading this task’s starter SQL and seed data…</small><button type="button" class="text-btn" data-sql-task-retry hidden>Retry task files</button></article>
-        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
+        <div class="execution-grid"><section class="editor-panel"><div class="editor-heading"><span>practice.sql</span><span data-sql-task-label>${task.id}</span><span class="kata-ide-spacer"></span><button type="button" class="ghost-btn" data-sql-run disabled title="執行（Ctrl+Enter）">執行</button><button type="button" class="primary-btn" data-sql-check disabled>檢查</button></div><textarea class="code-editor sql-code-editor" data-sql-code spellcheck="false" aria-label="SQL code editor" disabled>Loading selected task…</textarea></section><section class="console-panel"><div class="editor-heading"><span>Your result</span><span>Practice database</span></div><div class="sql-console" data-sql-output aria-live="polite">SQL is loading in the background…</div></section></div>
         <div class="schema-strip"><strong>Schema</strong><code data-sql-schema>Loading practice schema…</code><details class="sql-start-data"><summary>View starting data</summary><div data-sql-seed-output></div></details></div>
-        <div class="lab-actions studio-actions"><button type="button" class="primary-btn" data-sql-run disabled>Run</button><button type="button" class="secondary-btn" data-sql-check disabled>Check solution</button></div>
         <div data-sql-feedback></div>
         ${evidencePanel(profile)}
       </div>
@@ -862,6 +1008,7 @@
     if (!lab) return;
     const status = lab.querySelector('[data-sql-status]');
     const code = lab.querySelector('[data-sql-code]');
+    const releaseEditor = mountMonaco(code, 'sql');
     const output = lab.querySelector('[data-sql-output]');
     const runButton = lab.querySelector('[data-sql-run]');
     const checkButton = lab.querySelector('[data-sql-check]');
@@ -912,8 +1059,7 @@
       lastRun = null;
       checkedRun = null;
       checkButton.disabled = true;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      presentEvidence(lab, false);
       updateRunAvailability();
       try {
         const task = await hydrateTask(metadata);
@@ -939,13 +1085,15 @@
       }
     };
 
-    lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('change', () => saveProfile(lab)));
+    lab.querySelectorAll('[data-evidence-name], [data-evidence-class]').forEach((input) => input.addEventListener('input', () => {
+      saveProfile(lab);
+      presentEvidence(lab, Boolean(checkedRun));
+    }));
     code.addEventListener('input', () => {
       if (!selectedTask()) return;
       saveDraft('sql', selectedTask().id, code.value);
       checkedRun = null;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      presentEvidence(lab, false);
       checkButton.disabled = true;
     });
     const prepareSql = () => {
@@ -971,6 +1119,7 @@
     retryButton.addEventListener('click', prepareSql);
     showTask(selectedTaskMetadata());
     prepareSql();
+    lab.addEventListener('studio-run', () => { if (!runButton.disabled) runButton.click(); });
     taskSelector.addEventListener('change', () => showTask(selectedTaskMetadata()));
     const visibleSqlTasks = () => tasksInCategory('sql', lab.querySelector('[data-sql-category]')?.value || '');
     lab.querySelector('[data-sql-category]')?.addEventListener('change', () => {
@@ -995,8 +1144,7 @@
       lastRun = null;
       checkedRun = null;
       checkButton.disabled = true;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
+      presentEvidence(lab, false);
       output.innerHTML = '<p class="console-muted">Practice database reset to its starting records.</p>';
       lab.querySelector('[data-sql-feedback]').innerHTML = feedback('info', 'Task reset.', 'The starter SQL and practice database have been restored.', 'Run your SQL again and inspect the result.');
     });
@@ -1004,9 +1152,8 @@
       if (!db || !taskReady) return;
       runButton.disabled = true;
       checkButton.disabled = true;
-      evidenceButton.disabled = true;
-      evidenceOpen.disabled = true;
       checkedRun = null;
+      presentEvidence(lab, false);
       try {
         resetDatabase();
         const resultSets = db.exec(code.value);
@@ -1029,8 +1176,7 @@
       if (!lastRun || !db || lastRun.code !== code.value || lastRun.task.id !== selectedTask().id) return;
       const correct = lastRun.ok && verifySqlTask(selectedTask(), db, lastRun);
       checkedRun = correct ? lastRun : null;
-      evidenceButton.disabled = !correct;
-      evidenceOpen.disabled = !correct;
+      presentEvidence(lab, correct);
       lab.querySelector('[data-sql-feedback]').innerHTML = correct
         ? feedback('good', 'Task result confirmed.', 'The practice database now contains the requested result. You can export evidence for this completed task.', 'Explain which clause made the action safe or which fields prove the change.')
         : feedback('bad', 'Task result is not there yet.', 'The statement may be valid SQL, but the current database state does not yet match the task brief.', 'Reset if needed, then compare the required fields, condition and values carefully.');
@@ -1050,6 +1196,7 @@
     const dispose = () => {
       if (disposed) return;
       disposed = true;
+      releaseEditor();
       db?.close();
       db = null;
       global.removeEventListener('pagehide', dispose);
